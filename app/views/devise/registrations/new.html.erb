@@ -1,0 +1,54 @@
+<div class="container-fluid">
+
+  <div class="row justify-content-md-center">
+
+    <div class="col-5">
+
+      <div class="container-fluid devise-input-form-container">
+
+        <h2 class="text-center font-weight-bold">Register New Account</h2>
+
+        <br>
+
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+          <div class="row form-group">
+            <%= f.label :email, :class => "col-4 col-form-label" %><br />
+            <div class="col-8">
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", :class => "form-control" %>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="row form-group">
+            <%= f.label :password, :class => "col-4 col-form-label" %>
+            <div class="col-8">
+              <%= f.password_field :password, autocomplete: "new-password", :class => "form-control", :placeholder => "6 characters minimum" %>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="row form-group">     
+            <%= f.label :password, "Confirm Password", :class => "col-4 col-form-label" %><br />
+            <div class="col-8">
+              <%= f.password_field :password, autocomplete: "current-password", :class => "form-control" %>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="row justify-content-md-center"> 
+            <div class="actions">
+              <%= f.submit "Register", :class => "btn btn-primary" %>
+            </div>
+          </div>
+
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+
+</div>

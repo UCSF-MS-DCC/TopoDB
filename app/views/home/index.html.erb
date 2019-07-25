@@ -1,0 +1,10 @@
+<div class="container">
+    <% if !current_user %> 
+        <div class="row justify-content-md-center" style="margin-top:2%;">
+           <span>UCSF Multiple Sclerosis Genetics Research Laboratory Mouse Database</span>
+            <%= image_tag("lab-mouse-vector", :style => "margin-top:5%;") %>
+        </div>
+    <% else %>
+        <!-- cages content -->
+    <% end %>
+</div>

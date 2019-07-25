@@ -1,0 +1,23 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="border-bottom:1px solid black;">
+    <%= link_to(image_tag("mouse-icon.png", :style=>"height:40px;") +" TopoDB", root_path, :class => "navbar-brand" )%>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <% if current_user %>
+                <li class="nav-item">
+                    <span>signed in as <%= current_user.email %></span>
+                </li>
+            <% else %>
+                <li class="nav-item">
+                    <%= link_to "Sign In", new_user_session_path %>
+                </li>
+            <% end %>
+
+        </ul>
+    </div>
+</nav>
+
