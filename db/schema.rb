@@ -10,7 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_213646) do
+ActiveRecord::Schema.define(version: 2019_07_26_220225) do
+
+  create_table "cages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+    t.string "cage_number"
+    t.string "cage_type"
+    t.string "location"
+    t.string "rack"
+    t.boolean "cage_number_changed"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "pups"
+    t.string "sex"
+  end
+
+  create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "cage_id"
+    t.string "sex"
+    t.string "genotype"
+    t.date "dob"
+    t.date "weaning_date"
+    t.date "tail_cut_date"
+    t.string "ear_punch"
+    t.string "designation"
+    t.boolean "dead"
+    t.text "notes"
+    t.string "on_experiment"
+    t.integer "parent_cage_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "strain"
+    t.index ["cage_id"], name: "index_mice_on_cage_id"
+  end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -20,6 +51,7 @@ ActiveRecord::Schema.define(version: 2019_07_25_213646) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "admin"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -45,4 +77,5 @@ ActiveRecord::Schema.define(version: 2019_07_25_213646) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
+  add_foreign_key "mice", "cages"
 end

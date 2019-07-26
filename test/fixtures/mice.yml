@@ -1,0 +1,61 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+mouse_one:
+  strain: "ATXN1"
+  cage: breeding_cage
+  sex: "F"
+  genotype: "-/-"
+  dob: 2019-07-26
+  weaning_date: 2019-07-26
+  tail_cut_date: 2019-07-26
+  ear_punch: "RL"
+  designation: "F001RL"
+  dead: false
+  notes: nil
+  on_experiment: 
+  parent_cage_id: 1
+
+mouse_two:
+  strain: "ATXN1"
+  cage: breeding_cage
+  sex: "M"
+  genotype: "-/+"
+  dob: 2019-07-26
+  weaning_date: 2019-07-26
+  tail_cut_date: 2019-07-26
+  ear_punch: "N"
+  designation: "M024N"
+  dead: false
+  notes: nil
+  on_experiment: 
+  parent_cage_id: 1
+
+mouse_three:
+  strain: "ATXN1"
+  cage: breeding_cage
+  sex: "F"
+  genotype: "+/+"
+  dob: 2019-07-26
+  weaning_date: 2019-07-26
+  tail_cut_date: 2019-07-26
+  ear_punch: "RL"
+  designation: "F003L"
+  dead: false
+  notes: nil
+  on_experiment: 
+  parent_cage_id: 1
+
+mouse_four:
+  strain: "Tau"
+  cage: single_sex_cage
+  sex: "M"
+  genotype: "-/+"
+  dob: 2019-07-26
+  weaning_date: 2019-07-26
+  tail_cut_date: 2019-07-26
+  ear_punch: "N"
+  designation: "M024N"
+  dead: false
+  notes: nil
+  on_experiment: 
+  parent_cage_id: 1

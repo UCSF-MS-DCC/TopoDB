@@ -11,12 +11,19 @@
                 <li class="nav-item">
                     <span>signed in as <%= current_user.email %></span>
                 </li>
+                <li class="nav-item">
+                    <%= link_to "Log out", destroy_user_session_path, :method => :delete, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                </li>
             <% else %>
                 <li class="nav-item">
-                    <%= link_to "Sign In", new_user_session_path %>
+                    <%= link_to "Sign In", new_user_session_path, :class => "btn btn-outline-primary" %>
                 </li>
             <% end %>
-
+            <% if current_user && current_user.is_admin? %>
+                <li class="nav-item">
+                    <%= link_to "Admin", rails_admin_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                </li>
+            <% end %>
         </ul>
     </div>
 </nav>
