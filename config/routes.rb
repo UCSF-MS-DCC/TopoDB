@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   namespace :home do
     get 'index'
+    get 'cage'
   end
 
   get '*path', to: 'error#error_404', via: :all, as: 'error'

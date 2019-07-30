@@ -39,6 +39,24 @@
 
           <br>
 
+          <div class="row form-group">     
+            <%= f.label :password, "First Name", :class => "col-4 col-form-label" %><br />
+            <div class="col-8">
+              <%= f.text_field :first, :class => "form-control" %>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="row form-group">     
+            <%= f.label :password, "Last Name", :class => "col-4 col-form-label" %><br />
+            <div class="col-8">
+              <%= f.text_field :last, :class => "form-control" %>
+            </div>
+          </div>
+
+          <br>
+
           <div class="row justify-content-md-center"> 
             <div class="actions">
               <%= f.submit "Register", :class => "btn btn-primary" %>

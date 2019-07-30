@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_26_220225) do
+ActiveRecord::Schema.define(version: 2019_07_30_191930) do
 
   create_table "cages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.string "cage_number"
@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(version: 2019_07_26_220225) do
     t.datetime "updated_at", null: false
     t.integer "pups"
     t.string "sex"
+    t.string "strain"
+    t.date "expected_weaning_date"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
@@ -40,6 +42,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_220225) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strain"
+    t.string "origin"
     t.index ["cage_id"], name: "index_mice_on_cage_id"
   end
 
@@ -51,7 +54,10 @@ ActiveRecord::Schema.define(version: 2019_07_26_220225) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "admin"
+    t.boolean "admin", default: false
+    t.string "first"
+    t.string "last"
+    t.boolean "editor", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

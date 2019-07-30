@@ -12,7 +12,8 @@
  *
  */
  @import "bootstrap";
-
+ @import "datatables";
+ 
  .devise-input-form-container {
     border:1px solid skyblue;
     margin-top:15%;
@@ -21,3 +22,4 @@
     padding-top:5%;
     background-color:#e6f4ff;
  }
+

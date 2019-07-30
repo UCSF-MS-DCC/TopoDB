@@ -23,6 +23,11 @@ gem 'rails_admin', '~> 2.0.0.beta'
 gem 'cancancan'
 gem 'paper_trail'
 gem 'paper_trail-association_tracking'
+gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
+gem 'ajax-datatables-rails'
+gem 'jquery-datatables'
+gem 'jquery-rails'
+gem 'draper'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks

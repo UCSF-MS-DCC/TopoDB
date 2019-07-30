@@ -9,7 +9,10 @@ class Ability
     if user.is_admin?
       can :manage, :all
       can :access, :rails_admin
-      can :read, :dashboard
+    end
+
+    if user.is_editor?
+      can :manage, [:cages, :mice]
     end
     # Define abilities for the passed in user here. For example:
     #

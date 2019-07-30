@@ -5,6 +5,21 @@
             <%= image_tag("lab-mouse-vector", :style => "margin-top:5%;") %>
         </div>
     <% else %>
-        <!-- cages content -->
+        <div class="row justify-content-md-center" style="margin-top:20px;">
+            <div class="col-8">
+                <table id="cages-datatable" class="table table-bordered table-striped" data-source="<%= home_index_path(format: :json) %>">
+                    <thead>
+                        <th>Cage Number</th>
+                        <th>Strain</th>
+                        <th>Cage Type</th>
+                        <th>Population</th>
+                        <th>Expected Weaning Date</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
     <% end %>
 </div>

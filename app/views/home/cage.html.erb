@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="container">
+    <% if !current_user %> 
+        <div class="row justify-content-md-center" style="margin-top:2%;">
+           <span>UCSF Multiple Sclerosis Genetics Research Laboratory Mouse Database</span>
+            <%= image_tag("lab-mouse-vector", :style => "margin-top:5%;") %>
+        </div>
+    <% else %>
+        <div class="row justify-content-md-center" style="margin-top:20px;">
+            <div class="col-8">
+                <table id="single-cage-datatable" class="table table-bordered table-striped" data-source="<%= home_cage_path(format: :json) %>">
+                    <thead>
+                        <th>Genotype</th>
+                        <th>ID</th>
+                        <th>Birth Cage</th>
+                        <th>Wean Date</th>
+                    </thead>
+                    <tbody>
+                    <% @mice.each do |m| %>
+                        <tr>
+                            <td><%= m.genotype %></td>
+                            <td><%= m.designation %></td>
+                            <td><%= m.parent_cage_id%></td>
+                            <td><%= m.weaning_date%></td>
+                        </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    <% end %>
+</div>
+</div>
+
