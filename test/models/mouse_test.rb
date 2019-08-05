@@ -1,12 +1,14 @@
 require 'test_helper'
 
 class MouseTest < ActiveSupport::TestCase
-  test "validates uniqueness of designations within a strain" do
-    mouse = Mouse.new(cage_id:Cage.first.id, sex:"F", genotype:"-/-", dob:"04/12/2019", weaning_date:"05/02/2019", tail_cut_date:nil, ear_punch:"LL", designation:"F001RL", strain:"ATXN1")
-    assert mouse.invalid?
+  test "validates designation is available (not in use by a living mouse in the same strain)" do
+    mouse1 = Mouse.new(cage_id:Cage.first.id, sex:"F", genotype:"-/-", dob:"04/12/2019", weaning_date:"05/02/2019", tail_cut_date:nil, ear_punch:"LL", designation:"F001RL", strain:"ATXN1", euthanized:false)
+    assert mouse1.invalid?
+    mouse2 = Mouse.new(cage_id:Cage.first.id, sex:"M", genotype:"-/-", dob:"04/12/2019", weaning_date:"05/02/2019", tail_cut_date:nil, ear_punch:"RR", designation:"M222RR", strain:"ATXN1", euthanized:false)
+    assert mouse2.valid?
   end
   test "allows duplicate designations in different strains" do
-    mouse = Mouse.new(cage_id:Cage.first.id, sex:"F", genotype:"-/-", dob:"04/12/2019", weaning_date:"05/02/2019", tail_cut_date:nil, ear_punch:"LL", designation:"F001LL", strain:"Tau")
+    mouse = Mouse.new(cage_id:Cage.first.id, sex:"F", genotype:"-/-", dob:"04/12/2019", weaning_date:"05/02/2019", tail_cut_date:nil, ear_punch:"LL", designation:"F001LL", strain:"Tau", euthanized:false)
     assert mouse.valid?
   end
   test "restricts ear punch patterns to a defined and enumerated set" do

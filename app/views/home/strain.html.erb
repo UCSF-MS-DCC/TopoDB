@@ -1,0 +1,23 @@
+<div class="container-fluid">
+    <div class="row">
+        <h1><%= @strain %></h1>
+    </div>
+    <%= render 'home/partials/new_cage_form' %>
+    <div class="row justify-content-md-center" style="margin-top:2%;">
+        <div class="col-9">
+            <table id="strain-datatable" data-source="<%= home_strain_path(format: :json, strain: @strain) %>" class='table table-bordered table-striped' >
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Sex</th>
+                        <th>Expected Wean date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+         </div>
+    </div>
+</div>

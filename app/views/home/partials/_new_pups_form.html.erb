@@ -1,0 +1,17 @@
+<div class="collapse"  id="recordNewPupsDiv" style="margin-top:20px;margin-bottom:20px;">
+<hr>
+    <div class="row justify-content-md-center">
+        <h4>Record/Edit Pups Birth</h4>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-10">
+            <%= form_tag home_new_pups_path(:cage => @cage.id), method: :put do  %>
+                <span class="pupsFormLabel">Female: </span><%= text_field_tag "female_pups", nil, placeholder:@cage.female_pups %>&nbsp;
+                <span class="pupsFormLabel">Male: </span><%= text_field_tag "male_pups", nil, placeholder:@cage.male_pups %>&nbsp;
+                <span class="pupsFormLabel">Birthdate: </span><%= date_field_tag "birthdate", Date.today %>
+                <%= submit_tag "Save", :class => "btn btn-primary float-right"  %>
+            <% end %>
+        </div>
+    </div>
+    <hr>
+</div>

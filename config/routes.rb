@@ -7,6 +7,13 @@ Rails.application.routes.draw do
   namespace :home do
     get 'index'
     get 'cage'
+    get 'strain'
+    post 'create_cage'
+    patch 'update_cage'
+    put 'euthanize_mice'
+    post 'update_mouse'
+    get 'transfer'
+    put 'new_pups'
   end
 
   get '*path', to: 'error#error_404', via: :all, as: 'error'

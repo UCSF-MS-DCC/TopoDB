@@ -10,7 +10,7 @@ mouse_one:
   tail_cut_date: 2019-07-26
   ear_punch: "RL"
   designation: "F001RL"
-  dead: false
+  euthanized: false
   notes: nil
   on_experiment: 
   parent_cage_id: 1
@@ -25,7 +25,7 @@ mouse_two:
   tail_cut_date: 2019-07-26
   ear_punch: "N"
   designation: "M024N"
-  dead: false
+  euthanized: false
   notes: nil
   on_experiment: 
   parent_cage_id: 1
@@ -40,7 +40,7 @@ mouse_three:
   tail_cut_date: 2019-07-26
   ear_punch: "RL"
   designation: "F003L"
-  dead: false
+  euthanized: false
   notes: nil
   on_experiment: 
   parent_cage_id: 1
@@ -55,7 +55,22 @@ mouse_four:
   tail_cut_date: 2019-07-26
   ear_punch: "N"
   designation: "M024N"
-  dead: false
+  euthanized: false
+  notes: nil
+  on_experiment: 
+  parent_cage_id: 1
+
+mouse_four:
+  strain: "Tau"
+  cage: single_sex_cage
+  sex: "M"
+  genotype: "-/+"
+  dob: 2019-07-26
+  weaning_date: 2019-07-26
+  tail_cut_date: 2019-07-26
+  ear_punch: "RR"
+  designation: "M222RR"
+  euthanized: true
   notes: nil
   on_experiment: 
   parent_cage_id: 1

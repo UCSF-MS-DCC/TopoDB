@@ -1,0 +1,67 @@
+    <div class="row" style="margin-top:10px;">
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+    </div>
+    <div class="row justify-content-md-center collapse" id="newCageForm">
+        <%= form_for(@new_cage, url: home_create_cage_path(@new_cage), :html => { :style => "border:1px solid skyblue;padding-bottom:10px;padding-top:10px;min-width:50%;" } ) do |f| %>
+            <div class="col-12">
+                <div class="row justify-content-md-center">
+                    <h4>Enter new cage information</h4>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <%= f.label :cage_number, "Cage Number", :class => "col-form-label"%>
+                            <%= f.text_field :cage_number, :class => "form-control" %>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <%= f.label :strain, "Strain", :class => "col-form-label"%>
+                            <%= f.text_field :strain, :class => "form-control", :value => @strain  %>
+                        </div>
+                    </div>
+                </div>
+    
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">Cage Location</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check" style="display:inline-block;margin-right:30px;">
+                                <%= f.radio_button :location, "sandler", :value => "sandler", :class => "form-check-input" %>
+                                <%= f.label :location, "Sandler", :value => "sandler" %>
+                            </div>
+                            <div class="form-check" style="display:inline-block;">
+                                <%= f.radio_button :location, "genentech hall", :value => "genentech hall", :class => "form-check-input" %>
+                                <%= f.label :location, "Genentech Hall", :value => "genentech hall" %>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-label col-sm-3 pt-0">Cage Type</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check" style="display:inline-block;margin-right:30px;">
+                                <%= f.radio_button :cage_type, "single-f", :value => "single-f", :class => "form-check-input" %>
+                                <%= f.label :cage_type, "Single F", :value => "single-f" %>
+                            </div>
+                            <div class="form-check" style="display:inline-block;margin-right:30px;">
+                                <%= f.radio_button :cage_type, "single-m", :value => "single-m", :class => "form-check-input" %>
+                                <%= f.label :cage_type, "Single M", :value => "single-m" %>
+                            </div>
+                            <div class="form-check" style="display:inline-block;">
+                                <%= f.radio_button :cage_type, "breeding", :value => "breeding", :class => "form-check-input" %>
+                                <%= f.label :cage_type, "Breeding", :value => "breeding" %>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row justify-content-md-center"> 
+                    <div class="actions">
+                        <%= f.submit "Enter", :class => "btn btn-primary btn-block" %>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+    </div>

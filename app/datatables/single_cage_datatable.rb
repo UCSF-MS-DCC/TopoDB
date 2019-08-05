@@ -8,7 +8,7 @@ class SingleCageDatatable < AjaxDatatablesRails::ActiveRecord
       genotype:           { source: "Mouse.genotype" },
       designation:        { source: "Mouse.designation" },
       parent_cage_id:     { source: "Mouse.parent_cage_id" },
-      weaning_date:       { source: "Mouse.weaning_date" }
+      weaning_date:       { source: "Mouse.dob" }
 
 
       # id: { source: "User.id", cond: :eq },
@@ -22,7 +22,7 @@ class SingleCageDatatable < AjaxDatatablesRails::ActiveRecord
         genotype:             record.genotype,
         designation:          record.designation,
         parent_cage_id:       record.parent_cage_id,
-        weaning_date:         record.weaning_date
+        weaning_date:         record.dob
         # example:
         # id: record.id,
         # name: record.name
@@ -32,7 +32,7 @@ class SingleCageDatatable < AjaxDatatablesRails::ActiveRecord
 
   def get_raw_records
     puts "datatable options #{options.to_json}"
-    Mouse.where(cage_id:Cage.find_by(:cage_number => options[:cage_number]).id)
+    Mouse.where(cage_id:Cage.find_by(:cage_number => options[:cage_number]).id).where.not(euthanized:true)
     # insert query here
     # User.all
     # Mouse.all

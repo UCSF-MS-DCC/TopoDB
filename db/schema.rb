@@ -10,20 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_30_191930) do
+ActiveRecord::Schema.define(version: 2019_08_02_224745) do
 
   create_table "cages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.string "cage_number"
     t.string "cage_type"
     t.string "location"
-    t.string "rack"
     t.boolean "cage_number_changed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "pups"
+    t.integer "pups_f"
     t.string "sex"
     t.string "strain"
     t.date "expected_weaning_date"
+    t.boolean "in_use"
+    t.integer "pups_m"
+    t.date "pups_birthdate"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
@@ -35,7 +37,7 @@ ActiveRecord::Schema.define(version: 2019_07_30_191930) do
     t.date "tail_cut_date"
     t.string "ear_punch"
     t.string "designation"
-    t.boolean "dead"
+    t.boolean "euthanized"
     t.text "notes"
     t.string "on_experiment"
     t.integer "parent_cage_id"

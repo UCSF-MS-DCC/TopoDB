@@ -1,5 +1,4 @@
 <div class="container">
-    <div class="container">
     <% if !current_user %> 
         <div class="row justify-content-md-center" style="margin-top:2%;">
            <span>UCSF Multiple Sclerosis Genetics Research Laboratory Mouse Database</span>
@@ -7,29 +6,72 @@
         </div>
     <% else %>
         <div class="row justify-content-md-center" style="margin-top:20px;">
-            <div class="col-8">
-                <table id="single-cage-datatable" class="table table-bordered table-striped" data-source="<%= home_cage_path(format: :json) %>">
+            <div class='col-9' style="padding-left:20px;">
+                <h1>Cage <%= @cage.cage_number %></h1>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col-9" style="padding-left:25px;">
+                <table>
+                    <tr>
+                        <th>Strain:</th>
+                        <td> <%= @cage.strain %></td>
+                    </tr>
+                    <tr>
+                        <th>Type:</th>
+                        <td> <%= @cage.cage_type %></td>
+                    </tr>
+                    <tr>
+                        <th>Location:</th>
+                        <td><%= @cage.location.capitalize %></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+ 
+        <div class="row justify-content-md-center" style="margin-top:20px;">
+            <div class="col-9">
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#xferMiceDiv" type="button" aria-expanded=false>Transfer Mice To/From This Cage</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false  >Record New Pups</button>
+            </div>
+        </div>
+        <%= render 'home/partials/edit_cage_form' %>
+        <%= render 'home/partials/new_pups_form'%>
+        <div class="row justify-content-md-center" style="margin-top:20px;">
+            <div class="col-10">
+            <%= form_tag home_euthanize_mice_path(:cage => @cage.cage_number), method: :put do %>
+                <table id="single-cage-datatable" class="table table-bordered table-striped">
                     <thead>
                         <th>Genotype</th>
+                        <th>Ear Punch</th>
+                        <th>Sex</th>
                         <th>ID</th>
                         <th>Birth Cage</th>
-                        <th>Wean Date</th>
+                        <th>Birth Date</th>
+                        <th>On Experiment</th>
+                        <th>Euthanized</th>
                     </thead>
                     <tbody>
                     <% @mice.each do |m| %>
                         <tr>
-                            <td><%= m.genotype %></td>
-                            <td><%= m.designation %></td>
-                            <td><%= m.parent_cage_id%></td>
-                            <td><%= m.weaning_date%></td>
+                            <td><%= m.genotype != nil ? m.genotype : "NA" %></td>
+                            <td><%= m.ear_punch != nil ? m.ear_punch : "none" %></td>
+                            <td><%= m.sex %></td>
+                            <td><%= m.designation != nil ? m.designation : "none" %></td>
+                            <td><%= m.parent_cage_id != nil ? Cage.find(m.parent_cage_id.to_i).cage_number : "-" %></td>
+                            <td><%= m.dob %></td>
+                            <td><%= check_box_tag "on_experiment_ids[]", m.id %>
+                            <td><%= check_box_tag "euthanize_ids[]", m.id %></td>
                         </tr>
                     <% end %>
                     </tbody>
                 </table>
+                <%= submit_tag "Update Mice", :class => "btn btn-primary float-right"  %>
+                <% end %>
             </div>
         </div>
         
     <% end %>
-</div>
 </div>
 

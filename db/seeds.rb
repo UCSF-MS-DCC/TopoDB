@@ -6,14 +6,14 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 strains = %w(ATXN1 Tau 2D2 ATXN1L CD79 CIC\ FLOX)
-cage_types = %w(single breeding)
+cage_types = %w(single-m single-f breeding)
 locations = %w(sandler genentech\ hall)
 
 # strains.each do |strain|
 #     num_cages = Faker::Number.between(5,8)
 #     num_cages.times do
 #         loc = locations[Faker::Number.between(0,1)]
-#         ct = cage_types[Faker::Number.between(0,1)]
+#         ct = cage_types[Faker::Number.between(0,2)]
 #         rk = ["R1", "R2", "R3", "L1", "L2", "L3"][Faker::Number.between(0,5)]
 #         cnc = false
 #         pps = ct == "breeding" ? Faker::Number.between(1,5) : nil 
