@@ -16,7 +16,9 @@
 //= require jquery
 //= require jquery3
 //= require datatables
-
+//= require best_in_place
+//= require jquery-ui
+//= require best_in_place.jquery-ui
 //= require popper
 //= require bootstrap-sprockets
 //= require_tree .

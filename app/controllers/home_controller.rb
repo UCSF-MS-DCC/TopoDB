@@ -51,28 +51,57 @@ class HomeController < ApplicationController
     end
 
     def update_mouse
+        mouse = params.keys.select{ |k| k.include?("mouse-") }.first
+        mouse_id = mouse.split("-").second
+        key = params[mouse].keys.first
+        val = params[mouse][key.to_sym]
+        @mouse = Mouse.find(mouse_id)
+        if @mouse && @mouse.update_attributes(key.to_sym => val)
+            # indicate success
+        else
+            # raise errors
+            puts @mouse.errors.full_messages
+        end
+    end
+
+    def update_mouse_cage
+        puts params
+        mouse = params.keys.select{ |k| k.include?("mouse-") }.first
+        mouse_id = mouse.split("-").second
+        source_cage_id = params[mouse][:cage_id].split("->").first
+        target_cage_id = params[mouse][:cage_id].split("->").second
+        
+        @mouse = Mouse.find(mouse_id)
+        if @mouse && @mouse.update_attributes(cage_id:target_cage_id)
+            puts "Mouse moved"
+        else
+            puts @mouse.errors.full_messages
+        end
     end
 
     def euthanize_mice
-        Mouse.where(id:params[:euthanize_ids]).update_all(euthanized:true)
-        redirect_to home_cage_path(cage_number:params[:cage])
     end
 
     def transfer 
-        @cage1 = Cage.find(params[:cage])
+        @source = Cage.find(params[:cage])
+    end
+
+    def transfer_update
+        @source = Cage.find(params[:cage])
+        puts params[:cage]
     end
 
     def new_pups
         puts newPupsParams
         cage_id = params[:cage].to_i
         params[:female_pups].to_i.times.each do |p|
-           @m =  Mouse.new(sex:"F", dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:Cage.find(cage_id).strain, euthanized:false)
+           @m =  Mouse.new(sex:1, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:Cage.find(cage_id).strain, euthanized:false)
             if !@m.save
                 puts @m.errors.full_messages
             end
         end
         params[:male_pups].to_i.times.each do |p|
-            @m = Mouse.new(sex:"M", dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:Cage.find(cage_id).strain, euthanized:false)
+            @m = Mouse.new(sex:2, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:Cage.find(cage_id).strain, euthanized:false)
             if !@m.save
                 puts @m.errors.full_messages
             end
@@ -99,7 +128,7 @@ class HomeController < ApplicationController
     end
 
     def updateMouseParams
-        params.require(:mouse).permit(:euthanized, :on_experiment)
+        params.permit(:genotype)
     end
 
     def newPupsParams 

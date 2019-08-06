@@ -41,8 +41,8 @@ Cage.all.each do |c|
         pop.times do |num|
             bd = Faker::Date.between(1.year.ago, 3.months.ago)
             wd = bd + 21
-            ep = ["N", "L", "LL", "R", "RR", "RRL", "RLL", "RRLL"][Faker::Number.between(0,7)]
-            gt = ["+/+", "-/-", "+/-", "-/+"][Faker::Number.between(0,3)]
+            ep = Faker::Number.between(1,9)
+            gt = Faker::Number.between(1,5)
             if num == 0
                 mouse = Mouse.new(:cage_id => c.id, :sex => "M", :genotype => gt, :dob => bd, :weaning_date => wd, :tail_cut_date => bd + 7, :ear_punch => ep, :designation => "M#{dgn}#{ep}", :strain => c.strain )
                 mouse.save
@@ -56,14 +56,15 @@ Cage.all.each do |c|
 
     else
         pop = Faker::Number.between(3, 5)
+        parent_cages = Cage.where(cage_type:"breeding").pluck(:id).limit(10)
         puts "#{ct} cage, generating #{pop} mice"
         pop.times do
             bd = Faker::Date.between(1.year.ago, 3.months.ago)
             wd = bd + 21
-            ep = ["N", "L", "LL", "R", "RR", "RRL", "RLL", "RRLL"][Faker::Number.between(0,7)]
-            gt = ["+/+", "-/-", "+/-", "-/+"][Faker::Number.between(0,3)]
+            ep = Faker::Number.between(1,9)
+            gt = Faker::Number.between(2,5)
             sx = c.sex
-            mouse = Mouse.new(:cage_id => c.id, :sex => sx, :genotype => gt, :dob => bd, :weaning_date => wd, :tail_cut_date => bd + 7, :ear_punch => ep, :designation => "#{sx}#{dgn}#{ep}", :strain => c.strain, :parent_cage_id => Faker::Number.between(100000, 200000) )
+            mouse = Mouse.new(:cage_id => c.id, :sex => sx, :genotype => gt, :dob => bd, :weaning_date => wd, :tail_cut_date => bd + 7, :ear_punch => ep, :designation => "#{sx}#{dgn}#{ep}", :strain => c.strain, :parent_cage_id => parent_cages[Faker::Number.between(0,9)]  )
             mouse.save
             dgn += 1
         end

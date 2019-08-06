@@ -30,44 +30,50 @@
         </div>
  
         <div class="row justify-content-md-center" style="margin-top:20px;">
-            <div class="col-9">
+            <div class="col-10">
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
-                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#xferMiceDiv" type="button" aria-expanded=false>Transfer Mice To/From This Cage</button>
-                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false  >Record New Pups</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false >Record New Pups</button>
             </div>
         </div>
         <%= render 'home/partials/edit_cage_form' %>
         <%= render 'home/partials/new_pups_form'%>
         <div class="row justify-content-md-center" style="margin-top:20px;">
-            <div class="col-10">
-            <%= form_tag home_euthanize_mice_path(:cage => @cage.cage_number), method: :put do %>
+            <div class="col-12">
+            <%= form_tag home_update_mouse_path(:cage => @cage.cage_number), method: :put do %>
                 <table id="single-cage-datatable" class="table table-bordered table-striped">
                     <thead>
-                        <th>Genotype</th>
-                        <th>Ear Punch</th>
-                        <th>Sex</th>
-                        <th>ID</th>
+                        <th>Genotype *</th>
+                        <th>Ear Punch *</th>
+                        <th>Sex *</th>
+                        <th>ID *</th>
                         <th>Birth Cage</th>
                         <th>Birth Date</th>
-                        <th>On Experiment</th>
-                        <th>Euthanized</th>
+                        <th>Tail Cut Date *</th>
+                        <th>Expected Wean Date</th>
+                        <th>Transfer To Cage *</th>
                     </thead>
                     <tbody>
                     <% @mice.each do |m| %>
                         <tr>
-                            <td><%= m.genotype != nil ? m.genotype : "NA" %></td>
-                            <td><%= m.ear_punch != nil ? m.ear_punch : "none" %></td>
-                            <td><%= m.sex %></td>
-                            <td><%= m.designation != nil ? m.designation : "none" %></td>
+                            <td><%= best_in_place m, :genotype, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype, :html_attrs => { :selected => m.genotype, :class =>"editableField" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField" %></td>
+                            <td><%= best_in_place m, :ear_punch, :as => :select, :collection => [[1,"-"],[2,"N"],[3,"R"],[4,"L"],[5,"RR"],[6,"RL"],[7,"LL"],[8,"RRL"],[9,"RLL"],[10,"RRLL"]], :html_attrs => { :selected => m.ear_punch }, :default => m.ear_punch, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %></td>
+                            <td><%= best_in_place m, :sex, :as => :select, :collection => [[1,"F"], [2,"M"]], :value => m.sex, :html_attrs => { :selected => m.sex }, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %></td>
+                            <td><%= best_in_place m, :designation , :as => :input, :url => home_update_mouse_path, :html_attrs => { :size => "9", :maxlength => "8" }, :placeholder => m.designation, :default => m.designation, :value => m.designation, :param => "mouse-#{m.id}" %></td>
                             <td><%= m.parent_cage_id != nil ? Cage.find(m.parent_cage_id.to_i).cage_number : "-" %></td>
                             <td><%= m.dob %></td>
-                            <td><%= check_box_tag "on_experiment_ids[]", m.id %>
-                            <td><%= check_box_tag "euthanize_ids[]", m.id %></td>
+                            <td><%= best_in_place m, :tail_cut_date, :as => :input, :html_attrs => { :size => "12" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %>
+                            <td><%= m.weaning_date == nil ? m.dob + 21 : "n/a" %></td>
+                            <td><%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where(strain:@cage.strain).where.not(id:@cage.id).map { |cg| ["#{@cage.id}->#{cg.id}", cg.cage_number] }, :html_attrs => {:selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}"%></td>
                         </tr>
                     <% end %>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="9">* indicates field that may be edited</td>
+                        </tr>
+                    </tfoot>
                 </table>
-                <%= submit_tag "Update Mice", :class => "btn btn-primary float-right"  %>
+                
                 <% end %>
             </div>
         </div>

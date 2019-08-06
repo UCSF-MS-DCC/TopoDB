@@ -3,14 +3,20 @@
         <h2>Transfer Mice</h2>
     </div>
     <div class="row justify-content-md-center">
-        <div class="col-6">
-            <%= form_for(@cage1, url: home_transfer_path) do |f| %>
-                <div class="row">
-                    <div class='form-group'>
-                        <>
-                    </div>
-                </div>
-            <% end %>
+        <div class="col-8">
+            <select id="sourceCageUpdateSelect">
+                <% Cage.all.each do |cg| %>
+                    <option value="<%= cg.id %>"><%= cg.cage_number %></option>
+                <% end %>
+            </select>
+            
+            <ul style="list-style-type:none;border:1px solid grey;">
+                <% @source.mice.each do |m| %>
+                    <li><%= m.designation %></li>
+                <% end%>
+            </ul>
+        <ul style="list-style-type:none;">
+        </ul>
         </div>
     </div>
 </div>

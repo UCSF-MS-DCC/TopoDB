@@ -8,12 +8,13 @@ Rails.application.routes.draw do
     get 'index'
     get 'cage'
     get 'strain'
+    get 'transfer'
     post 'create_cage'
     patch 'update_cage'
-    put 'euthanize_mice'
-    post 'update_mouse'
-    get 'transfer'
+    put 'update_mouse'
     put 'new_pups'
+    put 'update_mouse_cage'
+    get 'transfer_update'
   end
 
   get '*path', to: 'error#error_404', via: :all, as: 'error'

@@ -21,7 +21,7 @@ $(document).on('turbolinks:load',function() {
       // Check dataTables documentation to learn more about
       // available options.
     });
-console.log($('#strain-datatable').data('source'))
+
     $('#strain-datatable').dataTable({
         "processing": true,
         "serverSide": true,
@@ -40,4 +40,13 @@ console.log($('#strain-datatable').data('source'))
         // Check dataTables documentation to learn more about
         // available options.
     });
+    /* Activating Best In Place */
+    jQuery(".best_in_place").best_in_place();
+
+    $("#sourceCageUpdateSelect").on("change", function(e){
+        console.log(e.target.value)
+        $.get("/home/transfer_update?cage="+e.target.value, function(data, status) {
+            alert(status);
+        });
+    })
   });
