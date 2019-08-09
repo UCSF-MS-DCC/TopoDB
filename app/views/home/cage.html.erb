@@ -15,7 +15,7 @@
                 <table>
                     <tr>
                         <th>Strain:</th>
-                        <td> <%= @cage.strain %></td>
+                        <td><%= link_to @cage.strain, home_strain_path(:strain => @cage.strain) %></td>
                     </tr>
                     <tr>
                         <th>Type:</th>
@@ -30,9 +30,12 @@
         </div>
  
         <div class="row justify-content-md-center" style="margin-top:20px;">
-            <div class="col-10">
+            <div class="col-11">
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false >Record New Pups</button>
+                <% if @cage.cage_type == "breeding" && @cage.mice.where(designation:nil).count > 0 %>
+                    <%= link_to "Assign IDs to pups", home_assign_new_ids_path(:cage_id => @cage.id), :class => "btn btn-sm btn-primary" %>
+                <% end %>
             </div>
         </div>
         <%= render 'home/partials/edit_cage_form' %>
@@ -42,34 +45,41 @@
             <%= form_tag home_update_mouse_path(:cage => @cage.cage_number), method: :put do %>
                 <table id="single-cage-datatable" class="table table-bordered table-striped">
                     <thead>
-                        <th>Genotype *</th>
-                        <th>Ear Punch *</th>
-                        <th>Sex *</th>
-                        <th>ID *</th>
+                        <th class="editableColHeader"><%= @cage.strain.include?("/") ? @cage.strain.split("/").first : @cage.strain %></th>
+                        <% if @cage.strain.include?("/")%><th class="editableColHeader"><%= @cage.strain.split("/").second %></th><% end %>
+                        <th class="editableColHeader">Notch</th>
+                        <th class="editableColHeader">Sex</th>
+                        <th class="editableColHeader">ID</th>
                         <th>Birth Cage</th>
                         <th>Birth Date</th>
-                        <th>Tail Cut Date *</th>
-                        <th>Expected Wean Date</th>
-                        <th>Transfer To Cage *</th>
+                        <th class="editableColHeader">Tail Cut Date</th>
+                        <% if @cage.cage_type == "breeding" %><th>Wean Date</th><% end %>
+                        <th class="editableColHeader">Transfer To Cage</th>
+                        <th class="editableColHeader">Date Removed</th>
+                        <th class="editableColHeader">Removed For</th>
                     </thead>
                     <tbody>
                     <% @mice.each do |m| %>
+                        <% sx = ["f", "m"][(m.sex.to_i - 1)] %>
                         <tr>
                             <td><%= best_in_place m, :genotype, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype, :html_attrs => { :selected => m.genotype, :class =>"editableField" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField" %></td>
+                            <% if @cage.strain.include?("/")%><td><%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2, :class =>"editableField" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField" %></td><% end %>
                             <td><%= best_in_place m, :ear_punch, :as => :select, :collection => [[1,"-"],[2,"N"],[3,"R"],[4,"L"],[5,"RR"],[6,"RL"],[7,"LL"],[8,"RRL"],[9,"RLL"],[10,"RRLL"]], :html_attrs => { :selected => m.ear_punch }, :default => m.ear_punch, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %></td>
                             <td><%= best_in_place m, :sex, :as => :select, :collection => [[1,"F"], [2,"M"]], :value => m.sex, :html_attrs => { :selected => m.sex }, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %></td>
                             <td><%= best_in_place m, :designation , :as => :input, :url => home_update_mouse_path, :html_attrs => { :size => "9", :maxlength => "8" }, :placeholder => m.designation, :default => m.designation, :value => m.designation, :param => "mouse-#{m.id}" %></td>
                             <td><%= m.parent_cage_id != nil ? Cage.find(m.parent_cage_id.to_i).cage_number : "-" %></td>
                             <td><%= m.dob %></td>
                             <td><%= best_in_place m, :tail_cut_date, :as => :input, :html_attrs => { :size => "12" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %>
-                            <td><%= m.weaning_date == nil ? m.dob + 21 : "n/a" %></td>
-                            <td><%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where(strain:@cage.strain).where.not(id:@cage.id).map { |cg| ["#{@cage.id}->#{cg.id}", cg.cage_number] }, :html_attrs => {:selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}"%></td>
+                            <% if @cage.cage_type == "breeding" %><td><%= m.weaning_date == nil ? m.dob + 21 : "n/a" %></td><% end %>
+                            <td><%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where(strain:@cage.strain).where(cage_type:["breeding", "single-#{sx}"]).map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.cage_number} (#{cg.cage_type})"] }, :html_attrs => {:selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}"%></td>
+                            <td><%= best_in_place m, :removed, :as => :input, :html_attrs => { :size => "12" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %>
+                            <td><%= best_in_place m, :removed_for, :as => :input, :html_attrs => {:size => "20" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}" %>
                         </tr>
                     <% end %>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="9">* indicates field that may be edited</td>
+                            <td colspan="15"><div style="display:inline-block;height:15px;min-width:15px;border:1px solid black;background-color:lightblue;"></div>&nbsp;&nbsp;indicates column that can be edited. Click on a value to change it. A "-" indicates the field has no set value.</td>
                         </tr>
                     </tfoot>
                 </table>

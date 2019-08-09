@@ -1,6 +1,9 @@
     <div class="row" style="margin-top:10px;">
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+        <div class="col-2 offset-2">
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+        </div>
     </div>
+    <br>
     <div class="row justify-content-md-center collapse" id="newCageForm">
         <%= form_for(@new_cage, url: home_create_cage_path(@new_cage), :html => { :style => "border:1px solid skyblue;padding-bottom:10px;padding-top:10px;min-width:50%;" } ) do |f| %>
             <div class="col-12">

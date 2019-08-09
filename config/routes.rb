@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     put 'new_pups'
     put 'update_mouse_cage'
     get 'transfer_update'
+    get 'assign_new_ids'
   end
 
   get '*path', to: 'error#error_404', via: :all, as: 'error'

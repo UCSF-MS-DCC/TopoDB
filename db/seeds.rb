@@ -9,64 +9,57 @@ strains = %w(ATXN1 Tau 2D2 ATXN1L CD79 CIC\ FLOX)
 cage_types = %w(single-m single-f breeding)
 locations = %w(sandler genentech\ hall)
 
-# strains.each do |strain|
-#     num_cages = Faker::Number.between(5,8)
-#     num_cages.times do
-#         loc = locations[Faker::Number.between(0,1)]
-#         ct = cage_types[Faker::Number.between(0,2)]
-#         rk = ["R1", "R2", "R3", "L1", "L2", "L3"][Faker::Number.between(0,5)]
-#         cnc = false
-#         pps = ct == "breeding" ? Faker::Number.between(1,5) : nil 
-#         sx = ct == "breeding" ?  nil : ["F", "M"][Faker::Number.between(0,1)]
-#         cn = Faker::Number.between(100000, 200000)
-#         cage = Cage.new(:strain => strain, :cage_number => cn, :cage_type => ct, :location => loc, :cage_number_changed => cnc, :pups => pps, :sex => sx, :rack => rk)
+dgn = 100
 
-#         if cage.save 
-#             puts "Cage saved"
-#         else
-#             puts cage.errors.full_messages
-#         end
-#     end
-# end
+if Mouse.count > 0
+    Mouse.destroy_all
+end
+if Cage.count > 0
+    Cage.destroy_all
+end
+20.times do 
 
-dgn = 500
+    ct = "breeding"
+    st = strains[Faker::Number.between(0, (strains.count - 1))]
+    ln = locations[Faker::Number.between(0, (locations.count - 1))]
 
-Cage.all.each do |c|
-    ct = c.cage_type  
-    db = Faker::Date.between(1.year.ago, 3.months.ago)
-
-    if ct == "breeding"
-        pop = Faker::Number.between(2, 3)
-        puts "#{ct} cage, generating #{pop} mice"
-        pop.times do |num|
-            bd = Faker::Date.between(1.year.ago, 3.months.ago)
-            wd = bd + 21
-            ep = Faker::Number.between(1,9)
-            gt = Faker::Number.between(1,5)
-            if num == 0
-                mouse = Mouse.new(:cage_id => c.id, :sex => "M", :genotype => gt, :dob => bd, :weaning_date => wd, :tail_cut_date => bd + 7, :ear_punch => ep, :designation => "M#{dgn}#{ep}", :strain => c.strain )
-                mouse.save
-                dgn += 1
-            else
-                mouse = Mouse.new(:cage_id => c.id, :sex => "F", :genotype => gt, :dob => bd, :weaning_date => wd, :tail_cut_date => bd + 7, :ear_punch => ep, :designation => "F#{dgn}#{ep}", :strain => c.strain )
-                mouse.save
-                dgn += 1
-            end
-        end
-
-    else
-        pop = Faker::Number.between(3, 5)
-        parent_cages = Cage.where(cage_type:"breeding").pluck(:id).limit(10)
-        puts "#{ct} cage, generating #{pop} mice"
-        pop.times do
-            bd = Faker::Date.between(1.year.ago, 3.months.ago)
-            wd = bd + 21
-            ep = Faker::Number.between(1,9)
-            gt = Faker::Number.between(2,5)
-            sx = c.sex
-            mouse = Mouse.new(:cage_id => c.id, :sex => sx, :genotype => gt, :dob => bd, :weaning_date => wd, :tail_cut_date => bd + 7, :ear_punch => ep, :designation => "#{sx}#{dgn}#{ep}", :strain => c.strain, :parent_cage_id => parent_cages[Faker::Number.between(0,9)]  )
-            mouse.save
-            dgn += 1
-        end
+    cage = Cage.new(cage_number:Faker::Number.between(100000, 1500000), cage_type:ct, strain:st, location:ln, in_use:true)
+    if cage.save
+        
+        ep1 = Faker::Number.between(2, 10)
+        ep2 = Faker::Number.between(2, 10)
+        types = %w(N R L RR RL RR RRL RLL RRLL)
+        dbs = [Faker::Date.between(1.year.ago, 6.months.ago), Faker::Date.between(1.year.ago, 6.months.ago)]
+        mouse1 = Mouse.new(:cage_id => cage.id, :sex => 2, :genotype => Faker::Number.between(2,5), :dob => dbs[0] , :weaning_date => dbs[0] + 21, :three_digit_code => dgn,
+                 :tail_cut_date => dbs[0] + 12, :ear_punch => ep1 , :designation => "M#{dgn}#{types[ep1 - 2]}", :strain => cage.strain, :removed => nil ).save
+        dgn += 1
+        mouse2 = Mouse.new(:cage_id => cage.id, :sex => 1, :genotype => Faker::Number.between(2,5), :dob => dbs[1] , :weaning_date => dbs[1] + 21, :three_digit_code => dgn,
+                 :tail_cut_date => dbs[1] + 12, :ear_punch => ep2, :designation => "F#{dgn}#{types[ep2 - 2]}", :strain => cage.strain, :removed => nil ).save
+        dgn += 1
     end
+end
+
+4.times do
+
+    ct = "breeding"
+    st1 = strains[Faker::Number.between(0, (strains.count - 1))]
+    st2 = strains[Faker::Number.between(0, (strains.count - 1))]
+    ln = locations[Faker::Number.between(0, (locations.count - 1))]
+
+    cage = Cage.new(cage_number:Faker::Number.between(100000, 1500000), cage_type:ct, strain:"#{st1}/#{st2}", location:ln, in_use:true)
+    if cage.save
+        
+        ep1 = Faker::Number.between(2, 10)
+        ep2 = Faker::Number.between(2, 10)
+        types = %w(N R L RR RL RR RRL RLL RRLL)
+        dbs = [Faker::Date.between(1.year.ago, 6.months.ago), Faker::Date.between(1.year.ago, 6.months.ago)]
+        mouse1 = Mouse.new(:cage_id => cage.id, :sex => 2, :genotype => Faker::Number.between(2,5), :genotype2 => Faker::Number.between(2,5), :dob => dbs[0] , :weaning_date => dbs[0] + 21, :three_digit_code => dgn,
+                 :tail_cut_date => dbs[0] + 12, :ear_punch => ep1 , :designation => "M#{dgn}#{types[ep1 - 2]}", :strain => st1, :strain2 => st2, :removed => nil ).save
+        dgn += 1
+        mouse2 = Mouse.new(:cage_id => cage.id, :sex => 1, :genotype => Faker::Number.between(2,5), :genotype2 => Faker::Number.between(2,5), :dob => dbs[1] , :weaning_date => dbs[1] + 21, :three_digit_code => dgn,
+                 :tail_cut_date => dbs[1] + 12, :ear_punch => ep2, :designation => "F#{dgn}#{types[ep2 - 2]}", :strain => st1, :strain2 => st2, :removed => nil ).save
+        dgn += 1
+    end
+
+
 end

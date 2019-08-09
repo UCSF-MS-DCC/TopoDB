@@ -8,7 +8,6 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
       strain:                 { source:"Cage.strain" },
       location:               { source:"Cage.location"},
       cage_type:              { source:"Cage.cage_type" },
-      #sex:                    { source:"Cage.sex" },
       expected_weaning_date:  { source:"Cage.expected_weaning_date" }
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
@@ -22,7 +21,6 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
         strain:                 record.decorate.link_to_strain,
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
-        #sex:                    record.cage_type == 'breeding' ? "#{record.mice.where(sex:'M').count}M, #{record.mice.where(sex:'F').count}F, #{record.pups}P" : "#{record.mice.count}#{record.sex}",
         expected_weaning_date:  record.cage_type == 'breeding' ? record.expected_weaning_date : '-'
         # example:
         # id: record.id,
