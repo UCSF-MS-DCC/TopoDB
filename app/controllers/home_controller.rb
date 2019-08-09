@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+    include HomeHelper
     def index 
         @new_cage = Cage.new
         @strain = nil
@@ -12,6 +13,7 @@ class HomeController < ApplicationController
         puts createCageParams
         @newCage = Cage.new(createCageParams)
         if @newCage.save 
+            log_new_cage(@newCage, current_user)
             redirect_to home_strain_path(:strain => createCageParams[:strain]) 
         else
             puts "Cage did not save #{@newCage.errors.full_messages}"
@@ -77,8 +79,9 @@ class HomeController < ApplicationController
         
         @mouse = Mouse.find(mouse_id)
         if @mouse && @mouse.update_attributes(cage_id:target_cage_id)
+            log_mouse_cage_transfer(@mouse, source_cage_id, target_cage_id, current_user)
             redirect_to home_cage_path(:cage_number => Cage.find(source_cage_id).cage_number)
-            puts "Mouse moved"
+            
         else
             puts @mouse.errors.full_messages
             # raise errors in view
@@ -103,18 +106,29 @@ class HomeController < ApplicationController
         @cage = Cage.find(cage_id)
         strain = @cage.strain.include?("/") ? @cage.strain.split("/").first : @cage.strain
         strain2 = @cage.strain.include?("/") ? @cage.strain.split("/").second : nil
-        puts "Strain: #{strain} Strain2: #{strain2}"
+        successful_saves_m = 0
+        successful_saves_f = 0
         params[:female_pups].to_i.times.each do |p|
-           @m =  Mouse.new(sex:1, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
-            if !@m.save
+           @m = Mouse.new(sex:1, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
+            if @m.save
+                successful_saves_f += 1
+            else
                 puts @m.errors.full_messages
             end
         end
+        if successful_saves_f > 0
+            log_new_pups(@cage.cage_number, successful_saves_f, "female", current_user)
+        end
         params[:male_pups].to_i.times.each do |p|
             @m =  Mouse.new(sex:2, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
-            if !@m.save
+            if @m.save
+                successful_saves_m += 1
+            else
                 puts @m.errors.full_messages
             end
+        end
+        if successful_saves_m > 0
+            log_new_pups(@cage.cage_number, successful_saves_m, "male", current_user)
         end
         redirect_to home_cage_path(:cage_number => Cage.find(cage_id).cage_number)
     end

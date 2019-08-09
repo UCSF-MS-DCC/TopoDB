@@ -20,12 +20,10 @@ class Mouse < ApplicationRecord
       else     
         # find the highest three_digit_code among living mice within the current strain/hybrid strain
         current_max_tdc = Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("created_at").pluck(:three_digit_code).map(&:to_i).last
-        puts "LINE 23 new_index: #{new_index} current_max_index:#{current_max_tdc}"
         # initialize a variable to hold the value of the next available integer
         next_tdc = nil
         # tdc is only three characters and "000" is not used. So after "999", the tdcs must rollover, and start looking for the first unused value starting with 1
         if current_max_tdc == 999 # this if/else should only be concerned with finding the next valid three_digit_code.
-          puts "LINE 28 new_index: #{new_index} current_max_index:#{current_max_tdc} next_tdc:#{next_tdc}"
           # get ordered list of three_digit_codes as integers (TDCIs), then iterate starting at one until finding a value NOT in the list, then create a three character string (inserting leading zeroes as necessary)
           tdcis = Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).pluck(:three_digit_code).map(&:to_i).sort
           idx = 1
@@ -35,14 +33,11 @@ class Mouse < ApplicationRecord
             end
             idx += 1
           end
-          puts "LINE 38 new_index: #{new_index} current_max_index:#{current_max_tdc} next_tdc:#{next_tdc}"
         else
           # if the current_max_tdc is below "999", create the next_tdc by converting the current_max_tdc to an integer, incrementing it, then creating a three character string (inserting leading zeroes as necessary)
           next_tdc = current_max_tdc + 1
-          puts "LINE 42 new_index: #{new_index} current_max_index:#{current_max_tdc} next_tdc:#{next_tdc}"
         end
         # turn the next_tdc into a string, inserting leading zeroes as necessary
-        puts "LINE 45 new_index: #{new_index} current_max_index:#{current_max_tdc} next_tdc:#{next_tdc}"
         if next_tdc < 10
           new_index = "00#{next_tdc.to_s}"
         elsif next_tdc < 100

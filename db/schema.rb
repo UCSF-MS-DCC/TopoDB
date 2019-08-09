@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_08_191230) do
+ActiveRecord::Schema.define(version: 2019_08_09_193257) do
+
+  create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+    t.string "objdsn"
+    t.string "objtype"
+    t.string "objattr"
+    t.string "acttype"
+    t.string "priorval"
+    t.string "newval"
+    t.string "who"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "cages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.string "cage_number"

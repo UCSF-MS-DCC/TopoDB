@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     get 'assign_new_ids'
   end
 
+  namespace :archive do
+    get 'index'
+  end
+
   get '*path', to: 'error#error_404', via: :all, as: 'error'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

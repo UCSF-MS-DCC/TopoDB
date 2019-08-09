@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  objdsn: MyString
+  objtype: MyString
+  objattr: MyString
+  acttype: MyString
+  priorval: MyString
+  newval: MyString
+  who: MyString
+
+two:
+  objdsn: MyString
+  objtype: MyString
+  objattr: MyString
+  acttype: MyString
+  priorval: MyString
+  newval: MyString
+  who: MyString

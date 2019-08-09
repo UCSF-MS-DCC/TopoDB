@@ -1,0 +1,2 @@
+class Archive < ApplicationRecord
+end
