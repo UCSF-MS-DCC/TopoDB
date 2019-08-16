@@ -39,11 +39,11 @@
                         <legend class="col-form-label col-sm-3 pt-0">Cage Type</legend>
                         <div class="col-sm-9">
                             <div class="form-check" style="display:inline-block;margin-right:30px;">
-                                <%= f.radio_button :cage_type, "single-f", :value => "single-f", :class => "form-check-input" %>
+                                <%= f.radio_button :cage_type, "single-f", :value => "single-f", :class => "form-check-input", :disabled => @cage.mice.where(sex:2).count > 0 %>
                                 <%= f.label :cage_type, "Single F", :value => "single-f" %>
                             </div>
                             <div class="form-check" style="display:inline-block;margin-right:30px;">
-                                <%= f.radio_button :cage_type, "single-m", :value => "single-m", :class => "form-check-input" %>
+                                <%= f.radio_button :cage_type, "single-m", :value => "single-m", :class => "form-check-input", :disabled => @cage.mice.where(sex:1).count > 0 %>
                                 <%= f.label :cage_type, "Single M", :value => "single-m" %>
                             </div>
                             <div class="form-check" style="display:inline-block;">
@@ -55,15 +55,15 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <div class="row">
-                        <legend class="col-form-label col-sm-3 pt-0">Remove Cage?</legend>
-                        <div class="col-sm-9">
+                        <legend class="col-form-label col-sm-6 pt-0">Remove Cage? <em style="font-size:10pt;">cage must be empty</em></legend>
+                        <div class="col-sm-6">
                             <div class="form-check" style="display:inline-block;margin-right:30px;">
-                                <%= f.radio_button :in_use, "false", :value => "false", :class => "form-check-input" %>
-                                <%= f.label :in_use, "Yes", :value => "false" %>
+                                <%= f.radio_button :in_use, "false", :value => "false", :class => "form-check-input", :disabled => @cage.mice.where(removed:nil).count > 0 %>
+                                <%= f.label :in_use, "Yes", :value => false %>
                             </div>
                             <div class="form-check" style="display:inline-block;">
-                                <%= f.radio_button :in_use, "true", :value => "true", :class => "form-check-input" %>
-                                <%= f.label :in_use, "No", :value => "genentech hall" %>
+                                <%= f.radio_button :in_use, "true", :value => "true", :class => "form-check-input", :disabled => @cage.mice.where(removed:nil).count > 0 %>
+                                <%= f.label :in_use, "No", :value => true %>
                             </div>
                         </div>
                     </div>

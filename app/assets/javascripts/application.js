@@ -21,4 +21,5 @@
 //= require best_in_place.jquery-ui
 //= require popper
 //= require bootstrap-sprockets
+//= require gritter
 //= require_tree .

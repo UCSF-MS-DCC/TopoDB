@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_09_193257) do
+ActiveRecord::Schema.define(version: 2019_08_16_191251) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
-    t.string "objdsn"
-    t.string "objtype"
-    t.string "objattr"
+    t.integer "cage"
+    t.integer "mouse"
+    t.string "changed_attr"
     t.string "acttype"
     t.string "priorval"
     t.string "newval"
-    t.string "who"
+    t.integer "who"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 2019_08_09_193257) do
     t.string "sex"
     t.string "strain"
     t.date "expected_weaning_date"
-    t.boolean "in_use"
+    t.boolean "in_use", default: true
     t.integer "pups_m"
     t.date "pups_birthdate"
   end

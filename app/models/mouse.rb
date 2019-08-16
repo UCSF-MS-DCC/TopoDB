@@ -7,8 +7,8 @@ class Mouse < ApplicationRecord
   # validate :sex_matches_designation
   # validate :ear_punch_matches_designation
   # validate :designation_is_available, on: :create
-  # validate :three_digit_code_is_valid
-
+  # validate :three_digit_code_is_unique, on: :create
+  
   def assign_full_designation
     if self.sex != nil && self.ear_punch != nil
       sx = %w(F M)
@@ -20,6 +20,7 @@ class Mouse < ApplicationRecord
       else     
         # find the highest three_digit_code among living mice within the current strain/hybrid strain
         current_max_tdc = Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("created_at").pluck(:three_digit_code).map(&:to_i).last
+        #puts Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("created_at").pluck(:three_digit_code).map(&:to_i)
         # initialize a variable to hold the value of the next available integer
         next_tdc = nil
         # tdc is only three characters and "000" is not used. So after "999", the tdcs must rollover, and start looking for the first unused value starting with 1
@@ -36,6 +37,7 @@ class Mouse < ApplicationRecord
         else
           # if the current_max_tdc is below "999", create the next_tdc by converting the current_max_tdc to an integer, incrementing it, then creating a three character string (inserting leading zeroes as necessary)
           next_tdc = current_max_tdc + 1
+          #puts "New max tdc is #{next_tdc}"
         end
         # turn the next_tdc into a string, inserting leading zeroes as necessary
         if next_tdc < 10
@@ -54,6 +56,7 @@ class Mouse < ApplicationRecord
   end
 
   private
+
 
     def has_ear_punch?
       ear_punch != nil

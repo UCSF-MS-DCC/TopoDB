@@ -40,15 +40,23 @@ class ArchiveDatatable < AjaxDatatablesRails::ActiveRecord
     def parseDesc(id)
       @arc = Archive.find(id)
       desc = ""
-      if @arc.acttype == "Xfer Mouse"
-        desc = "Transfered mouse #{@arc.objdsn} from cage #{@arc.priorval} to cage #{@arc.newval}"
-      elsif @arc.acttype == "New Cage"
-        desc = "Added new #{Cage.find_by(cage_number:@arc.objdsn).cage_type} cage #{@arc.objdsn} for strain #{@arc.newval}"
-      elsif @arc.acttype == "New Pups"
-        desc = "Added #{@arc.newval} pups to cage #{@arc.objdsn}"
-      else
+      if @arc.acttype == "New Cage"
+        desc = "New cage ##{@arc.cage} created."
+      elsif @arc.acttype == "Update Cage"
+        desc = "Cage ##{@arc.cage} was updated: #{@arc.changed_attr} was changed from #{@arc.priorval} to #{@arc.newval}"
+      elsif @arc.acttype == "Remove Cage"
+        desc = "Cage ##{@arc.cage} was removed."
+      elsif @arc.acttype == "Remove mouse"
+        desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} was removed from Cage ##{@arc.cage}"
+      elsif @arc.acttype == "Update Mouse"
+        desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} in Cage ##{@arc.cage} was updated: #{@arc.changed_attr} changed from #{@arc.priorval} to #{@arc.newval}"
+      elsif @arc.acttype == "Tail Cut Date"
+        desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} in Cage ##{@arc.cage} tail cut date was set to #{@arc.newval}"
+      elsif @arc.acttype == "Xfer Mouse"
+        desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} was transfered from Cage ##{@arc.priorval} to Cage ##{@arc.newval}"
+      elsif @arc.acttype == "Reason for Mouse Removal"
+        desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} reason for removal: #{@arc.newval}"
       end
-      desc
     end
 
     def parseUser(id)

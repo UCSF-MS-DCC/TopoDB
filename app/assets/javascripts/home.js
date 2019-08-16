@@ -41,11 +41,7 @@ $(document).on('turbolinks:load',function() {
     });
     /* Activating Best In Place */
     jQuery(".best_in_place").best_in_place();
+    $('.highlight-on-success').bind("ajax:success", function (data) { if (!$(this).next("span").hasClass("hidden")) { $(this).next("span").addClass("hidden") }; $(this).prev("span").removeClass("hidden"); console.log(data) });
+    $('.highlight-on-success').bind("ajax:error", function () { if (!$(this).prev("span").hasClass("hidden")) { $(this).prev("span").addClass("hidden") }; $(this).next("span").removeClass("hidden"); });
 
-    $("#sourceCageUpdateSelect").on("change", function(e){
-        console.log(e.target.value)
-        $.get("/home/transfer_update?cage="+e.target.value, function(data, status) {
-            alert(status);
-        });
-    })
   });

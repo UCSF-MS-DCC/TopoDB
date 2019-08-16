@@ -14,12 +14,18 @@ Rails.application.routes.draw do
     put 'update_mouse'
     put 'new_pups'
     put 'update_mouse_cage'
+    put 'remove_mouse'
+    put 'update_tail_cut_date'
     get 'transfer_update'
     get 'assign_new_ids'
   end
 
   namespace :archive do
     get 'index'
+  end
+
+  namespace :error do
+    get 'error_404'
   end
 
   get '*path', to: 'error#error_404', via: :all, as: 'error'

@@ -19,7 +19,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
         cage_number:            record.decorate.link_to_cage,
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
-        contents:               record.cage_type == 'breeding' ? "#{record.mice.where(sex:2).where(removed:nil).count}M, #{record.mice.where(sex:1).where(removed:nil).count}F" : "#{record.mice.count}"
+        contents:               record.cage_type == 'breeding' ? "#{record.mice.where(sex:2).where(removed:nil).count}M, #{record.mice.where(sex:1).where(removed:nil).count}F" : "#{record.mice.where(removed:nil).count}"
         # example:
         # id: record.id,
         # name: record.name

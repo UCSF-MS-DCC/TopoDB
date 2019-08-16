@@ -13,6 +13,7 @@
  */
  @import "bootstrap";
  @import "datatables";
+ @import "gritter";
  
  .devise-input-form-container {
     border:1px solid skyblue;
@@ -24,4 +25,25 @@
  }
  .editableColHeader {
    background-color:lightblue;
+}
+
+.hidden {
+   display:none;
+}
+.red-x {
+   float:right;
+   font-size:10px;
+   color:red;
+}
+
+.green-check {
+   float:right;
+   font-size:20px;
+   color:green;
+}
+
+.tfoot-red-x {
+   font-size:10px;
+   color:red;
+   margin-left:20px;
 }
