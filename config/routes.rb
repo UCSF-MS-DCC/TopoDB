@@ -8,7 +8,6 @@ Rails.application.routes.draw do
     get 'index'
     get 'cage'
     get 'strain'
-    get 'transfer'
     post 'create_cage'
     patch 'update_cage'
     put 'update_mouse'
@@ -16,7 +15,6 @@ Rails.application.routes.draw do
     put 'update_mouse_cage'
     put 'remove_mouse'
     put 'update_tail_cut_date'
-    get 'transfer_update'
     get 'assign_new_ids'
   end
 

@@ -15,7 +15,7 @@ $(document).on('turbolinks:load',function() {
         {"data": "location"},
         {"data": "cage_type"},
         // {"data": "sex"},
-        {"data": "expected_weaning_date"}
+        {"data": "contents"}
       ]
       // pagingType is optional, if you want full pagination controls.
       // Check dataTables documentation to learn more about

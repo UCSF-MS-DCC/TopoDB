@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_16_191251) do
+ActiveRecord::Schema.define(version: 2019_08_19_164012) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.integer "cage"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2019_08_16_191251) do
     t.text "removed_for"
     t.string "genotype2"
     t.string "strain2"
+    t.datetime "tdc_generated"
     t.index ["cage_id"], name: "index_mice_on_cage_id"
   end
 

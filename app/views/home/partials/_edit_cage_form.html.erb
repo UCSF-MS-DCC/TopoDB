@@ -47,7 +47,7 @@
                                 <%= f.label :cage_type, "Single M", :value => "single-m" %>
                             </div>
                             <div class="form-check" style="display:inline-block;">
-                                <%= f.radio_button :cage_type, "breeding", :value => "breeding", :class => "form-check-input" %>
+                                <%= f.radio_button :cage_type, "breeding", :value => "breeding", :class => "form-check-input", :disabled => @cage.mice.where(sex:2).count > 1 %>
                                 <%= f.label :cage_type, "Breeding", :value => "breeding" %>
                             </div>
                         </div>

@@ -104,7 +104,7 @@
                             </td>
                             <td>
                                 <span class="hidden green-check">&#10003;</span><%= best_in_place m, :tail_cut_date, :as => :input, :html_attrs => { :size => "12" }, 
-                                :url => home_update_mouse_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}" %>
+                                :url => home_update_tail_cut_date_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}" %>
                                 <span class="hidden red-x">&#10060;</span>
                             </td>
                             <% if @cage.cage_type == "breeding" %>
@@ -114,13 +114,13 @@
                             <% end %>
                             <td>
                                 <span class="hidden green-check">&#10003;</span>
-                                <%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where("strain LIKE ?", "%#{m.strain}%").where(cage_type:["breeding", "single-#{sx}"]).map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain}: #{cg.cage_number} (#{cg.cage_type})"] }, 
+                                <%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where("strain LIKE ?", "%#{m.strain}%").where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true).map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain}: #{cg.cage_number} (#{cg.cage_type})"] }, 
                                 :html_attrs => {:selected => m.cage.cage_number, :disabled => m.designation == nil }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success"%>
                                 <span class="hidden red-x">&#10060;</span>
                             </td>
                             <td>
                                 <span class="hidden green-check">&#10003;</span>
-                                <%= best_in_place m, :removed, :as => :input, :html_attrs => { :size => "12" }, :url => home_remove_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                <%= best_in_place m, :removed, :as => :input, :html_attrs => { :size => "12" }, :placeholder => "YYYY-MM-DD", :url => home_remove_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
                                 <span class="hidden red-x">&#10060;</span>
                             </td>
                             <td>

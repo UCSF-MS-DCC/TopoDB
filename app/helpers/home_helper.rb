@@ -18,8 +18,8 @@ module HomeHelper
         end
     end
 
-    def log_new_pups(cage, number, sex, user)
-        @archive = Archive.new(objdsn:cage, objtype:"Cage", acttype:"New Pups", newval:"#{number} #{sex}", who:user.id)
+    def log_new_pups(cage, number_and_sex, user)
+        @archive = Archive.new(cage:cage, acttype:"New Pups", newval:number_and_sex, who:user.id)
         if @archive.save
             puts "Archive created"
         else
@@ -43,8 +43,8 @@ module HomeHelper
         end
     end
 
-    def log_new_ids(mouse, user)
-        @archive = Archive.new(objdsn:mouse.cage.cage_number, objtype:"Mouse", acttype:"New Mouse ID", objattr:"designation", newval:mouse.designation, who:user.id)
+    def log_new_ids(cage, id_list, user)
+        @archive = Archive.new(cage:cage, acttype:"New Mouse ID", newval:id_list, who:user.id)
         if @archive.save
             puts "Archive created"
         else
@@ -83,6 +83,7 @@ module HomeHelper
     end
 
     def log_remove_mouse(cage, mouse, user)
+        puts cage
         @archive = Archive.new(cage:cage, mouse:mouse, acttype:"Remove mouse", who:user.id)
         if @archive.save
             puts "Mouse deleted"

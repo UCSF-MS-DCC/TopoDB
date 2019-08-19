@@ -18,8 +18,8 @@ class Mouse < ApplicationRecord
       if Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).count == 0
         new_index = "001"
       else     
-        # find the highest three_digit_code among living mice within the current strain/hybrid strain
-        current_max_tdc = Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("created_at").pluck(:three_digit_code).map(&:to_i).last
+        # find the highest three_digit_code among living mice within the current strain/hybrid strain. This is determined by the tdc_generated column, which holds the timestamp when the mouse's designation was created.
+        current_max_tdc = Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("tdc_generated").pluck(:three_digit_code).map(&:to_i).last
         #puts Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("created_at").pluck(:three_digit_code).map(&:to_i)
         # initialize a variable to hold the value of the next available integer
         next_tdc = nil
@@ -37,7 +37,6 @@ class Mouse < ApplicationRecord
         else
           # if the current_max_tdc is below "999", create the next_tdc by converting the current_max_tdc to an integer, incrementing it, then creating a three character string (inserting leading zeroes as necessary)
           next_tdc = current_max_tdc + 1
-          #puts "New max tdc is #{next_tdc}"
         end
         # turn the next_tdc into a string, inserting leading zeroes as necessary
         if next_tdc < 10
@@ -50,6 +49,7 @@ class Mouse < ApplicationRecord
       end
       self.designation = "#{sx[(self.sex.to_i - 1)]}#{new_index}#{ep[(self.ear_punch.to_i - 1)]}"
       self.three_digit_code = new_index
+      self.tdc_generated = Time.now
     else
       errors.add(:designation, "Mouse must have sex and ear punch defined before assigning a full ID")
     end
