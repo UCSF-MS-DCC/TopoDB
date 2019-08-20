@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2019_08_19_164012) do
 
-  create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "archives", force: :cascade do |t|
     t.integer "cage"
     t.integer "mouse"
     t.string "changed_attr"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "cages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "cages", force: :cascade do |t|
     t.string "cage_number"
     t.string "cage_type"
     t.string "location"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.date "pups_birthdate"
   end
 
-  create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "mice", force: :cascade do |t|
     t.bigint "cage_id"
     t.string "sex"
     t.string "genotype"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.index ["cage_id"], name: "index_mice_on_cage_id"
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "version_associations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "version_associations", force: :cascade do |t|
     t.integer "version_id"
     t.string "foreign_key_name", null: false
     t.integer "foreign_key_id"
@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
-  create_table "versions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
+  create_table "versions", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.bigint "item_id", null: false
     t.string "event", null: false
