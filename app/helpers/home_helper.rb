@@ -10,6 +10,7 @@ module HomeHelper
     end
 
     def log_new_cage(cage, user)
+        puts "LOG METHOD CAGE # #{cage.cage_number}"
         @archive = Archive.new(cage:cage.cage_number, acttype:"New Cage", who:user.id)
         if @archive.save
             puts "Archive created"

@@ -7,6 +7,7 @@ class Cage < ApplicationRecord
     validates_presence_of :location
     validates_inclusion_of :location, :in => ["sandler", "genentech hall"]
     validates_presence_of :cage_number
+    validates_numericality_of :cage_number
     validates_presence_of :strain
     validates_uniqueness_of :cage_number
 

@@ -13,6 +13,7 @@ class HomeController < ApplicationController
         puts createCageParams
         @newCage = Cage.new(createCageParams)
         if @newCage.save 
+            puts "NEW CAGE #{@newCage.cage_number}"
             log_new_cage(@newCage, current_user)
             gflash :success => "New cage #{@newCage.cage_number} successfully created"
             redirect_to home_strain_path(:strain => createCageParams[:strain]) 
