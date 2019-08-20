@@ -28,6 +28,7 @@ test:
   host: 127.0.0.1
   port: 3306
 
-# production:
-#   <<: *default
-#   database: db/production.sqlite3
+# Production db will have postgres at first for beta deployment to Heroku. Replace with mysql for real deployment
+production:
+  adapter: pg
+  database: topo_beta

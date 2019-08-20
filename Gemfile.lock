@@ -171,6 +171,7 @@ GEM
       activerecord (>= 4.2, < 6.1)
       request_store (~> 1.1)
     paper_trail-association_tracking (2.0.0)
+    pg (1.0.0)
     popper_js (1.14.5)
     public_suffix (3.1.1)
     puma (3.12.1)
@@ -313,6 +314,7 @@ DEPENDENCIES
   mysql2 (~> 0.5.2)
   paper_trail
   paper_trail-association_tracking
+  pg
   puma (~> 3.11)
   rails (~> 5.2.1)
   rails_admin (~> 2.0.0.beta)
