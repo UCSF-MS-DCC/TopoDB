@@ -10,10 +10,13 @@
         
             <% if current_user %>
                 <li class="nav-item">
+                    <%= link_to "Cages", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                </li>
+                <li class="nav-item">
                     <%= link_to "ChangeLog", archive_index_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <li class="nav-item">
-                    <span style="margin-left:15px;">signed in as <%= current_user.email %></span>
+                    <%= link_to "signed in as #{current_user.email}", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <li class="nav-item">
                     <%= link_to "Log out", destroy_user_session_path, :method => :delete, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>

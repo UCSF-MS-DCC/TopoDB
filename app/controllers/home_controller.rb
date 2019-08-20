@@ -51,6 +51,7 @@ class HomeController < ApplicationController
 
     def update_cage
         @c = Cage.find(params[:id])
+        cage_no = @c.cage_number
         log_params = {}
         updateCageParams.each do |k, v|
             if v == "true" || v == "false"
@@ -70,8 +71,8 @@ class HomeController < ApplicationController
                 redirect_to home_cage_path(:cage_number => @c.cage_number)
             end
         else
-            gflash :error => "Cage #{@c.cage_number} failed to update.#{@c.errors.full_messages}"
-            redirect_to home_cage_path(:cage_number => @c.cage_number)
+            gflash :error => "Cage #{cage_no} failed to update.#{@c.errors.full_messages}"
+            redirect_to home_cage_path(:cage_number => cage_no)
         end
     end
 
