@@ -26,5 +26,5 @@ test:
 
 # Production db will have postgres at first for beta deployment to Heroku. Replace with mysql for real deployment
 production:
-  adapter: pg
+  adapter: postgresql
   database: topo_beta
