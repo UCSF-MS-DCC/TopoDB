@@ -9,7 +9,7 @@ class CreateMice < ActiveRecord::Migration[5.2]
       t.date :tail_cut_date
       t.string :ear_punch
       t.string :designation
-      t.boolean :dead
+      t.date :removed
       t.text :notes
       t.string :on_experiment
       t.integer :parent_cage_id
