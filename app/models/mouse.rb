@@ -20,7 +20,6 @@ class Mouse < ApplicationRecord
       else     
         # find the highest three_digit_code among living mice within the current strain/hybrid strain. This is determined by the tdc_generated column, which holds the timestamp when the mouse's designation was created.
         current_max_tdc = Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("tdc_generated").pluck(:three_digit_code).map(&:to_i).last
-        #puts Mouse.where(strain:self.strain).where(strain2:self.strain2).where(removed:nil).where.not(three_digit_code:nil).order("created_at").pluck(:three_digit_code).map(&:to_i)
         # initialize a variable to hold the value of the next available integer
         next_tdc = nil
         # tdc is only three characters and "000" is not used. So after "999", the tdcs must rollover, and start looking for the first unused value starting with 1

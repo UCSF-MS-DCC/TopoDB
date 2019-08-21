@@ -3,9 +3,9 @@ module HomeHelper
     def log_mouse_cage_transfer(mouse, source_cage, target_cage, user)
         @archive = Archive.new(mouse:mouse.id, acttype:"Xfer Mouse", priorval:Cage.find(source_cage).cage_number, newval:Cage.find(target_cage).cage_number, who:user.id)
         if @archive.save
-            puts "Archive created"
+           # puts "Archive created"
         else
-            puts @archive.errors.full_messages
+           # puts @archive.errors.full_messages
         end
     end
 
@@ -13,18 +13,18 @@ module HomeHelper
         puts "LOG METHOD CAGE # #{cage.cage_number}"
         @archive = Archive.new(cage:cage.cage_number, acttype:"New Cage", who:user.id)
         if @archive.save
-            puts "Archive created"
+           # puts "Archive created"
         else
-            puts @archive.errors.full_messages
+           # puts @archive.errors.full_messages
         end
     end
 
     def log_new_pups(cage, number_and_sex, user)
         @archive = Archive.new(cage:cage, acttype:"New Pups", newval:number_and_sex, who:user.id)
         if @archive.save
-            puts "Archive created"
+           # puts "Archive created"
         else
-            puts @archive.errors.full_messages
+           # puts @archive.errors.full_messages
         end
     end
 
@@ -37,9 +37,9 @@ module HomeHelper
                 @archive = Archive.new(cage:cage, acttype:"Update Cage", changed_attr:k.to_s, priorval:updateCageParams[k][:priorval], newval:updateCageParams[k][:newval], who:user.id)
             end
             if @archive.save
-                puts "Archive created"
+               # puts "Archive created"
             else
-                puts @archive.errors.full_messages
+               # puts @archive.errors.full_messages
             end
         end
     end
@@ -47,9 +47,9 @@ module HomeHelper
     def log_new_ids(cage, id_list, user)
         @archive = Archive.new(cage:cage, acttype:"New Mouse ID", newval:id_list, who:user.id)
         if @archive.save
-            puts "Archive created"
+           # puts "Archive created"
         else
-            puts @archive.errors.full_messages
+           # puts @archive.errors.full_messages
         end
     end
 
@@ -77,9 +77,9 @@ module HomeHelper
         else
         end
         if @archive && @archive.save
-            puts "Archive created"
+           # puts "Archive created"
         else
-            puts @archive.errors.full_messages
+           # puts @archive.errors.full_messages
         end
     end
 
@@ -87,9 +87,9 @@ module HomeHelper
         puts cage
         @archive = Archive.new(cage:cage, mouse:mouse, acttype:"Remove mouse", who:user.id)
         if @archive.save
-            puts "Mouse deleted"
+           # puts "Mouse deleted"
         else
-            puts @archive.errors.full_messages
+           # puts @archive.errors.full_messages
         end
     end
     def validate_date(input)

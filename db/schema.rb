@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_19_164012) do
+ActiveRecord::Schema.define(version: 2019_08_21_175321) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "cage"
@@ -31,13 +31,10 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.boolean "cage_number_changed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "pups_f"
     t.string "sex"
     t.string "strain"
     t.date "expected_weaning_date"
     t.boolean "in_use", default: true
-    t.integer "pups_m"
-    t.date "pups_birthdate"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -50,13 +47,10 @@ ActiveRecord::Schema.define(version: 2019_08_19_164012) do
     t.string "ear_punch"
     t.string "designation"
     t.date "removed"
-    t.text "notes"
-    t.string "on_experiment"
     t.integer "parent_cage_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "strain"
-    t.string "origin"
     t.string "three_digit_code"
     t.text "removed_for"
     t.string "genotype2"

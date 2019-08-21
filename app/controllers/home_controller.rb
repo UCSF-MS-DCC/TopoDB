@@ -33,7 +33,6 @@ class HomeController < ApplicationController
             @mice = @cage.mice.where(removed:nil)
             @can_update_remove = @mice.count == 0 ? false : true
             @can_add_pups = @cage.cage_type != 'breeding' ? true : false
-    
             @target_cages = Cage.where(strain:@cage.strain)
         end
 
