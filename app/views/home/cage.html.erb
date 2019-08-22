@@ -65,36 +65,36 @@
                         <% @mice.each do |m| %>
                             <% sx = ["f", "m"][(m.sex.to_i - 1)] %>
                             <tr>
-                                <td>
+                                <td id="genotype-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :genotype, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype, :html_attrs => { :selected => m.genotype }, 
-                                    :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                    :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#genotype-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <% if @cage.strain.include?("/")%>
-                                    <td>
+                                    <td id="genotype2-<%= m.id %>">
                                         <span class="hidden green-check">&#10003;</span>
                                         <%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2 },
-                                        :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                        :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#genotype2-#{m.id}" %>
                                         <span class="hidden red-x">&#10060;</span>
                                     </td>
                                 <% end %>
-                                <td>
+                                <td id="ear-punch-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :ear_punch, :as => :select, :collection => [[1,"-"],[2,"N"],[3,"R"],[4,"L"],[5,"RR"],[6,"RL"],[7,"LL"],[8,"RRL"],[9,"RLL"],[10,"RRLL"]], :html_attrs => { :selected => m.ear_punch }, :default => m.ear_punch, 
-                                    :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                    :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#ear-punch-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
-                                <td>
+                                <td id="sex-<%= m.id %>" >
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :sex, :as => :select, :collection => [[1,"F"], [2,"M"]], :value => m.sex, :html_attrs => { :selected => m.sex }, 
-                                    :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                    :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#sex-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
-                                <td>
+                                <td id="designation-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :designation , :as => :input, :url => home_update_mouse_path, :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => m.designation,
-                                    :default => m.designation, :value => m.designation, :param => "mouse-#{m.id}" %>
+                                    :default => m.designation, :value => m.designation, :param => "mouse-#{m.id}", :activator => "#designation-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <td>
@@ -103,9 +103,9 @@
                                 <td>
                                     <%= m.dob %>
                                 </td>
-                                <td>
+                                <td id="tail-cut-cell-<%= m.id %>" >
                                     <span class="hidden green-check">&#10003;</span><%= best_in_place m, :tail_cut_date, :as => :input, :html_attrs => { :size => "12" }, 
-                                    :url => home_update_tail_cut_date_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}" %>
+                                    :url => home_update_tail_cut_date_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}", :activator => "#tail-cut-cell-#{m.id }" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <% if @cage.cage_type == "breeding" %>
@@ -113,20 +113,20 @@
                                         <%= m.weaning_date == nil ? m.dob + 21 : "n/a" %>
                                     </td>
                                 <% end %>
-                                <td>
+                                <td id="transfer-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where("strain LIKE ?", "%#{m.strain}%").where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true).map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain}: #{cg.cage_number} (#{cg.cage_type})"] }, 
-                                    :html_attrs => {:selected => m.cage.cage_number, :disabled => m.designation == nil }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success"%>
+                                    :html_attrs => {:selected => m.cage.cage_number, :disabled => m.designation == nil }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
-                                <td>
+                                <td id="removed-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :removed, :as => :input, :html_attrs => { :size => "12" }, :placeholder => "YYYY-MM-DD", :url => home_remove_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                    <%= best_in_place m, :removed, :as => :input, :html_attrs => { :size => "12" }, :placeholder => "YYYY-MM-DD", :url => home_remove_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#removed-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
-                                <td>
+                                <td id="removed-for-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :removed_for, :as => :input, :html_attrs => {:size => "20" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success" %>
+                                    <%= best_in_place m, :removed_for, :as => :input, :html_attrs => {:size => "20" }, :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#removed-for-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                             </tr>
