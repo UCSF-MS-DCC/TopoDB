@@ -95,5 +95,15 @@ module HomeHelper
     def validate_date(input)
         /\d{4}\-\d{2}-\d{2}/.match(input) || input == nil
     end
+
+    def tdc_is_valid?(mouse, dgn)
+        tdc = dgn.scan(/\d+/).first
+        mouse_count = Mouse.where(strain:mouse.strain).where(strain2:mouse.strain2).where(removed:nil).where(three_digit_code:tdc).count
+        return_val = false
+        if mouse_count == 0 && tdc.length == 3
+            return_val = true
+        end
+        return_val
+    end
 end
 

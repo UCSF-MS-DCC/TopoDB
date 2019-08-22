@@ -84,12 +84,20 @@ class HomeController < ApplicationController
         old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
         log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
 
-        respond_to do |format|
-            if @mouse.update_attributes(key.to_sym => val)         
-                if key == "designation"
+        respond_to do |format| # need to change this method to check that a three digit code is unique to non-removed mice within the strain. First, check the tdc is good, then update tdc, tdc_generated, and designation.
+            if key == "designation"
+                puts "DGN: #{val}"
+                if tdc_is_valid?(@mouse, val)
+                    puts "new tdc is valid"
                     tdc = val.scan(/\d+/)
-                    @mouse.update_attributes(three_digit_code:tdc.first)
+                    @mouse.update_attributes(three_digit_code:tdc.first, designation:val, tdc_generated:Time.now)
+                    format.html
+                    format.json { render :json => { :message => "Mouse updated" }, :status => :ok }
+                else
+                    format.html
+                    format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
                 end
+            elsif @mouse.update_attributes(key.to_sym => val)         
                 log_update_mouse(@mouse, log_params, current_user)
                 format.html
                 format.json { render :json => { :message => "Mouse updated" }, :status => :ok }

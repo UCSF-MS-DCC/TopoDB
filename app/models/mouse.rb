@@ -7,7 +7,8 @@ class Mouse < ApplicationRecord
   # validate :sex_matches_designation
   # validate :ear_punch_matches_designation
   # validate :designation_is_available, on: :create
-  # validate :three_digit_code_is_unique, on: :create
+  validates_uniqueness_of :three_digit_code, :scope => [:strain, :strain2, :removed], on: :update, allow_nil: true, allow_blank: true
+  validates_uniqueness_of :ear_punch, :scope => [:cage_id, :dob], on: :update, allow_nil: true, allow_blank: true
   
   def assign_full_designation
     if self.sex != nil && self.ear_punch != nil
@@ -56,6 +57,10 @@ class Mouse < ApplicationRecord
 
   private
 
+    def three_digit_code_is_valid
+      tdc_array = three_digit_code.scan(/\d+|\D+/)
+
+    end
 
     def has_ear_punch?
       ear_punch != nil
