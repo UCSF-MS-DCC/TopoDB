@@ -12,6 +12,7 @@ $(document).on('turbolinks:load',function() {
       "columns": [
         {"data": "cage_number"},
         {"data": "strain"},
+        {"data": "genotype"},
         {"data": "location"},
         {"data": "cage_type"},
         // {"data": "sex"},

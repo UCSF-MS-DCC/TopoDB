@@ -6,6 +6,7 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
     @view_columns ||= {
       cage_number:            { source:"Cage.cage_number" },
       strain:                 { source:"Cage.strain" },
+      genotype:               { source:"Cage.genotype"},
       location:               { source:"Cage.location"},
       cage_type:              { source:"Cage.cage_type" },
       contents:               { source:"Cage.sex" }
@@ -15,10 +16,12 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def data
+    gts = %w(+/+ +/- -/+ -/-)
     records.map do |record|
       {
         cage_number:            record.decorate.link_to_cage,
-        strain:                 record.decorate.link_to_strain,
+        strain:                 (record.strain2 == nil || record.strain2 == "") ? record.decorate.link_to_strain : record.decorate.link_to_hybrid_strain,
+        genotype:               record.cage_type.include?("single") ? (record.genotype2 == nil ? gts[record.genotype.to_i - 2] : "#{gts[record.genotype.to_i - 2]} | #{gts[record.genotype2.to_i - 2]}") : "",
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
         contents:               record.cage_type == 'breeding' ? "#{record.mice.where(sex:1).where(removed:nil).count}F, #{record.mice.where(sex:2).where(removed:nil).count}M" : record.mice.count
@@ -44,5 +47,9 @@ class CageDecorator < ApplicationDecorator
 
   def link_to_strain
     h.link_to object.strain, h.home_strain_path(:strain => object.strain)
+  end
+
+  def link_to_hybrid_strain
+    h.link_to "#{object.strain} / #{object.strain2}", h.home_strain_path(:strain => "#{object.strain}_#{object.strain2}")
   end
 end

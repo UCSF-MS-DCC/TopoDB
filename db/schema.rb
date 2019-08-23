@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_21_175321) do
+ActiveRecord::Schema.define(version: 2019_08_23_153040) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "cage"
@@ -35,6 +35,9 @@ ActiveRecord::Schema.define(version: 2019_08_21_175321) do
     t.string "strain"
     t.date "expected_weaning_date"
     t.boolean "in_use", default: true
+    t.string "genotype"
+    t.string "genotype2"
+    t.string "strain2"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

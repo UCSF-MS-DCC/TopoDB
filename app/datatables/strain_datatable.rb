@@ -28,7 +28,8 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def get_raw_records
-    Cage.where(strain:options[:strain]).where(in_use:true)
+    puts "STRAIN DATATABLE OPTIONS: #{options.to_json}"
+    Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(in_use:true)
     # insert query here
     # User.all
   end

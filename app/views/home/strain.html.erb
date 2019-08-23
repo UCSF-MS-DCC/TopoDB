@@ -1,14 +1,14 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-7 offset-2">
-            <h1><%= @strain %></h1>
+            <h1><%= @strain2 == nil ? @strain : "#{@strain} | #{@strain2}" %></h1>
          </div>
     </div>
     <%= render 'home/partials/new_cage_form' %>
     <div class="row justify-content-md-center" style="margin-top:2%;">
         <div class="col-9">
 
-            <table id="strain-datatable" data-source="<%= home_strain_path(format: :json, strain: @strain) %>" class='table table-bordered table-striped' >
+            <table id="strain-datatable" data-source="<%= home_strain_path(format: :json, strain: @strain, strain2: @strain2) %>" class='table table-bordered table-striped' >
                 <thead>
                     <tr>
                         <th>Number</th>

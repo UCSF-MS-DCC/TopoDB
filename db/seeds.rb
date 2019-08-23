@@ -26,7 +26,7 @@ end
     st = strains[Faker::Number.between(from: 0, to: (strains.count - 1))]
     ln = locations[Faker::Number.between(from: 0, to: (locations.count - 1))]
 
-    cage = Cage.new(cage_number:Faker::Number.between(from: 100000, to: 1500000), cage_type:ct, strain:st, location:ln, in_use:true)
+    cage = Cage.new(cage_number:Faker::Number.between(from: 100000, to: 1500000), cage_type:ct, strain:st, location:ln, in_use:true, :genotype => Faker::Number.within(range: 2..5))
     if cage.save
         
         ep1 = Faker::Number.within(range: 2..10)
@@ -49,7 +49,7 @@ end
     st2 = strains[Faker::Number.between(from: 0, to: (strains.count - 1))]
     ln = locations[Faker::Number.between(from: 0, to: (locations.count - 1))]
 
-    cage = Cage.new(cage_number:Faker::Number.between(from: 100000, to: 1500000), cage_type:ct, strain:"#{st1}/#{st2}", location:ln, in_use:true)
+    cage = Cage.new(cage_number:Faker::Number.between(from: 100000, to: 1500000), cage_type:ct, strain:st1, strain2:st2, location:ln, in_use:true, :genotype => Faker::Number.within(range: 2..5), :genotype2 => Faker::Number.within(range: 2..5))
     if cage.save
         
         ep1 = Faker::Number.within(range: 2..10)

@@ -11,9 +11,13 @@ class HomeController < ApplicationController
 
     def create_cage
         puts createCageParams
-        @newCage = Cage.new(createCageParams)
+        gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
+        createParams = createCageParams
+        createParams[:genotype] = gts.find_index(createCageParams[:genotype])
+        createParams[:genotype2] = gts.find_index(createCageParams[:genotype2])
+
+        @newCage = Cage.new(createParams)
         if @newCage.save 
-            puts "NEW CAGE #{@newCage.cage_number}"
             log_new_cage(@newCage, current_user)
             gflash :success => "New cage #{@newCage.cage_number} successfully created"
             redirect_to home_strain_path(:strain => createCageParams[:strain]) 
@@ -39,12 +43,24 @@ class HomeController < ApplicationController
     end
 
     def strain
-        puts singleStrainParams
+        puts "SINGLE STRAIN PARAMS: #{singleStrainParams}"
         @strain = singleStrainParams[:strain]
+        @strain2 = nil
+        if singleStrainParams[:strain].include?("_")
+            puts "SINGLE STRAIN PARAMS SPLIT: #{singleStrainParams[:strain].split('_')}"
+            @strain = singleStrainParams[:strain].split("_")[0]
+            @strain2 = singleStrainParams[:strain].split("_")[1]
+            puts "@strain2: #{@strain2}"
+        elsif 
+            singleStrainParams[:strain2] != nil
+            @strain2 = singleStrainParams[:strain2]
+        else
+        end
         @new_cage = Cage.new
         respond_to do |format|
+            puts "RESPOND @strain2: #{@strain2}"
             format.html 
-            format.json { render json: StrainDatatable.new(params, strain: @strain )}
+            format.json { render json: StrainDatatable.new(params, strain: @strain, strain2: @strain2)}
         end
     end
 
@@ -257,11 +273,11 @@ class HomeController < ApplicationController
     end
 
     def singleStrainParams
-        params.permit(:strain)
+        params.permit(:strain, :strain2)
     end
 
     def createCageParams
-        params.require(:cage).permit(:cage_number, :strain, :cage_type, :location)
+        params.require(:cage).permit(:cage_number, :strain, :strain2, :cage_type, :location, :genotype, :genotype2)
     end
 
     def updateCageParams
