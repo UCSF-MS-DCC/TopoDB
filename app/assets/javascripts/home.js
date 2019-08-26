@@ -32,7 +32,8 @@ $(document).on('turbolinks:load',function() {
             {"data": "cage_number"},
             {"data": "location"},
             {"data": "cage_type"},
-            {"data": "genotype"}
+            {"data": "genotype"},
+            {"data": "dob"}
         ]
         // pagingType is optional, if you want full pagination controls.
         // Check dataTables documentation to learn more about

@@ -15,12 +15,12 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def data
-    gts = %w(+/+ +/- -/+ -/-)
+    gts = %w(\  n/a +/+ +/- -/+ -/-)
     records.map do |record|
       {
         cage_number:            record.decorate.link_to_cage,
         strain:                 (record.strain2 == nil || record.strain2 == "") ? record.decorate.link_to_strain : record.decorate.link_to_hybrid_strain,
-        genotype:               (record.genotype == nil || record.genotype == "") ? "" : ( (record.genotype2 == nil || record.genotype2 == "") ? gts[record.genotype.to_i - 2] : "#{gts[record.genotype.to_i - 2]} | #{gts[record.genotype2.to_i - 2]}"),
+        genotype:               (record.genotype == nil || record.genotype == "") ? "" : ( (record.genotype2 == nil || record.genotype2 == "" || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}"),
         location:               record.location.capitalize,
         cage_type:              record.cage_type
         # example:

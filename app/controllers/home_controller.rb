@@ -84,10 +84,8 @@ class HomeController < ApplicationController
             end
         end
         updateParams = updateCageParams
-        puts "UPDATE CAGE PARAMS: #{updateParams.to_json}"
         updateParams[:genotype] = updateCageParams[:genotype] == "" ? 0 : gts.find_index(updateCageParams[:genotype])  
         updateParams[:genotype2] = updateCageParams[:genotype2] == "" ? 0 : gts.find_index(updateCageParams[:genotype2])  
-        puts "UPDATE CAGE PARAMS: #{updateParams.to_json}"
         if @c && @c.update_attributes(updateParams) 
             log_update_cage(@c.cage_number, log_params, current_user)
             if updateCageParams[:in_use] == false
@@ -114,7 +112,6 @@ class HomeController < ApplicationController
 
         respond_to do |format| # need to change this method to check that a three digit code is unique to non-removed mice within the strain. First, check the tdc is good, then update tdc, tdc_generated, and designation.
             if key == "designation"
-                puts "DGN: #{val}"
                 if tdc_is_valid?(@mouse, val)
                     puts "new tdc is valid"
                     tdc = val.scan(/\d+/)

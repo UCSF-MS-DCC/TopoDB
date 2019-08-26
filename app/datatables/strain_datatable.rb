@@ -7,7 +7,8 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
       cage_number:            { source:"Cage.cage_number" },
       location:               { source:"Cage.location"},
       cage_type:              { source:"Cage.cage_type" },
-      genotype:               { source:"Cage.genotype" }
+      genotype:               { source:"Cage.genotype" },
+      dob:                    { source:"Cage.cage_number"}
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
     }
@@ -20,7 +21,8 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
         cage_number:            record.decorate.link_to_cage,
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
-        genotype:               record.genotype == nil || record.genotype == "" || record.genotype == "0" ? "" : ( record.genotype2 != nil ? "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" : gts[record.genotype.to_i] )
+        genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( record.genotype2 != nil ? "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" : gts[record.genotype.to_i] ),
+        dob:                    record.mice.pluck(:dob).sort.uniq.map{ |d| d.strftime('%Y-%m-%d') }.join(", ")
         # example:
         # id: record.id,
         # name: record.name
@@ -29,7 +31,6 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def get_raw_records
-    puts "STRAIN DATATABLE OPTIONS: #{options.to_json}"
     Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(in_use:true)
     # insert query here
     # User.all
