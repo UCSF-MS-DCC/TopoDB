@@ -15,13 +15,20 @@
                 <table>
                     <tr>
                         <th>Strain:</th>
-                        <td><%= link_to @cage.strain, home_strain_path(:strain => @cage.strain) %></td>
-                    </tr>
-                    <tr>
+                        <td><% if @cage.strain2 == nil || @cage.strain2 == "" %>
+                                <%= link_to @cage.strain, home_strain_path(:strain => @cage.strain) %>
+                            <% else %>
+                                <%= link_to "#{@cage.strain}/#{@cage.strain2}", home_strain_path(:strain => "#{@cage.strain}_#{@cage.strain2}") %>
+                            <% end %>
+                        </td>
                         <th>Type:</th>
                         <td> <%= @cage.cage_type %></td>
                     </tr>
                     <tr>
+                        <th>Genotype:</th>
+                        <td>
+                            <%= (@cage.genotype == nil || @cage.genotype == "" || @cage.genotype == "0") ? "" : ( @cage.genotype2 != nil ? "#{@gts[@cage.genotype.to_i]} | #{@gts[@cage.genotype2.to_i]}" : "#{@gts[@cage.genotype.to_i]}") %>
+                        </td>
                         <th>Location:</th>
                         <td><%= @cage.location.capitalize %></td>
                     </tr>

@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-7 offset-2">
-            <h1><%= @strain2 == nil ? @strain : "#{@strain} | #{@strain2}" %></h1>
+            <h1><%= @strain2 == nil ? @strain : "#{@strain} / #{@strain2}" %></h1>
          </div>
     </div>
     <%= render 'home/partials/new_cage_form' %>
@@ -14,7 +14,7 @@
                         <th>Number</th>
                         <th>Location</th>
                         <th>Type</th>
-                        <th>Contents</th>
+                        <th>Genotype</th>
                     </tr>
                 </thead>
                 <tbody>

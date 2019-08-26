@@ -8,8 +8,7 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
       strain:                 { source:"Cage.strain" },
       genotype:               { source:"Cage.genotype"},
       location:               { source:"Cage.location"},
-      cage_type:              { source:"Cage.cage_type" },
-      contents:               { source:"Cage.sex" }
+      cage_type:              { source:"Cage.cage_type" }
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
     }
@@ -21,10 +20,9 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
       {
         cage_number:            record.decorate.link_to_cage,
         strain:                 (record.strain2 == nil || record.strain2 == "") ? record.decorate.link_to_strain : record.decorate.link_to_hybrid_strain,
-        genotype:               record.cage_type.include?("single") ? (record.genotype2 == nil ? gts[record.genotype.to_i - 2] : "#{gts[record.genotype.to_i - 2]} | #{gts[record.genotype2.to_i - 2]}") : "",
+        genotype:               (record.genotype == nil || record.genotype == "") ? "" : ( (record.genotype2 == nil || record.genotype2 == "") ? gts[record.genotype.to_i - 2] : "#{gts[record.genotype.to_i - 2]} | #{gts[record.genotype2.to_i - 2]}"),
         location:               record.location.capitalize,
-        cage_type:              record.cage_type,
-        contents:               record.cage_type == 'breeding' ? "#{record.mice.where(sex:1).where(removed:nil).count}F, #{record.mice.where(sex:2).where(removed:nil).count}M" : record.mice.count
+        cage_type:              record.cage_type
         # example:
         # id: record.id,
         # name: record.name

@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     put 'remove_mouse'
     put 'update_tail_cut_date'
     get 'assign_new_ids'
+    get 'removed_mouse_index'
   end
 
   namespace :archive do

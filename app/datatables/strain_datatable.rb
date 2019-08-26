@@ -7,19 +7,20 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
       cage_number:            { source:"Cage.cage_number" },
       location:               { source:"Cage.location"},
       cage_type:              { source:"Cage.cage_type" },
-      contents:               { source:"Cage.sex" }
+      genotype:               { source:"Cage.genotype" }
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
     }
   end
 
   def data
+    gts = %w(\  n/a +/+ +/- -/+ -/-)
     records.map do |record|
       {
         cage_number:            record.decorate.link_to_cage,
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
-        contents:               record.cage_type == 'breeding' ? "#{record.mice.where(sex:2).where(removed:nil).count}M, #{record.mice.where(sex:1).where(removed:nil).count}F" : "#{record.mice.where(removed:nil).count}"
+        genotype:               record.genotype == nil || record.genotype == "" || record.genotype == "0" ? "" : ( record.genotype2 != nil ? "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" : gts[record.genotype.to_i] )
         # example:
         # id: record.id,
         # name: record.name

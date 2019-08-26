@@ -13,14 +13,18 @@ class HomeController < ApplicationController
         puts createCageParams
         gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
         createParams = createCageParams
+        if createCageParams[:strain2] == ""
+            createParams[:strain2] = nil
+        end
         createParams[:genotype] = gts.find_index(createCageParams[:genotype])
         createParams[:genotype2] = gts.find_index(createCageParams[:genotype2])
 
         @newCage = Cage.new(createParams)
+        strainpath = (createParams[:strain2] == nil || createParams[:strain2] == "") ? createParams[:strain] : "#{createParams[:strain]}_#{createParams[:strain2]}"
         if @newCage.save 
             log_new_cage(@newCage, current_user)
             gflash :success => "New cage #{@newCage.cage_number} successfully created"
-            redirect_to home_strain_path(:strain => createCageParams[:strain]) 
+            redirect_to home_strain_path(:strain => strainpath) 
         else
             gflash :error =>  "Something went wrong #{@newCage.errors.full_messages}"
             redirect_to root_path
@@ -32,8 +36,10 @@ class HomeController < ApplicationController
         if @cage == nil
             redirect_to :controller => "error", :action => "error_404"
         elsif @cage.in_use == false
+            gflash :warning => "Cage ##{singleCageParams[:cage_number]} is no longer in use."
             redirect_to root_path
         else
+            @gts = %w(\  n/a +/+ +/- -/+ -/-)
             @mice = @cage.mice.where(removed:nil)
             @can_update_remove = @mice.count == 0 ? false : true
             @can_add_pups = @cage.cage_type != 'breeding' ? true : false
@@ -68,6 +74,7 @@ class HomeController < ApplicationController
         @c = Cage.find(params[:id])
         cage_no = @c.cage_number
         log_params = {}
+        gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
         updateCageParams.each do |k, v|
             if v == "true" || v == "false"
                 v = updateCageParams[:in_use] = ActiveModel::Type::Boolean.new.cast(v)
@@ -76,7 +83,12 @@ class HomeController < ApplicationController
                 log_params[k.to_sym] = {:priorval => @c[k.to_sym], :newval => v }
             end
         end
-        if @c && @c.update_attributes(updateCageParams) 
+        updateParams = updateCageParams
+        puts "UPDATE CAGE PARAMS: #{updateParams.to_json}"
+        updateParams[:genotype] = updateCageParams[:genotype] == "" ? 0 : gts.find_index(updateCageParams[:genotype])  
+        updateParams[:genotype2] = updateCageParams[:genotype2] == "" ? 0 : gts.find_index(updateCageParams[:genotype2])  
+        puts "UPDATE CAGE PARAMS: #{updateParams.to_json}"
+        if @c && @c.update_attributes(updateParams) 
             log_update_cage(@c.cage_number, log_params, current_user)
             if updateCageParams[:in_use] == false
                 gflash :success => "Cage #{@c.cage_number} was deleted."
@@ -266,6 +278,10 @@ class HomeController < ApplicationController
         end
     end
 
+    def removed_mouse_index
+        @mice = Mouse.where.not(removed:nil)
+    end
+
     private
 
     def singleCageParams
@@ -281,7 +297,7 @@ class HomeController < ApplicationController
     end
 
     def updateCageParams
-        params.require(:cage).permit(:cage_number, :strain, :cage_type, :location, :pups_m, :pups_f, :in_use)
+        params.require(:cage).permit(:cage_number, :strain, :strain2, :genotype, :genotype2, :cage_type, :location, :in_use)
     end
 
     def removeCageParams

@@ -14,9 +14,7 @@ $(document).on('turbolinks:load',function() {
         {"data": "strain"},
         {"data": "genotype"},
         {"data": "location"},
-        {"data": "cage_type"},
-        // {"data": "sex"},
-        {"data": "contents"}
+        {"data": "cage_type"}
       ]
       // pagingType is optional, if you want full pagination controls.
       // Check dataTables documentation to learn more about
@@ -34,7 +32,7 @@ $(document).on('turbolinks:load',function() {
             {"data": "cage_number"},
             {"data": "location"},
             {"data": "cage_type"},
-            {"data": "contents"}
+            {"data": "genotype"}
         ]
         // pagingType is optional, if you want full pagination controls.
         // Check dataTables documentation to learn more about
