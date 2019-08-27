@@ -54,8 +54,8 @@
             <%= form_tag home_update_mouse_path(:cage => @cage.cage_number), method: :put do %>
                 <table id="single-cage-datatable" class="table table-bordered table-striped">
                     <thead>
-                        <th class="editableColHeader"><%= @cage.strain.include?("/") ? @cage.strain.split("/").first : @cage.strain %></th>
-                        <% if @cage.strain.include?("/")%><th class="editableColHeader"><%= @cage.strain.split("/").second %></th><% end %>
+                        <th class="editableColHeader"><%= @cage.strain %></th>
+                        <% if @cage.strain2 != "" && @cage.strain2 != nil %><th class="editableColHeader"><%= @cage.strain2 %></th><% end %>
                         <th class="editableColHeader">Notch</th>
                         <th class="editableColHeader">Sex</th>
                         <th class="editableColHeader">ID</th>
@@ -78,7 +78,7 @@
                                     :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#genotype-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
-                                <% if @cage.strain.include?("/")%>
+                                <% if @cage.strain2 != "" && @cage.strain2 != nil %>
                                     <td id="genotype2-<%= m.id %>">
                                         <span class="hidden green-check">&#10003;</span>
                                         <%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2 },

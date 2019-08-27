@@ -215,8 +215,8 @@ class HomeController < ApplicationController
     def new_pups # will need to refactor to fail the whole process if any pup is not added.
         cage_id = params[:cage].to_i
         @cage = Cage.find(cage_id)
-        strain = @cage.strain.include?("/") ? @cage.strain.split("/").first : @cage.strain
-        strain2 = @cage.strain.include?("/") ? @cage.strain.split("/").second : nil
+        strain = @cage.strain
+        strain2 = @cage.strain2
         successful_saves_m = 0
         successful_saves_f = 0
         error_messages = []
@@ -276,7 +276,10 @@ class HomeController < ApplicationController
     end
 
     def removed_mouse_index
-        @mice = Mouse.where.not(removed:nil)
+        respond_to do |format|
+            format.html 
+            format.json { render json: RemovedMiceDatatable.new(params) }
+        end
     end
 
     private

@@ -21,7 +21,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
         cage_number:            record.decorate.link_to_cage,
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
-        genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( record.genotype2 != nil ? "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" : gts[record.genotype.to_i] ),
+        genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( (record.genotype2 == nil || record.genotype2 == "" || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" ),
         dob:                    record.mice.pluck(:dob).sort.uniq.map{ |d| d.strftime('%Y-%m-%d') }.join(", ")
         # example:
         # id: record.id,

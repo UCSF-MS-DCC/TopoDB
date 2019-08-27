@@ -39,9 +39,29 @@ $(document).on('turbolinks:load',function() {
         // Check dataTables documentation to learn more about
         // available options.
     });
+
+    $('#removed-mice-datatable').dataTable({
+      "processing": true,
+      "serverSide": true,
+      "ajax": {
+          "url": $('#removed-mice-datatable').data('source')
+      },
+      "pagingType": "full_numbers",
+      "columns": [
+          {"data": "cage"},
+          {"data": "designation"},
+          {"data": "strain"},
+          {"data": "genotype"},
+          {"data": "removed"},
+          {"data": "removed_for"}
+      ]
+      // pagingType is optional, if you want full pagination controls.
+      // Check dataTables documentation to learn more about
+      // available options.
+  });
     /* Activating Best In Place */
     jQuery(".best_in_place").best_in_place();
     $('.highlight-on-success').bind("ajax:success", function (data) { if (!$(this).next("span").hasClass("hidden")) { $(this).next("span").addClass("hidden") }; $(this).prev("span").removeClass("hidden"); console.log(data) });
     $('.highlight-on-success').bind("ajax:error", function () { if (!$(this).prev("span").hasClass("hidden")) { $(this).prev("span").addClass("hidden") }; $(this).next("span").removeClass("hidden"); });
 
-  });
+});
