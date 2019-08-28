@@ -26,8 +26,19 @@
                     </tr>
                     <tr>
                         <th>Genotype:</th>
+                        <% @null_vals = [nil, "", "0"]%>
                         <td>
-                            <%= (@cage.genotype == nil || @cage.genotype == "" || @cage.genotype == "0") ? "" : ( @cage.genotype2 != nil ? "#{@gts[@cage.genotype.to_i]} | #{@gts[@cage.genotype2.to_i]}" : "#{@gts[@cage.genotype.to_i]}") %>
+                            <% if @null_vals.include?(@cage.genotype) && @null_vals.include?(@cage.genotype2) %>
+                                <%= "" %>
+                            <% elsif !@null_vals.include?(@cage.genotype) && @null_vals.include?(@cage.genotype2) && !@null_vals.include?(@cage.strain2) %>
+                                <%= "#{@gts[@cage.genotype.to_i]} | NA" %>
+                            <% elsif !@null_vals.include?(@cage.genotype) && @null_vals.include?(@cage.genotype2) && @null_vals.include?(@cage.strain2) %>
+                                <%= @gts[@cage.genotype.to_i] %>
+                            <% elsif @null_vals.include?(@cage.genotype) && !@null_vals.include?(@cage.genotype2) %>
+                                <%= "NA | #{@gts[@cage.genotype2.to_i]}" %>
+                            <% else %>
+                                <%= "#{@gts[@cage.genotype.to_i]} | #{@gts[@cage.genotype2.to_i]}"%>
+                            <% end %>
                         </td>
                         <th>Location:</th>
                         <td><%= @cage.location.capitalize %></td>
@@ -121,8 +132,13 @@
                                     </td>
                                 <% end %>
                                 <td id="transfer-<%= m.id %>">
+                                    <% @genotypes = %w(\  n/a +/+ +/- -/+ -/-)%>
+                                    <% @target_cages = @null_vals.include?(m.strain2) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
+                                    <% @target_cage_list = @target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] } %>
+                                    
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :cage_id, :as => :select, :collection => Cage.where("strain LIKE ?", "%#{m.strain}%").where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true).map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain}: #{cg.cage_number} (#{cg.cage_type})"] }, 
+                                    <%= best_in_place m, :cage_id, :as => :select, 
+                                    :collection => @target_cage_list, 
                                     :html_attrs => {:selected => m.cage.cage_number, :disabled => m.designation == nil }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>

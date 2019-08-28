@@ -39,11 +39,12 @@ class ArchiveDatatable < AjaxDatatablesRails::ActiveRecord
 
     def parseDesc(id)
       @arc = Archive.find(id)
+      gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
       desc = ""
       if @arc.acttype == "New Cage"
         desc = "New cage ##{@arc.cage} created."
       elsif @arc.acttype == "Update Cage"
-        desc = "Cage ##{@arc.cage} was updated: #{@arc.changed_attr} was changed from #{@arc.priorval} to #{@arc.newval}"
+        desc = "Cage ##{@arc.cage} was updated: #{@arc.changed_attr} was changed from #{@arc.changed_attr.include?("genotype") ? gts[@arc.priorval.to_i] : @arc.priorval} to #{@arc.changed_attr.include?("genotype") ? gts[@arc.newval.to_i] : @arc.newval}"
       elsif @arc.acttype == "Remove Cage"
         desc = "Cage ##{@arc.cage} was removed."
       elsif @arc.acttype == "New Pups"

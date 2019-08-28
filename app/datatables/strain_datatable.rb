@@ -22,7 +22,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
         genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( (record.genotype2 == nil || record.genotype2 == "" || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" ),
-        dob:                    record.mice.pluck(:dob).sort.uniq.map{ |d| d.strftime('%Y-%m-%d') }.join(", ")
+        dob:                    record.mice.where(removed:nil).pluck(:dob).sort.uniq.map{ |d| d.strftime('%Y-%m-%d') }.join(", ")
         # example:
         # id: record.id,
         # name: record.name
@@ -31,7 +31,14 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def get_raw_records
-    Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(in_use:true)
+    
+    records = nil
+    if options[:strain2] && ![nil, ""].include?(options[:strain2]) 
+      records = Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(in_use:true)
+    else
+      records = Cage.where(strain:options[:strain]).where(strain2:[nil, ""]).where(in_use:true)
+    end
+    records
     # insert query here
     # User.all
   end

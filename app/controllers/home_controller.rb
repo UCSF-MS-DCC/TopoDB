@@ -10,7 +10,6 @@ class HomeController < ApplicationController
     end
 
     def create_cage
-        puts createCageParams
         gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
         createParams = createCageParams
         if createCageParams[:strain2] == ""
@@ -49,14 +48,11 @@ class HomeController < ApplicationController
     end
 
     def strain
-        puts "SINGLE STRAIN PARAMS: #{singleStrainParams}"
         @strain = singleStrainParams[:strain]
         @strain2 = nil
         if singleStrainParams[:strain].include?("_")
-            puts "SINGLE STRAIN PARAMS SPLIT: #{singleStrainParams[:strain].split('_')}"
             @strain = singleStrainParams[:strain].split("_")[0]
             @strain2 = singleStrainParams[:strain].split("_")[1]
-            puts "@strain2: #{@strain2}"
         elsif 
             singleStrainParams[:strain2] != nil
             @strain2 = singleStrainParams[:strain2]
@@ -64,7 +60,6 @@ class HomeController < ApplicationController
         end
         @new_cage = Cage.new
         respond_to do |format|
-            puts "RESPOND @strain2: #{@strain2}"
             format.html 
             format.json { render json: StrainDatatable.new(params, strain: @strain, strain2: @strain2)}
         end
@@ -75,17 +70,19 @@ class HomeController < ApplicationController
         cage_no = @c.cage_number
         log_params = {}
         gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
-        updateCageParams.each do |k, v|
+        updateParams = updateCageParams
+
+        updateParams[:genotype] = updateCageParams[:genotype] == "" ? nil : gts.find_index(updateCageParams[:genotype])  
+        updateParams[:genotype2] = updateCageParams[:genotype2] == "" ? nil : gts.find_index(updateCageParams[:genotype2])  
+
+        updateParams.each do |k, v|
             if v == "true" || v == "false"
                 v = updateCageParams[:in_use] = ActiveModel::Type::Boolean.new.cast(v)
             end
-            if v != @c[k.to_sym] 
+            if v.to_s != @c[k.to_sym] && v != nil
                 log_params[k.to_sym] = {:priorval => @c[k.to_sym], :newval => v }
             end
         end
-        updateParams = updateCageParams
-        updateParams[:genotype] = updateCageParams[:genotype] == "" ? 0 : gts.find_index(updateCageParams[:genotype])  
-        updateParams[:genotype2] = updateCageParams[:genotype2] == "" ? 0 : gts.find_index(updateCageParams[:genotype2])  
         if @c && @c.update_attributes(updateParams) 
             log_update_cage(@c.cage_number, log_params, current_user)
             if updateCageParams[:in_use] == false
@@ -110,10 +107,9 @@ class HomeController < ApplicationController
         old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
         log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
 
-        respond_to do |format| # need to change this method to check that a three digit code is unique to non-removed mice within the strain. First, check the tdc is good, then update tdc, tdc_generated, and designation.
+        respond_to do |format| 
             if key == "designation"
                 if tdc_is_valid?(@mouse, val)
-                    puts "new tdc is valid"
                     tdc = val.scan(/\d+/)
                     @mouse.update_attributes(three_digit_code:tdc.first, designation:val, tdc_generated:Time.now)
                     format.html
@@ -232,7 +228,7 @@ class HomeController < ApplicationController
             log_new_pups(@cage.cage_number, "#{successful_saves_f} female", current_user)
         end
         params[:male_pups].to_i.times.each do |p|
-            @m =  Mouse.new(sex:2, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
+            @m = Mouse.new(sex:2, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
             if @m.save
                 successful_saves_m += 1
             else

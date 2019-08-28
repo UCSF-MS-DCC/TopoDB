@@ -20,7 +20,7 @@ end
 if Archive.count > 0
     Archive.destroy_all
 end
-20.times do 
+100.times do 
 
     ct = "breeding"
     st = strains[Faker::Number.between(from: 0, to: (strains.count - 1))]
@@ -42,7 +42,7 @@ end
     end
 end
 
-4.times do
+24.times do
 
     ct = "breeding"
     st1 = strains[Faker::Number.between(from: 0, to: (strains.count - 1))]
