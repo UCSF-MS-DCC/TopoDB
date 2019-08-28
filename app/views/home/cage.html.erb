@@ -47,7 +47,7 @@
             </div>
         </div>
  
-        <div class="row justify-content-md-center" style="margin-top:20px;">
+        <div class="row justify-content-md-center hide-on-print" style="margin-top:20px;">
             <div class="col-11">
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
                 <% if @cage.cage_type == "breeding" %>
@@ -56,6 +56,7 @@
                 <% if @cage.cage_type == "breeding" && @cage.mice.where(designation:nil).count > 0 %>
                     <%= link_to "Assign IDs to pups", home_assign_new_ids_path(:cage_id => @cage.id), :class => "btn btn-sm btn-primary" %>
                 <% end %>
+                <%= link_to 'Print Table', home_strain_path(:strain => @cage.strain), :onclick => 'window.print();return false;', :class => "btn btn-sm btn-primary"%>
             </div>
         </div>
         <%= render 'home/partials/edit_cage_form' %>
@@ -139,7 +140,7 @@
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :cage_id, :as => :select, 
                                     :collection => @target_cage_list, 
-                                    :html_attrs => {:selected => m.cage.cage_number, :disabled => m.designation == nil }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
+                                    :html_attrs => {:selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <td id="removed-<%= m.id %>">
@@ -160,7 +161,7 @@
                         </tr>
                     <% end %>
                     </tbody>
-                    <tfoot>
+                    <tfoot class="hide-on-print">
                         <tr rowspan="2">
                             <td colspan="15"><div style="display:inline-block;height:15px;min-width:15px;border:1px solid black;background-color:lightblue;"></div>&nbsp;&nbsp;indicates column that can be edited. Click on a value to change it. A "-" indicates the field has no set value.<br>
                             <span style="font-size:20px;color:green;">&#10003;</span>&nbsp;&nbsp;Field value successfully updated.<span class="tfoot-red-x">&#10060;</span>&nbsp;&nbsp;Field failed to update</td>

@@ -70,19 +70,31 @@ class HomeController < ApplicationController
         cage_no = @c.cage_number
         log_params = {}
         gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
+        string_fields = %w(cage_type strain strain2 location cage_number)
+        index_fields = %w(genotype genotype2)
+        bool_fields = %w(in_use cage_number_changed)
         updateParams = updateCageParams
-
-        updateParams[:genotype] = updateCageParams[:genotype] == "" ? nil : gts.find_index(updateCageParams[:genotype])  
-        updateParams[:genotype2] = updateCageParams[:genotype2] == "" ? nil : gts.find_index(updateCageParams[:genotype2])  
-
-        updateParams.each do |k, v|
-            if v == "true" || v == "false"
-                v = updateCageParams[:in_use] = ActiveModel::Type::Boolean.new.cast(v)
+puts "UPDATECAGEPARAMS: #{updateCageParams.to_json}"
+puts "CAGEBEFOREUPDATE: #{@c.to_json}"
+        updateParams.each do |k, v| 
+            if bool_fields.include?(k)
+                updateParams[k.to_sym] = ActiveModel::Type::Boolean.new.cast(v)
+            elsif string_fields.include?(k) && [nil, ""].include?(v)
+                updateParams[k.to_sym] = nil
+            elsif index_fields.include?(k)
+                updateParams[k.to_sym] = v == "" ? "0" : gts.find_index(v).to_s 
             end
-            if v.to_s != @c[k.to_sym] && v != nil
+        end
+        updateParams.each do |k, v|
+            if v != nil && @c[k.to_sym] != nil && v != @c[k.to_sym]
+                log_params[k.to_sym] = {:priorval => @c[k.to_sym], :newval => v }
+            elsif v == nil && @c[k.to_sym] != nil
+                log_params[k.to_sym] = {:priorval => @c[k.to_sym], :newval => v }
+            elsif v != nil && @c[k.to_sym] == nil
                 log_params[k.to_sym] = {:priorval => @c[k.to_sym], :newval => v }
             end
         end
+puts "PROCESSEDUPDATEPARAMS: #{updateParams.to_json}"
         if @c && @c.update_attributes(updateParams) 
             log_update_cage(@c.cage_number, log_params, current_user)
             if updateCageParams[:in_use] == false

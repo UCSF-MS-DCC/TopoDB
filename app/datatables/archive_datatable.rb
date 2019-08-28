@@ -44,7 +44,7 @@ class ArchiveDatatable < AjaxDatatablesRails::ActiveRecord
       if @arc.acttype == "New Cage"
         desc = "New cage ##{@arc.cage} created."
       elsif @arc.acttype == "Update Cage"
-        desc = "Cage ##{@arc.cage} was updated: #{@arc.changed_attr} was changed from #{@arc.changed_attr.include?("genotype") ? gts[@arc.priorval.to_i] : @arc.priorval} to #{@arc.changed_attr.include?("genotype") ? gts[@arc.newval.to_i] : @arc.newval}"
+        desc = "Cage ##{@arc.cage} was updated: #{@arc.changed_attr} was changed from #{@arc.changed_attr.include?("genotype") ? (@arc.priorval == "0" ? "null" : gts[@arc.priorval.to_i]) : @arc.priorval} to #{@arc.changed_attr.include?("genotype") ? (@arc.newval == "0" ? "null" : gts[@arc.newval.to_i]) : @arc.newval}"
       elsif @arc.acttype == "Remove Cage"
         desc = "Cage ##{@arc.cage} was removed."
       elsif @arc.acttype == "New Pups"
