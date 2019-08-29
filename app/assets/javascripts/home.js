@@ -53,7 +53,8 @@ $(document).on('turbolinks:load',function() {
           {"data": "strain"},
           {"data": "genotype"},
           {"data": "removed"},
-          {"data": "removed_for"}
+          {"data": "removed_for"},
+          {"data": "transfer"}
       ]
       // pagingType is optional, if you want full pagination controls.
       // Check dataTables documentation to learn more about
