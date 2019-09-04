@@ -9,7 +9,8 @@ class RemovedMiceDatatable < AjaxDatatablesRails::ActiveRecord
       strain:             { source: "Mouse.strain" },
       genotype:           { source: "Mouse.genotype" },
       removed:            { source: "Mouse.removed" },
-      removed_for:        { source: "Mouse.removed_for" }
+      removed_for:        { source: "Mouse.removed_for" },
+      restore:            { source: "Mouse.id"}
 
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
@@ -25,7 +26,8 @@ class RemovedMiceDatatable < AjaxDatatablesRails::ActiveRecord
         strain:           (record.strain2 != nil && record.strain2 != "") ? "#{record.strain}/#{record.strain2}" : record.strain ,
         genotype:         (record.genotype2 == "" || record.genotype2 == nil || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}",
         removed:          record.removed,
-        removed_for:      record.removed_for
+        removed_for:      record.removed_for,
+        restore:          record.decorate.transfer_select
         # example:
         # id: record.id,
         # name: record.name
@@ -40,3 +42,15 @@ class RemovedMiceDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
 end
+class MouseDecorator < ApplicationDecorator
+  def transfer_select
+    h.best_in_place object, :removed, as: :checkbox, collection: {false: "No", true: "Yes"}, :url => '/home/update_mouse_cage'
+  end
+
+  def bip_transfer_select
+    sx = ["f", "m"][(object.sex.to_i - 1)]
+    col = [[1,12345],[2,45678],[3,78901]]
+    h.best_in_place(object, :cage_id, :as => :select, :collection => col , :url =>'/home/update_mouse_cage', :html_attrs => { :selected => col.first }, :param => object.id)
+  end
+end
+#Cage.where(strain:object.strain).where(cage_type:["experimental", "single-#{sx}"]).where(in_use:true).map{ |cg| ["#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"]

@@ -5,7 +5,7 @@ class HomeController < ApplicationController
         @strain = nil
         respond_to do |format|
             format.html 
-            format.json { render json: CageDatatable.new(params) }
+            format.json { render json: CageDatatable.new(params, location:params[:location]) }
         end
     end
 
@@ -280,6 +280,22 @@ puts "PROCESSEDUPDATEPARAMS: #{updateParams.to_json}"
             redirect_to home_cage_path(:cage_number => Cage.find(params[:cage_id]).cage_number)
         else
             gflash :error => "There was a problem assigning IDs to pups in Cage ##{Cage.find(params[:cage_id]).cage_number}, Contact an administrator for assistance. #{error_messages}"
+        end
+    end
+
+    def restore_mouse
+        puts params.to_json
+        @mouse = Mouse.find_by designation:params[:mouse], cage_id:Cage.find_by(cage_number:params[:cage]).id, removed: params[:removed]
+        puts @mouse.to_json
+        @mouse.update_attributes(removed:nil)
+        respond_to do |format|
+            if @mouse.removed == nil
+                format.html
+                format.json { render :json => { :message => "#{@mouse.designation} was restored.", :status => :accepted } }
+            else
+                format.html
+                format.json { render :json => { :message => "#{@mouse.designation} was not restored. Please see a site administrator.", :status => :unprocessable_entity } }
+            end
         end
     end
 

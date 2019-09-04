@@ -1,10 +1,5 @@
-    <div class="row" style="margin-top:10px;">
-        <div class="col-2 offset-2">
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
-        </div>
-    </div>
-    <br>
-    <div class="row justify-content-md-center collapse" id="newCageForm">
+
+    <div class="collapse" id="newCageForm" style="margin-top:20px;margin-bottom:20px;">
         <%= form_for(@new_cage, url: home_create_cage_path(@new_cage), :html => { :style => "border:1px solid skyblue;padding-bottom:10px;padding-top:10px;min-width:50%;" } ) do |f| %>
             <div class="col-12">
                 <div class="row justify-content-md-center">
@@ -73,9 +68,13 @@
                                 <%= f.radio_button :cage_type, "single-m", :value => "single-m", :class => "form-check-input" %>
                                 <%= f.label :cage_type, "Single M", :value => "single-m" %>
                             </div>
-                            <div class="form-check" style="display:inline-block;">
+                            <div class="form-check" style="display:inline-block;margin-right:30px;">
                                 <%= f.radio_button :cage_type, "breeding", :value => "breeding", :class => "form-check-input" %>
                                 <%= f.label :cage_type, "Breeding", :value => "breeding" %>
+                            </div>
+                            <div class="form-check" style="display:inline-block;">
+                                <%= f.radio_button :cage_type, "experiment", :value => "experiment", :class => "form-check-input" %>
+                                <%= f.label :cage_type, "Experiment", :value => "experiment" %>
                             </div>
                         </div>
                     </div>

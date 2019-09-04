@@ -3,7 +3,7 @@ class Cage < ApplicationRecord
     has_paper_trail
 
     validates_presence_of :cage_type
-    validates_inclusion_of :cage_type, :in => ["single-m", "single-f", "breeding"]
+    validates_inclusion_of :cage_type, :in => ["single-m", "single-f", "breeding", "experiment"]
     validates_presence_of :location
     validates_inclusion_of :location, :in => ["sandler", "genentech hall"]
     validates_presence_of :cage_number

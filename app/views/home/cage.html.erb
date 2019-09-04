@@ -134,7 +134,7 @@
                                 <% end %>
                                 <td id="transfer-<%= m.id %>">
                                     <% @genotypes = %w(\  n/a +/+ +/- -/+ -/-)%>
-                                    <% @target_cages = @null_vals.include?(m.strain2) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
+                                    <% @target_cages = @null_vals.include?(m.strain2) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}", "experiment"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
                                     <% @target_cage_list = @target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] } %>
                                     
                                     <span class="hidden green-check">&#10003;</span>

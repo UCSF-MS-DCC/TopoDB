@@ -31,7 +31,7 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def get_raw_records
-    Cage.all.where.not(in_use:false)
+    Cage.all.where.not(in_use:false).where(location:options[:location])
     # insert query here
     # User.all
   end

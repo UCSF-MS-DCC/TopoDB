@@ -8,7 +8,8 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
       location:               { source:"Cage.location"},
       cage_type:              { source:"Cage.cage_type" },
       genotype:               { source:"Cage.genotype" },
-      dob:                    { source:"Cage.cage_number"}
+      dob:                    { source:"Cage.cage_number"},
+      number_mice:            { source:"Cage.id"}
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
     }
@@ -22,7 +23,8 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
         location:               record.location.capitalize,
         cage_type:              record.cage_type,
         genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( (record.genotype2 == nil || record.genotype2 == "" || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" ),
-        dob:                    record.mice.where(removed:nil).pluck(:dob).sort.uniq.map{ |d| d.strftime('%Y-%m-%d') }.join(", ")
+        dob:                    record.cage_type != 'breeding' ? ( record.mice.where(removed:nil).where.not(dob:nil).count > 0 ? record.mice.where(removed:nil).where.not(dob:nil).order(dob: :asc).last[:dob].strftime("%Y-%m-%d") : "") : "",
+        number_mice:            record.cage_type != 'breeding' ? record.mice.where(removed:nil).count : ""
         # example:
         # id: record.id,
         # name: record.name

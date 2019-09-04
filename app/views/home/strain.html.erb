@@ -1,27 +1,26 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-7 offset-2">
-            <h1><%= @strain2 == nil ? @strain : "#{@strain} / #{@strain2}" %></h1>
+        <div class="col-sm-2"  style="margin-top:20px;border:1px solid lightblue;border-radius:5px;">
+            <h1 class="text-center"><%= @strain2 == nil ? @strain : "#{@strain} / #{@strain2}" %></h1>
+            <button class="btn btn-primary btn-block" style="margin-top:50px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
          </div>
-    </div>
-    <%= render 'home/partials/new_cage_form' %>
-    <div class="row justify-content-md-center" style="margin-top:2%;">
-        <div class="col-9">
 
+        <div class="col-sm-10"  style="margin-top:20px;">
+            <%= render 'home/partials/new_cage_form' %>
             <table id="strain-datatable" data-source="<%= home_strain_path(format: :json, strain: @strain, strain2: @strain2) %>" class='table table-bordered table-striped' >
                 <thead>
                     <tr>
-                        <th>Number</th>
+                        <th>Cage Number</th>
                         <th>Location</th>
                         <th>Type</th>
                         <th>Genotype</th>
                         <th>Dates of birth</th>
+                        <th># mice</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
-
-         </div>
+        </div>
     </div>
 </div>
