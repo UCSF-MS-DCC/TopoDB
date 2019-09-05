@@ -87,7 +87,7 @@ $(document).on('turbolinks:load',function() {
   });
     /* Activating Best In Place */
     jQuery(".best_in_place").best_in_place();
-    $('.highlight-on-success').bind("ajax:success", function (data) { if (!$(this).next("span").hasClass("hidden")) { $(this).next("span").addClass("hidden") }; $(this).prev("span").removeClass("hidden"); console.log(data) });
+    $('.highlight-on-success').bind("ajax:success", function (data) { if (!$(this).next("span").hasClass("hidden")) { $(this).next("span").addClass("hidden") }; $(this).prev("span").removeClass("hidden"); });
     $('.highlight-on-success').bind("ajax:error", function () { if (!$(this).prev("span").hasClass("hidden")) { $(this).prev("span").addClass("hidden") }; $(this).next("span").removeClass("hidden"); });
     
 });
@@ -98,7 +98,6 @@ function restoreMouse(obj) {
     var cageNumber = $(obj).parent().parent().children('td').eq(0).html();
     var strain = $(obj).parent().parent().children('td').eq(2).html();
     var removedDate = $(obj).parent().parent().children('td').eq(4).html()
-    <%# alert(mouseID + " from "+ cageNumber + " in strain "+ strain); %>
     $.ajax({
       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
       type:"POST",
