@@ -284,17 +284,31 @@ puts "PROCESSEDUPDATEPARAMS: #{updateParams.to_json}"
     end
 
     def restore_mouse
-        puts params.to_json
-        @mouse = Mouse.find_by designation:params[:mouse], cage_id:Cage.find_by(cage_number:params[:cage]).id, removed: params[:removed]
-        puts @mouse.to_json
+        # puts "RAW PARAMS: #{params.to_json}"
+        # puts "STRONG PARAMS: #{restoreMouseParams}"
+        sx = %w(nil F M)
+        if restoreMouseParams[:mouse].size && restoreMouseParams[:mouse] != ""
+            @mouse = Mouse.find_by(designation:restoreMouseParams[:mouse], cage_id:Cage.find_by(cage_number:restoreMouseParams[:cage]).id, removed:restoreMouseParams[:removed])
+            # puts ("Found by designation, cage, removed")
+        else
+            @mice = Mouse.where(cage_id:Cage.find_by(cage_number:restoreMouseParams[:cage]).id, removed:restoreMouseParams[:removed], sex:sx.index(restoreMouseParams[:sex]))
+            if @mice.count == 1
+                @mouse = @mice.first
+                # puts "Found by cage, removed, sex"
+            else
+                # handle more than one or no mouse with those criteria(?!)
+                # puts "(#{@mice.count}) mice with same cage, removed date, and sex"
+            end
+        end
+        # puts @mouse.to_json
         @mouse.update_attributes(removed:nil)
         respond_to do |format|
-            if @mouse.removed == nil
+            if @mouse && @mouse.removed == nil
                 format.html
-                format.json { render :json => { :message => "#{@mouse.designation} was restored.", :status => :accepted } }
+                format.json { render :json => { :message => "#{@mouse.designation != nil ? @mouse.designation : "Unidentified mouse"} was restored.", :status => :accepted } }
             else
                 format.html
-                format.json { render :json => { :message => "#{@mouse.designation} was not restored. Please see a site administrator.", :status => :unprocessable_entity } }
+                format.json { render :json => { :message => "Mouse was not restored. Please see a site administrator.", :status => :unprocessable_entity } }
             end
         end
     end
@@ -333,6 +347,10 @@ puts "PROCESSEDUPDATEPARAMS: #{updateParams.to_json}"
 
     def newPupsParams 
         params.permit(:female_pups, :male_pups, :birthdate)
+    end
+
+    def restoreMouseParams
+        params.permit(:mouse, :cage, :removed, :sex, :strain)
     end
 
 end

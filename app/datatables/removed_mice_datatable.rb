@@ -7,6 +7,7 @@ class RemovedMiceDatatable < AjaxDatatablesRails::ActiveRecord
       cage:               { source: "Mouse.cage_id"},
       designation:        { source: "Mouse.designation" },
       strain:             { source: "Mouse.strain" },
+      sex:                { source: "Mouse.sex" },
       genotype:           { source: "Mouse.genotype" },
       removed:            { source: "Mouse.removed" },
       removed_for:        { source: "Mouse.removed_for" },
@@ -20,10 +21,12 @@ class RemovedMiceDatatable < AjaxDatatablesRails::ActiveRecord
   def data
     records.map do |record|
       gts = %w(\  n/a +/+ +/- -/+ -/-)
+      sx = %w(nil F M)
       {
         cage:             Cage.find(record.cage_id).cage_number,
         designation:      record.designation,
         strain:           (record.strain2 != nil && record.strain2 != "") ? "#{record.strain}/#{record.strain2}" : record.strain ,
+        sex:              sx[record.sex.to_i],
         genotype:         (record.genotype2 == "" || record.genotype2 == nil || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}",
         removed:          record.removed,
         removed_for:      record.removed_for,
