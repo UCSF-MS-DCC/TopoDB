@@ -1,11 +1,16 @@
 <div class="container-fluid">
     <% if !current_user %> 
-        <div class="row justify-content-md-center" style="margin-top:2%;">
-           <h6>UCSF Multiple Sclerosis Genetics Research Laboratory Mouse Database</h6>
+      <div class="row justify-content-md-center">
+        <div style="width:800px;height:175px;margin-top:5%;border-radius:15px;">
+            <h1 class="text-center" style="font-size:75px;"><%= image_tag("mouse-icon-high-res.png", :style=>"height:40px;")%>&nbsp;TopoDB&nbsp;<%= image_tag("mouse-icon-high-res.png", :style=>"height:40px;-webkit-transform:scaleX(-1);transform:scaleX(-1);")%></h1>
+            <h4 class="text-center" style="margin-top:5%;word-spacing:5px;">UCSF Multiple Sclerosis Genetics Research Laboratory<br> Mouse Colony Database</h4>
         </div>
-        <div class="row justify-content-md-center" style="margin-top:2%;">
-            <%= image_tag("lab-mouse-vector", :style => "") %>
+    </div>
+    <div class="row justify-content-md-center" style="margin-top:5%;">
+        <div class="col-sm-3">
+            <%= link_to "Sign In", new_user_session_path, :class => "btn btn-outline-primary btn-block" %>
         </div>
+    </div>
     <% else %>
         <div class="row">
 
@@ -31,7 +36,6 @@
                             <th>Cage Number</th>
                             <th>Strain</th>
                             <th>Genotype</th>
-                            <th>Location</th>
                             <th>Cage Type</th>
                         </thead>
                         <tbody>
@@ -45,7 +49,6 @@
                             <th>Cage Number</th>
                             <th>Strain</th>
                             <th>Genotype</th>
-                            <th>Location</th>
                             <th>Cage Type</th>
                         </thead>
                         <tbody>

@@ -14,7 +14,6 @@ $(document).on('turbolinks:load',function() {
         {"data": "cage_number"},
         {"data": "strain"},
         {"data": "genotype"},
-        {"data": "location"},
         {"data": "cage_type"}
       ]
       // pagingType is optional, if you want full pagination controls.
@@ -33,7 +32,6 @@ $(document).on('turbolinks:load',function() {
         {"data": "cage_number"},
         {"data": "strain"},
         {"data": "genotype"},
-        {"data": "location"},
         {"data": "cage_type"}
       ]
       // pagingType is optional, if you want full pagination controls.

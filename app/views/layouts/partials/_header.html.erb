@@ -1,6 +1,6 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="border-bottom:1px solid black;">
-    <%= link_to(image_tag("mouse-icon.png", :style=>"height:40px;") +" TopoDB", root_path, :class => "navbar-brand" )%>
+    <%= link_to(image_tag("mouse-icon-high-res.png", :style=>"height:30px;") +" TopoDB", root_path, :class => "navbar-brand" )%>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -19,7 +19,7 @@
                     <%= link_to "Removed Mice", home_removed_mouse_index_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <li class="nav-item">
-                    <%= link_to "signed in as #{current_user.email}", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                    <%= link_to "signed in as #{current_user.first} #{current_user.last}", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <li class="nav-item">
                     <%= link_to "Log out", destroy_user_session_path, :method => :delete, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>

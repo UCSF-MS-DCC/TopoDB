@@ -10,7 +10,9 @@
   </head>
 
   <body>
-    <%= render 'layouts/partials/header' %>
+    <% if current_user %>
+      <%= render 'layouts/partials/header' %>
+    <% end %>
     <%= gflash %>
 
     <%= yield %>
