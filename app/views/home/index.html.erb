@@ -63,7 +63,8 @@
                 <table id="index-datatable" class="table table-bordered table-striped" data-source="<%= home_index_path(format: :json) %>">
                     <thead>
                         <th>Strain</th>
-                        <th>Cages</th>
+                        <th>Total Cages</th>
+                        <th>Breeding Cages</th>
                         <th>Mice</th>
                         <th>Latest Activity</th>
                     </thead>
@@ -72,6 +73,7 @@
                             <tr>
                                 <td><%= link_to strain, home_strain_path(:strain => strain) %></td>
                                 <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).count %></td>
+                                <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).where(cage_type:"breeding").count%></td>
                                 <td><%= Mouse.where(cage_id:Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).pluck(:id)).count %></td>
                                 <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).sort_by(&:updated_at).last.updated_at.strftime("%Y-%m-%d @ %l:%M %p") %></td>
                             </tr>
@@ -82,6 +84,7 @@
                             <tr>
                                 <td><%= link_to hybrid, home_strain_path(:strain => "#{first_strain}_#{second_strain}") %></td>
                                 <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).count %></td>
+                                <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).where(cage_type:"breeding").count%></td>
                                 <td><%= Mouse.where(cage_id:Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).pluck(:id)).count %></td>
                                 <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).sort_by(&:updated_at).last.updated_at.strftime("%Y-%m-%d @ %l:%M %p") %></td>
                             </tr>

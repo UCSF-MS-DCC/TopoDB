@@ -69,7 +69,13 @@ $(document).on('turbolinks:load',function() {
             {"data": "genotype"},
             {"data": "dob"},
             {"data": "number_mice"}
-        ]
+        ],
+        "language": {
+          "paginate": {
+            "previous": "<<-",
+            "next": "->>"
+          }
+        }
         // pagingType is optional, if you want full pagination controls.
         // Check dataTables documentation to learn more about
         // available options.
