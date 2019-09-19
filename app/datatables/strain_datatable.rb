@@ -16,7 +16,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def data
-    gts = %w(\  n/a +/+ +/- -/+ -/-)
+    gts = %w(\  n/a +/+ +/- -/-)
     records.map do |record|
       {
         cage_number:            record.decorate.link_to_cage,

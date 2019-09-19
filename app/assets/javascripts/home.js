@@ -2,42 +2,59 @@
 // # All this logic will automatically be available in application.js.
 // # You can use CoffeeScript in this file: http://coffeescript.org/
 $(document).on('turbolinks:load',function() {
-    $('#sandler-cages-datatable').dataTable({
-      "processing": true,
-      "serverSide": true,
-      "ajax": {
-        "url": $('#cages-datatable').data('source'),
-        "data": {"location":"sandler"}
-      },
-      "pagingType": "full_numbers",
-      "columns": [
-        {"data": "cage_number"},
-        {"data": "strain"},
-        {"data": "genotype"},
-        {"data": "cage_type"}
-      ]
-      // pagingType is optional, if you want full pagination controls.
-      // Check dataTables documentation to learn more about
-      // available options.
-    });
-    $('#genentech-cages-datatable').dataTable({
-      "processing": true,
-      "serverSide": true,
-      "ajax": {
-        "url": $('#cages-datatable').data('source'),
-        "data": {"location":"genentech hall"}
-      },
-      "pagingType": "full_numbers",
-      "columns": [
-        {"data": "cage_number"},
-        {"data": "strain"},
-        {"data": "genotype"},
-        {"data": "cage_type"}
-      ]
-      // pagingType is optional, if you want full pagination controls.
-      // Check dataTables documentation to learn more about
-      // available options.
-    });
+    // $('#sandler-cages-datatable').dataTable({
+    //   "processing": true,
+    //   "serverSide": true,
+    //   "ajax": {
+    //     "url": $('#cages-datatable').data('source'),
+    //     "data": {"location":"sandler"}
+    //   },
+    //   "pagingType": "full_numbers",
+    //   "columns": [
+    //     {"data": "cage_number"},
+    //     {"data": "strain"},
+    //     {"data": "genotype"},
+    //     {"data": "cage_type"}
+    //   ]
+    //   // pagingType is optional, if you want full pagination controls.
+    //   // Check dataTables documentation to learn more about
+    //   // available options.
+    // });
+    // $('#genentech-cages-datatable').dataTable({
+    //   "processing": true,
+    //   "serverSide": true,
+    //   "ajax": {
+    //     "url": $('#cages-datatable').data('source'),
+    //     "data": {"location":"genentech hall"}
+    //   },
+    //   "pagingType": "full_numbers",
+    //   "columns": [
+    //     {"data": "cage_number"},
+    //     {"data": "strain"},
+    //     {"data": "genotype"},
+    //     {"data": "cage_type"}
+    //   ]
+    //   // pagingType is optional, if you want full pagination controls.
+    //   // Check dataTables documentation to learn more about
+    //   // available options.
+    // });
+  //   $('#index-datatable').dataTable({
+  //     "processing": true,
+  //     "serverSide": true,
+  //     "ajax": {
+  //         "url": $('#index-datatable').data('source')
+  //     },
+  //     "pagingType": "full_numbers",
+  //     "columns": [
+  //         {"data": "strain"},
+  //         {"data": "cages"},
+  //         {"data": "mice"},
+  //         {"data": "last_active"}
+  //     ]
+  //     // pagingType is optional, if you want full pagination controls.
+  //     // Check dataTables documentation to learn more about
+  //     // available options.
+  // });
     $('#strain-datatable').dataTable({
         "processing": true,
         "serverSide": true,

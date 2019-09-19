@@ -12,7 +12,7 @@
         </div>
     </div>
     <% else %>
-        <div class="row">
+      <!-- >  <div class="row">
 
             <div class="col-sm-2">
                 <ul class="nav nav-pills nav-justified flex-column" style="margin-top:25px;">
@@ -56,6 +56,38 @@
                     </table>
                 </div>
 
+            </div>
+        </div> -->
+        <div class="row justify-content-md-center">
+            <div class="col-sm-8" style="margin-top:20px;">
+                <table id="index-datatable" class="table table-bordered table-striped" data-source="<%= home_index_path(format: :json) %>">
+                    <thead>
+                        <th>Strain</th>
+                        <th>Cages</th>
+                        <th>Mice</th>
+                        <th>Latest Activity</th>
+                    </thead>
+                    <tbody>
+                        <% @strains.each do |strain| %>
+                            <tr>
+                                <td><%= link_to strain, home_strain_path(:strain => strain) %></td>
+                                <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).count %></td>
+                                <td><%= Mouse.where(cage_id:Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).pluck(:id)).count %></td>
+                                <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(in_use:true).sort_by(&:updated_at).last.updated_at.strftime("%Y-%m-%d @ %l:%M %p") %></td>
+                            </tr>
+                        <% end %>
+                        <% @hybrids.each do |hybrid| %>
+                            <% first_strain = hybrid.split("/").first %>
+                            <% second_strain = hybrid.split("/").second %>
+                            <tr>
+                                <td><%= link_to hybrid, home_strain_path(:strain => "#{first_strain}_#{second_strain}") %></td>
+                                <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).count %></td>
+                                <td><%= Mouse.where(cage_id:Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).pluck(:id)).count %></td>
+                                <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(in_use:true).sort_by(&:updated_at).last.updated_at.strftime("%Y-%m-%d @ %l:%M %p") %></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
             </div>
         </div>
 

@@ -2,15 +2,12 @@ class HomeController < ApplicationController
     include HomeHelper
     def index 
         @new_cage = Cage.new
-        @strain = nil
-        respond_to do |format|
-            format.html 
-            format.json { render json: CageDatatable.new(params, location:params[:location]) }
-        end
+        @strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
+        @hybrids = Cage.where(in_use:true).where.not(strain2:[nil,""]).map { |cage| "#{cage.strain}/#{cage.strain2}" }.uniq
     end
 
     def create_cage
-        gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
+        gts = [nil, "n/a", "+/+", "+/-", "-/-"]
         createParams = createCageParams
         if createCageParams[:strain2] == ""
             createParams[:strain2] = nil
@@ -69,13 +66,11 @@ class HomeController < ApplicationController
         @c = Cage.find(params[:id])
         cage_no = @c.cage_number
         log_params = {}
-        gts = [nil, "n/a", "+/+", "+/-", "-/+", "-/-"]
+        gts = [nil, "n/a", "+/+", "+/-", "-/-"]
         string_fields = %w(cage_type strain strain2 location cage_number)
         index_fields = %w(genotype genotype2)
         bool_fields = %w(in_use cage_number_changed)
         updateParams = updateCageParams
-puts "UPDATECAGEPARAMS: #{updateCageParams.to_json}"
-puts "CAGEBEFOREUPDATE: #{@c.to_json}"
         updateParams.each do |k, v| 
             if bool_fields.include?(k)
                 updateParams[k.to_sym] = ActiveModel::Type::Boolean.new.cast(v)
@@ -94,7 +89,6 @@ puts "CAGEBEFOREUPDATE: #{@c.to_json}"
                 log_params[k.to_sym] = {:priorval => @c[k.to_sym], :newval => v }
             end
         end
-puts "PROCESSEDUPDATEPARAMS: #{updateParams.to_json}"
         if @c && @c.update_attributes(updateParams) 
             log_update_cage(@c.cage_number, log_params, current_user)
             if updateCageParams[:in_use] == false

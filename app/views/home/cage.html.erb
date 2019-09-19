@@ -86,14 +86,14 @@
                             <tr>
                                 <td id="genotype-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :genotype, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype, :html_attrs => { :selected => m.genotype }, 
+                                    <%= best_in_place m, :genotype, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/-"]], :value => m.genotype, :html_attrs => { :selected => m.genotype }, 
                                     :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#genotype-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <% if @cage.strain2 != "" && @cage.strain2 != nil %>
                                     <td id="genotype2-<%= m.id %>">
                                         <span class="hidden green-check">&#10003;</span>
-                                        <%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/+"],[5,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2 },
+                                        <%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2 },
                                         :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#genotype2-#{m.id}" %>
                                         <span class="hidden red-x">&#10060;</span>
                                     </td>
@@ -133,14 +133,14 @@
                                     </td>
                                 <% end %>
                                 <td id="transfer-<%= m.id %>">
-                                    <% @genotypes = %w(\  n/a +/+ +/- -/+ -/-)%>
+                                    <% @genotypes = %w(\  n/a +/+ +/- -/-)%>
                                     <% @target_cages = @null_vals.include?(m.strain2) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}", "experiment"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
-                                    <% @target_cage_list = @target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] } %>
-                                    
+                                    <% @target_cage_list = @target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] }.push(["#{@cage.id}->#{@cage.id}", "CANCEL TRANSFER"]) %>
+
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :cage_id, :as => :select, 
                                     :collection => @target_cage_list, 
-                                    :html_attrs => {:selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
+                                    :html_attrs => { :selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <td id="removed-<%= m.id %>">

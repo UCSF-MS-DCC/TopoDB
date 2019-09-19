@@ -14,7 +14,7 @@ class CageDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def data
-    gts = %w(\  n/a +/+ +/- -/+ -/-)
+    gts = %w(\  n/a +/+ +/- -/-)
     records.map do |record|
       {
         cage_number:            record.decorate.link_to_cage,
@@ -42,7 +42,7 @@ class CageDecorator < ApplicationDecorator
   end
 
   def link_to_strain
-    h.link_to object.strain, h.home_strain_path(:strain => object.strain)
+    h.link_to object, h.home_strain_path(:strain => object)
   end
 
   def link_to_hybrid_strain
