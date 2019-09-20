@@ -141,6 +141,7 @@ $(document).on('turbolinks:load',function() {
         options: {
           responsive:true,
           maintainAspectRatio:false,
+          rotation:5 * Math.PI,
           title: {
             display:true,
             fontSize:15,
@@ -161,8 +162,10 @@ $(document).on('turbolinks:load',function() {
     $.get("/home/graph_data_age?strain="+strain, function(data){
       var ageChart = new Chart(ctx2, {
         type: 'bar',
+        yAxisID: "Number of mice",
         data: {
           labels: ["0-4", "4-8", "8-12", "12-16", "16-20", "20+"],
+          
           datasets: [{
             label: "Mice",
             data: data["numbers"],
@@ -199,9 +202,17 @@ $(document).on('turbolinks:load',function() {
             labels: {
               boxWidth:10
             }
-
           },
-          scales: {}
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: "Number of mice",
+                fontStyle: "bold",
+                fontSize: 16
+              }
+            }]
+          }
         }
       }); /* close age chart instantiation */
     }); /* close AJAX call to graph_data_age endpoint */
