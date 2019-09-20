@@ -18,6 +18,8 @@ Rails.application.routes.draw do
     get 'assign_new_ids'
     get 'removed_mouse_index'
     post 'restore_mouse'
+    get 'graph_data_sex'
+    get 'graph_data_age'
   end
 
   namespace :archive do

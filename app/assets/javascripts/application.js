@@ -22,4 +22,5 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require gritter
+//= require Chart.min
 //= require_tree .

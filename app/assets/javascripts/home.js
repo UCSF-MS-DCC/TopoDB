@@ -114,7 +114,101 @@ $(document).on('turbolinks:load',function() {
     $('.highlight-on-success').bind("ajax:success", function () { if (!$(this).next("span").hasClass("hidden")) { $(this).next("span").addClass("hidden") }; $(this).prev("span").removeClass("hidden"); });
     $('.highlight-on-success').bind("ajax:error", function () { if (!$(this).prev("span").hasClass("hidden")) { $(this).prev("span").addClass("hidden") }; $(this).next("span").removeClass("hidden"); });
     
-});
+
+  if (window.location.pathname === "/home/strain") {
+    var ctx = $('#sex-chart');
+    var ctx2 = $('#age-chart');
+    var strain = window.location.href.split("=")[1]
+
+    $.get("/home/graph_data_sex?strain="+strain, function(data) {
+      var sexChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ["Female", "Male"],
+          datasets: [{
+            label: "Sex",
+            data: data["numbers"],
+            backgroundColor: [
+              'rgba(255,182,193,0.6)',
+              'rgba(115,194,251,0.6)'
+            ],
+            borderColor: [
+              'rgba(255,182,193,1)',
+              'rgba(115,194,251,1)'
+            ]
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          title: {
+            display:true,
+            fontSize:15,
+            fontColor:'#000',
+            text:"Sex"
+          },
+          legend:{
+            position:'bottom',
+            labels: {
+              boxWidth:10
+            }
+          },
+          scales: {}
+        }
+      }); /* close sexChart instantiation */
+    }); /* close AJAX call to graph_data_sex endpoint */
+
+    $.get("/home/graph_data_age?strain="+strain, function(data){
+      var ageChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ["0-4", "4-8", "8-12", "12-16", "16-20", "20+"],
+          datasets: [{
+            label: "Mice",
+            data: data["numbers"],
+            backgroundColor: [
+              'rgba(128, 255, 0,0.6)',
+              'rgba(0, 255, 128,0.6)',
+              'rgba(0, 191, 255,0.6)',
+              'rgba(0, 64, 255,0.6)',
+              'rgba(191, 0, 255,0.6)',
+              'rgba(255, 0, 64,0.6)'
+            ],
+            borderColor: [
+              'rgba(128, 255, 0,1)',
+              'rgba(0, 255, 128,1)',
+              'rgba(0, 191, 255,1)',
+              'rgba(0, 64, 255,1)',
+              'rgba(191, 0, 255,1)',
+              'rgba(255, 0, 64,1)'
+            ]
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          title: {
+            display:true,
+            fontSize:15,
+            fontColor:'#000',
+            text:"Age (months)"
+          },
+          legend:{
+            display:false,
+            position:'bottom',
+            labels: {
+              boxWidth:10
+            }
+
+          },
+          scales: {}
+        }
+      }); /* close age chart instantiation */
+    }); /* close AJAX call to graph_data_age endpoint */
+
+
+  } /* close 'if (window.location.pathname === "/home/strain") {} block */
+}); /* close 'on turbolinks:load' function */
 /* clicking on the checkbox in the restore column of the removed mice table activates this function. First, the checkbox becomes disabled. Then specific values are taken from the table row. Finally an AJAX call
 is made to the controller method, which will move a mouse back into its cage. */
 function restoreMouse(obj) {

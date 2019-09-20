@@ -314,6 +314,27 @@ class HomeController < ApplicationController
         end
     end
 
+    def graph_data_sex
+        strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
+        strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
+        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["", nil])
+        render :json => { :numbers => [@mice.where(sex:1).count, @mice.where(sex:2).count], :status => :ok }
+    end
+
+    def graph_data_age
+        strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
+        strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
+        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["", nil])
+        render :json => { :numbers => [
+                @mice.where(["dob > ?", 4.months.ago]).where(["dob <= ?", Date.today]).count,
+                @mice.where(["dob > ?", 8.months.ago]).where(["dob <= ?", 4.months.ago]).count,
+                @mice.where(["dob > ?", 12.months.ago]).where(["dob <= ?", 8.month.ago]).count, 
+                @mice.where(["dob > ?", 16.months.ago]).where(["dob <= ?", 12.months.ago]).count,
+                @mice.where(["dob > ?", 20.months.ago]).where(["dob <= ?", 16.months.ago]).count,
+                @mice.where(["dob < ?", 20.months.ago]).count], 
+            :status => :ok }
+    end
+
     private
 
     def singleCageParams
@@ -347,4 +368,7 @@ class HomeController < ApplicationController
         params.permit(:mouse, :cage, :removed, :sex, :strain)
     end
 
+    def graphDataParams
+        params.permit(:strain)
+    end
 end
