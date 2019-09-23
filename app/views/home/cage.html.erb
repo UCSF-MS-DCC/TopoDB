@@ -5,13 +5,10 @@
             <%= image_tag("lab-mouse-vector", :style => "margin-top:5%;") %>
         </div>
     <% else %>
-        <div class="row justify-content-md-center" style="margin-top:20px;">
-            <div class='col-9' style="padding-left:20px;">
-                <h1>Cage <%= @cage.cage_number %></h1>
-            </div>
-        </div>
+
         <div class="row justify-content-md-center">
-            <div class="col-9" style="padding-left:25px;">
+            <div class="col-5" style="padding-left:25px;margin-top:25px;">
+                <h1>Cage <%= @cage.cage_number %></h1>
                 <table>
                     <tr>
                         <th>Strain:</th>
@@ -45,9 +42,12 @@
                     </tr>
                 </table>
             </div>
+            <div class="col-7" style="margin-top:25px;">
+                <div id="cage-timeline"></div>
+            </div>
         </div>
  
-        <div class="row justify-content-md-center hide-on-print" style="margin-top:20px;">
+        <div class="row hide-on-print" style="margin-top:20px;">
             <div class="col-11">
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
                 <% if @cage.cage_type == "breeding" %>

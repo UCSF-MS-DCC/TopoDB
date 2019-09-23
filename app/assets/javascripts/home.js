@@ -217,11 +217,28 @@ $(document).on('turbolinks:load',function() {
       }); /* close age chart instantiation */
     }); /* close AJAX call to graph_data_age endpoint */
 
-
   } /* close 'if (window.location.pathname === "/home/strain") {} block */
+  if (window.location.pathname === "/home/cage") {
+    milestones('#cage-timeline')
+    .mapping({
+      'timestamp': 'second',
+      'text': 'title'
+    })
+    .parseTime('%s')
+    .aggregateBy('second')
+    .labelFormat('%Y-%m-%d')
+    .render([
+      { 'second': 1562955258, title: 'Cage created.' },
+      { 'second': 1563128058, title: 'Mouse M104L added.' },
+      { 'second': 1563646458, title: 'Mouse F105RL added.' },
+      { 'second': 1567707258, title: 'Pups born.' },
+      { 'second': 1568809802, title: 'Pups transfered to cage 199999' }
+    ]);
+  } /* close 'if (window.location.pathname === "/home/cage") {} block */
 }); /* close 'on turbolinks:load' function */
+
 /* clicking on the checkbox in the restore column of the removed mice table activates this function. First, the checkbox becomes disabled. Then specific values are taken from the table row. Finally an AJAX call
-is made to the controller method, which will move a mouse back into its cage. */
+is made to the controller method, which will set the 'removed' column to nil, "restoring" the mouse to the world of the living. */
 function restoreMouse(obj) {
   if (obj.checked === true) {
     $(obj).prop("disabled", true); 

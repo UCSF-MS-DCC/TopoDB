@@ -23,4 +23,5 @@
 //= require bootstrap-sprockets
 //= require gritter
 //= require Chart.min
+//= require d3
 //= require_tree .
