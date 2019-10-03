@@ -42,7 +42,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-7" style="margin-top:25px;">
+            <div class="col-7 hide-on-print" style="margin-top:25px;">
                 <div id="cage-timeline"></div>
             </div>
         </div>
@@ -123,7 +123,7 @@
                                     <%= m.dob %>
                                 </td>
                                 <td id="tail-cut-cell-<%= m.id %>" >
-                                    <span class="hidden green-check">&#10003;</span><%= best_in_place m, :tail_cut_date, :as => :input, :html_attrs => { :size => "12" }, 
+                                    <span class="hidden green-check">&#10003;</span><%= best_in_place m, :tail_cut_date, :as => :date, :html_attrs => { :size => "12" }, 
                                     :url => home_update_tail_cut_date_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}", :activator => "#tail-cut-cell-#{m.id }" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
@@ -145,7 +145,7 @@
                                 </td>
                                 <td id="removed-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :removed, :as => :input, :html_attrs => { :size => "12" }, :placeholder => "YYYY-MM-DD", :url => home_remove_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#removed-#{m.id}" %>
+                                    <%= best_in_place m, :removed, :as => :date, :html_attrs => { :size => "12" }, :placeholder => "YYYY-MM-DD", :url => home_remove_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#removed-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <td id="removed-for-<%= m.id %>">

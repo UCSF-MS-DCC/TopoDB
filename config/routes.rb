@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     post 'restore_mouse'
     get 'graph_data_sex'
     get 'graph_data_age'
+    get 'cage_timeline_dates'
   end
 
   namespace :archive do

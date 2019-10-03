@@ -55,7 +55,7 @@ module HomeHelper
 
     def log_update_mouse(mouse, updateParams, user)
         # for genotypes, ear punches,and sexes subtract 1 from the number passed as a parameter value to get the corresponding array index 
-        gt = ["n/a", "+/+" , "+/-", "-/+" ,"-/-"]
+        gt = ["n/a", "+/+" , "+/-" ,"-/-"]
         ep = ["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"]
         sx = ["F", "M"]
         puts updateParams
@@ -93,6 +93,7 @@ module HomeHelper
         end
     end
     def validate_date(input)
+        puts "VALIDATE DATE INPUT: #{input}"
         /\d{4}\-\d{2}-\d{2}/.match(input) || input == nil
     end
 

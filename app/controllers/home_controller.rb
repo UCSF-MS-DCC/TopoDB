@@ -119,7 +119,7 @@ class HomeController < ApplicationController
                     tdc = val.scan(/\d+/)
                     @mouse.update_attributes(three_digit_code:tdc.first, designation:val, tdc_generated:Time.now)
                     format.html
-                    format.json { render :json => { :message => "Mouse updated" }, :status => :ok }
+                    format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
                 else
                     format.html
                     format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
@@ -127,7 +127,7 @@ class HomeController < ApplicationController
             elsif @mouse.update_attributes(key.to_sym => val)         
                 log_update_mouse(@mouse, log_params, current_user)
                 format.html
-                format.json { render :json => { :message => "Mouse updated" }, :status => :ok }
+                format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
             else
                 format.html
                 format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
@@ -140,14 +140,15 @@ class HomeController < ApplicationController
         mouse_id = mouse.split("-").second
         key = params[mouse].keys.first
         val = params[mouse][key.to_sym]
+        date_val = Date.strptime(val,'%m/%d/%Y').to_s
         @mouse = Mouse.find(mouse_id)
         cage_number = @mouse.cage.cage_number
         old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
         log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
 
         respond_to do |format|
-            if validate_date(val)
-                @mouse.update_attributes(key.to_sym => val)  
+            if validate_date(date_val)
+                @mouse.update_attributes(key.to_sym => date_val)  
                 log_remove_mouse(cage_number, @mouse.id, current_user)
                 format.html
                 format.json { render :json => { :message => "Mouse removed" }, :status => :ok }
@@ -163,13 +164,14 @@ class HomeController < ApplicationController
         mouse_id = mouse.split("-").second
         key = params[mouse].keys.first
         val = params[mouse][key.to_sym]
+        date_val = Date.strptime(val, "%m/%d/%Y").to_s
         @mouse = Mouse.find(mouse_id)
         old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
-        log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
+        log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => date_val } }
 
         respond_to do |format|
-            if validate_date(val)
-                @mouse.update_attributes(key.to_sym => val)
+            if validate_date(date_val)
+                @mouse.update_attributes(key.to_sym => date_val)
                 log_update_mouse(@mouse, log_params, current_user)
                 format.html
                 format.json { render :json => { :message => "Mouse updated" }, :status => :ok }
@@ -215,6 +217,7 @@ class HomeController < ApplicationController
     end
 
     def new_pups # will need to refactor to fail the whole process if any pup is not added.
+        puts params
         cage_id = params[:cage].to_i
         @cage = Cage.find(cage_id)
         strain = @cage.strain
@@ -335,6 +338,19 @@ class HomeController < ApplicationController
             :status => :ok }
     end
 
+    def cage_timeline_dates
+        puts cageTimelineParams[:cage]
+        @cage = Cage.find_by(cage_number:cageTimelineParams[:cage])
+        @archives = Archive.where(cage:cageTimelineParams[:cage]).where(acttype:["New Cage","New Pups"]).order(:created_at)
+        if @cage.cage_type == "single-m" || @cage.cage_type == "single-f"
+            @archives = Archive.where(cage: cageTimelineParams[:cage]).where(acttype:["New Cage", "New Pups"]).or(Archive.where(acttype:"Xfer Mouse").where(newval:cageTimelineParams[:cage])).order(:created_at)
+        end 
+        timeline = @archives.map{ |a| a.acttype == "Xfer Mouse" ? {"second": a.created_at.to_time.to_i,"title":"#{a.acttype} from cage #{a.priorval}"} : {"second": a.created_at.to_time.to_i,"title":a.acttype} }
+        puts timeline
+        render :json => { :timepoints => timeline }
+
+    end
+
     private
 
     def singleCageParams
@@ -370,5 +386,9 @@ class HomeController < ApplicationController
 
     def graphDataParams
         params.permit(:strain)
+    end
+
+    def cageTimelineParams
+        params.permit(:cage)
     end
 end
