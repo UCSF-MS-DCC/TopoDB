@@ -33,10 +33,10 @@ end
         ep2 = Faker::Number.within(range: 2..10)
         types = %w(N R L RR RL RR RRL RLL RRLL)
         dbs = [Faker::Date.between(from: 1.year.ago, to: 6.months.ago), Faker::Date.between(from: 1.year.ago, to: 6.months.ago)]
-        mouse1 = Mouse.new(:cage_id => cage.id, :sex => 2, :genotype => Faker::Number.within(range: 2..5), :dob => dbs[0] , :weaning_date => dbs[0] + 21, :three_digit_code => dgn,
+        mouse1 = Mouse.new(:cage_id => cage.id, :sex => 2, :genotype => Faker::Number.within(range: 2..4), :dob => dbs[0] , :weaning_date => dbs[0] + 21, :three_digit_code => dgn,
                  :tail_cut_date => dbs[0] + 12, :ear_punch => ep1 , :designation => "M#{dgn}#{types[ep1 - 2]}", :tdc_generated => Time.now, :strain => cage.strain, :removed => nil ).save
         dgn += 1
-        mouse2 = Mouse.new(:cage_id => cage.id, :sex => 1, :genotype => Faker::Number.within(range: 2..5), :dob => dbs[1] , :weaning_date => dbs[1] + 21, :three_digit_code => dgn,
+        mouse2 = Mouse.new(:cage_id => cage.id, :sex => 1, :genotype => Faker::Number.within(range: 2..4), :dob => dbs[1] , :weaning_date => dbs[1] + 21, :three_digit_code => dgn,
                  :tail_cut_date => dbs[1] + 12, :ear_punch => ep2, :designation => "F#{dgn}#{types[ep2 - 2]}", :tdc_generated => Time.now, :strain => cage.strain, :removed => nil ).save
         dgn += 1
     end
@@ -56,10 +56,10 @@ end
         ep2 = Faker::Number.within(range: 2..10)
         types = %w(N R L RR RL RR RRL RLL RRLL)
         dbs = [Faker::Date.between(from: 1.year.ago, to: 6.months.ago), Faker::Date.between(from: 1.year.ago, to: 6.months.ago)]
-        mouse1 = Mouse.new(:cage_id => cage.id, :sex => 2, :genotype => Faker::Number.within(range: 2..5), :genotype2 => Faker::Number.within(range: 2..5), :dob => dbs[0] , :weaning_date => dbs[0] + 21, :three_digit_code => dgn,
+        mouse1 = Mouse.new(:cage_id => cage.id, :sex => 2, :genotype => Faker::Number.within(range: 2..4), :genotype2 => Faker::Number.within(range: 2..4), :dob => dbs[0] , :weaning_date => dbs[0] + 21, :three_digit_code => dgn,
                  :tail_cut_date => dbs[0] + 12, :ear_punch => ep1 , :designation => "M#{dgn}#{types[ep1 - 2]}", :tdc_generated => Time.now, :strain => st1, :strain2 => st2, :removed => nil ).save
         dgn += 1
-        mouse2 = Mouse.new(:cage_id => cage.id, :sex => 1, :genotype => Faker::Number.within(range: 2..5), :genotype2 => Faker::Number.within(range: 2..5), :dob => dbs[1] , :weaning_date => dbs[1] + 21, :three_digit_code => dgn,
+        mouse2 = Mouse.new(:cage_id => cage.id, :sex => 1, :genotype => Faker::Number.within(range: 2..4), :genotype2 => Faker::Number.within(range: 2..4), :dob => dbs[1] , :weaning_date => dbs[1] + 21, :three_digit_code => dgn,
                  :tail_cut_date => dbs[1] + 12, :ear_punch => ep2, :designation => "F#{dgn}#{types[ep2 - 2]}", :tdc_generated => Time.now, :strain => st1, :strain2 => st2, :removed => nil ).save
         dgn += 1
     end

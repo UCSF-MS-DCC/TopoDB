@@ -19,8 +19,8 @@ module HomeHelper
         end
     end
 
-    def log_new_pups(cage, number_and_sex, user)
-        @archive = Archive.new(cage:cage, acttype:"New Pups", newval:number_and_sex, who:user.id)
+    def log_new_pups(cage, number, user)
+        @archive = Archive.new(cage:cage, acttype:"New Pups", newval:number, who:user.id)
         if @archive.save
            # puts "Archive created"
         else

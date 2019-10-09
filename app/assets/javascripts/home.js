@@ -146,7 +146,7 @@ $(document).on('turbolinks:load',function() {
             display:true,
             fontSize:15,
             fontColor:'#000',
-            text:"Sex"
+            text:"Sex (excluding breeding cages)"
           },
           legend:{
             position:'bottom',

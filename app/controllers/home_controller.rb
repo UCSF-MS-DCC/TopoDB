@@ -35,7 +35,7 @@ class HomeController < ApplicationController
             gflash :warning => "Cage ##{singleCageParams[:cage_number]} is no longer in use."
             redirect_to root_path
         else
-            @gts = %w(\  n/a +/+ +/- -/+ -/-)
+            @gts = %w(\  n/a +/+ +/- -/-)
             @mice = @cage.mice.where(removed:nil)
             @can_update_remove = @mice.count == 0 ? false : true
             @can_add_pups = @cage.cage_type != 'breeding' ? true : false
@@ -222,30 +222,18 @@ class HomeController < ApplicationController
         @cage = Cage.find(cage_id)
         strain = @cage.strain
         strain2 = @cage.strain2
-        successful_saves_m = 0
-        successful_saves_f = 0
+        successful_saves = 0
         error_messages = []
-        params[:female_pups].to_i.times.each do |p|
-           @m = Mouse.new(sex:1, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
+        params[:pups].to_i.times.each do |p|
+           @m = Mouse.new(sex:nil, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
             if @m.save
-                successful_saves_f += 1
+                successful_saves += 1
             else
                 error_messages.push(@m.errors.full_messages)
             end
         end
-        if successful_saves_f > 0
-            log_new_pups(@cage.cage_number, "#{successful_saves_f} female", current_user)
-        end
-        params[:male_pups].to_i.times.each do |p|
-            @m = Mouse.new(sex:2, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
-            if @m.save
-                successful_saves_m += 1
-            else
-                error_messages.push(@m.errors.full_messages)
-            end
-        end
-        if successful_saves_m > 0
-            log_new_pups(@cage.cage_number, "#{successful_saves_m} male", current_user)
+        if successful_saves > 0
+            log_new_pups(@cage.cage_number, "#{successful_saves} pups", current_user)
         end
         if error_messages.count > 0
             gflash :error => "There was a problem adding new pups to Cage ##{Cage.find(cage_id).cage_number}. Contact an administrator for assistance."
@@ -320,7 +308,8 @@ class HomeController < ApplicationController
     def graph_data_sex
         strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
         strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
-        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["", nil])
+        single_sex_cage_ids = Cage.where(cage_type:["single-m","single-f"]).pluck(:id)
+        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["", nil]).where(cage_id:single_sex_cage_ids)
         render :json => { :numbers => [@mice.where(sex:1).count, @mice.where(sex:2).count], :status => :ok }
     end
 
@@ -339,14 +328,12 @@ class HomeController < ApplicationController
     end
 
     def cage_timeline_dates
-        puts cageTimelineParams[:cage]
         @cage = Cage.find_by(cage_number:cageTimelineParams[:cage])
         @archives = Archive.where(cage:cageTimelineParams[:cage]).where(acttype:["New Cage","New Pups"]).order(:created_at)
         if @cage.cage_type == "single-m" || @cage.cage_type == "single-f"
             @archives = Archive.where(cage: cageTimelineParams[:cage]).where(acttype:["New Cage", "New Pups"]).or(Archive.where(acttype:"Xfer Mouse").where(newval:cageTimelineParams[:cage])).order(:created_at)
         end 
         timeline = @archives.map{ |a| a.acttype == "Xfer Mouse" ? {"second": a.created_at.to_time.to_i,"title":"#{a.acttype} from cage #{a.priorval}"} : {"second": a.created_at.to_time.to_i,"title":a.acttype} }
-        puts timeline
         render :json => { :timepoints => timeline }
 
     end
@@ -377,7 +364,7 @@ class HomeController < ApplicationController
     end
 
     def newPupsParams 
-        params.permit(:female_pups, :male_pups, :birthdate)
+        params.permit(:pups, :birthdate)
     end
 
     def restoreMouseParams
