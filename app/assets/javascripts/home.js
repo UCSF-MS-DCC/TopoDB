@@ -2,59 +2,6 @@
 // # All this logic will automatically be available in application.js.
 // # You can use CoffeeScript in this file: http://coffeescript.org/
 $(document).on('turbolinks:load',function() {
-    // $('#sandler-cages-datatable').dataTable({
-    //   "processing": true,
-    //   "serverSide": true,
-    //   "ajax": {
-    //     "url": $('#cages-datatable').data('source'),
-    //     "data": {"location":"sandler"}
-    //   },
-    //   "pagingType": "full_numbers",
-    //   "columns": [
-    //     {"data": "cage_number"},
-    //     {"data": "strain"},
-    //     {"data": "genotype"},
-    //     {"data": "cage_type"}
-    //   ]
-    //   // pagingType is optional, if you want full pagination controls.
-    //   // Check dataTables documentation to learn more about
-    //   // available options.
-    // });
-    // $('#genentech-cages-datatable').dataTable({
-    //   "processing": true,
-    //   "serverSide": true,
-    //   "ajax": {
-    //     "url": $('#cages-datatable').data('source'),
-    //     "data": {"location":"genentech hall"}
-    //   },
-    //   "pagingType": "full_numbers",
-    //   "columns": [
-    //     {"data": "cage_number"},
-    //     {"data": "strain"},
-    //     {"data": "genotype"},
-    //     {"data": "cage_type"}
-    //   ]
-    //   // pagingType is optional, if you want full pagination controls.
-    //   // Check dataTables documentation to learn more about
-    //   // available options.
-    // });
-  //   $('#index-datatable').dataTable({
-  //     "processing": true,
-  //     "serverSide": true,
-  //     "ajax": {
-  //         "url": $('#index-datatable').data('source')
-  //     },
-  //     "pagingType": "full_numbers",
-  //     "columns": [
-  //         {"data": "strain"},
-  //         {"data": "cages"},
-  //         {"data": "mice"},
-  //         {"data": "last_active"}
-  //     ]
-  //     // pagingType is optional, if you want full pagination controls.
-  //     // Check dataTables documentation to learn more about
-  //     // available options.
-  // });
     $('#strain-datatable').dataTable({
         "processing": true,
         "serverSide": true,
@@ -64,7 +11,6 @@ $(document).on('turbolinks:load',function() {
         "pagingType": "full_numbers",
         "columns": [
             {"data": "cage_number"},
-            {"data": "location"},
             {"data": "cage_type"},
             {"data": "genotype"},
             {"data": "dob"},
@@ -160,61 +106,62 @@ $(document).on('turbolinks:load',function() {
     }); /* close AJAX call to graph_data_sex endpoint */
 
     $.get("/home/graph_data_age?strain="+strain, function(data){
-      var ageChart = new Chart(ctx2, {
-        type: 'bar',
-        yAxisID: "Number of mice",
-        data: {
-          labels: ["0-4", "4-8", "8-12", "12-16", "16-20", "20+"],
-          
-          datasets: [{
-            label: "Mice",
-            data: data["numbers"],
-            backgroundColor: [
-              'rgba(128, 255, 0,0.6)',
-              'rgba(0, 255, 128,0.6)',
-              'rgba(0, 191, 255,0.6)',
-              'rgba(0, 64, 255,0.6)',
-              'rgba(191, 0, 255,0.6)',
-              'rgba(255, 0, 64,0.6)'
-            ],
-            borderColor: [
-              'rgba(128, 255, 0,1)',
-              'rgba(0, 255, 128,1)',
-              'rgba(0, 191, 255,1)',
-              'rgba(0, 64, 255,1)',
-              'rgba(191, 0, 255,1)',
-              'rgba(255, 0, 64,1)'
-            ]
-          }]
-        },
-        options: {
-          responsive:true,
-          maintainAspectRatio:false,
-          title: {
-            display:true,
-            fontSize:15,
-            fontColor:'#000',
-            text:"Age (months)"
-          },
-          legend:{
-            display:false,
-            position:'bottom',
-            labels: {
-              boxWidth:10
-            }
-          },
-          scales: {
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: "Number of mice",
-                fontStyle: "bold",
-                fontSize: 16
-              }
-            }]
+      console.log(data)
+      console.log(data.data)
+      google.charts.load('current', {'packages':['treemap']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var d = google.visualization.arrayToDataTable(data.data);
+
+        var tree = new google.visualization.TreeMap(document.getElementById("age-chart"));
+        /* Each levels' tooltips will need to be customized a little to provide the proper context and values to the user */
+        /* Top level (row 0) describes the data structure */
+        /* Next level (row 1) is information on the strain and its children nodes (cage_types) */
+        /* Next level are the cage_types. ID values are 'breeding', 'single-f', 'single-m', and 'experiment' */
+        /* Next level are time frames and child nodes (cages). ID values consist of cage_type and a hyphen delimited span of months, with 'months' being the last word of the ID phrase */
+        /* Last level are cages. ID values consist of cage_number and parenthises containing the time-frame */
+        function showFullToolTip(row, size, value) {
+          // console.log(row, size, value)
+          if (!d.getValue(row,1)) {
+            return '<div style="background:#000; padding:10px; border-style:solid; color:#fff">' +
+            '<span><b>Strain: ' + d.getValue(row, 0).split(" ")[0] +'</b></span><br>'+
+            'mice: '+d.getValue(row,2)+'</div> ';
+          } else if (["single-f", "single-m"].indexOf(d.getValue(row,0)) !== -1 ) {
+            return '<div style="background:#000; padding:10px; border-style:solid; color:#fff">' +
+            '<span><b>Cage type: ' + d.getValue(row, 0).split(" ")[0] +'</b></span><br>'+
+            'mice: '+d.getValue(row,2)+'</div> ';
+          } else if (["single-f", "single-m"].indexOf(d.getValue(row,1)) !== -1 ) {
+            console.log(row, d.getValue(row,0), d.getValue(row,1), d.getValue(row,2), d.getValue(row,3))
+            var ageRange = d.getValue(row, 0).split(" ")
+            var cat = ageRange.shift();
+            var ageStr = ageRange.join(" ");
+            return '<div style="background:#000; padding:10px; border-style:solid; color:#fff">' +
+            '<span><b>Age of mice: ' + cat + ' months</b></span><br>'+
+            'mice: '+d.getValue(row,2)+'</div> ';
+          } else {
+            var cageNum = d.getValue(row, 0).split("|")[0];
+            var ageRange = d.getValue(row, 0).split(" ")
+            var cat = ageRange.shift();
+            var ageStr = ageRange.join(" ").replace("(","").replace(")","");
+            return '<div style="background:#000; padding:10px; border-style:solid; color:#fff">' +
+            '<span><b>Cage number: ' + cageNum +'</b></span><br>'+
+            'Age Range: '+ ageStr +'<br>'+
+            'Mice in age range: '+d.getValue(row,2)+'</div> ';
           }
         }
-      }); /* close age chart instantiation */
+        tree.draw(d, {
+          minColor:'#A9CCE3',
+          midColor:'#5499C7',
+          maxColor:'#2471A3',
+          headerHeight:25,
+          fontColor: 'black',
+          showScale: false,
+          maxDepth:1,
+          maxPostDepth:3,
+          generateTooltip:showFullToolTip
+        });
+
+      } /* close drawChart function definition */
     }); /* close AJAX call to graph_data_age endpoint */
 
   } /* close 'if (window.location.pathname === "/home/strain") {} block */

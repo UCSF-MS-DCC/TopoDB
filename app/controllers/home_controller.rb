@@ -316,15 +316,40 @@ class HomeController < ApplicationController
     def graph_data_age
         strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
         strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
-        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["", nil])
-        render :json => { :numbers => [
-                @mice.where(["dob > ?", 4.months.ago]).where(["dob <= ?", Date.today]).count,
-                @mice.where(["dob > ?", 8.months.ago]).where(["dob <= ?", 4.months.ago]).count,
-                @mice.where(["dob > ?", 12.months.ago]).where(["dob <= ?", 8.month.ago]).count, 
-                @mice.where(["dob > ?", 16.months.ago]).where(["dob <= ?", 12.months.ago]).count,
-                @mice.where(["dob > ?", 20.months.ago]).where(["dob <= ?", 16.months.ago]).count,
-                @mice.where(["dob < ?", 20.months.ago]).count], 
-            :status => :ok }
+
+        graph_strain = graphDataParams[:strain].include?("_") ? "#{strain}/#{strain2}" : "#{strain}"
+
+        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["",nil]).joins(:cage).where(:cages => {:cage_type => ['single-f', 'single-m'], :in_use => true}) #add filter for cage_type here
+
+        # create an empty matrix and add the category descriptors (required by the graph API) and the top-line data points in this format: [category ID, category parent, quantity of mice in the category, secondary data point]
+        array = []
+        array.push(['Container', 'Parent', 'Cage Count', 'Other Category'])
+        array.push([graphDataParams[:strain].include?("_") ? "#{strain}/#{strain2}" : "#{strain}", nil, @mice.count ,0])
+
+        cage_types = %w(single-f single-m)
+        age_ranges = [[0,3],[3,6],[6,9],[9,12],[12,15],[15,20],[20,24]]
+        cage_types.each do |c|
+            @cages = Cage.where(cage_type:c).where(strain:strain).where(strain2:strain2).where(in_use:true)
+            array.push([c,graph_strain,@mice.where(cage_id:@cages.pluck(:id)).where(removed:[nil,""]).where(["dob <= ?", Date.today]).where(["dob > ?", 24.months.ago]).count,@cages.count])
+            age_ranges.each do |r|
+                puts r[0]
+                puts r[1]
+                cage_ids = Mouse.where(["dob <= ?", r[0] == 0 ? Date.today : r[0].months.ago]).where(["dob > ?", r[1].months.ago]).where(removed:[nil,""]).joins(:cage).where(:cages => {:cage_type => c, :strain => strain, :strain2 => strain2, :in_use => true}).pluck(:cage_id).uniq
+                mice_count = Mouse.where(["dob <= ?", r[0] == 0 ? Date.today : r[0].months.ago]).where(["dob > ?", r[1].months.ago]).where(removed:[nil,""]).joins(:cage).where(:cages => {:cage_type => c, :strain => strain, :strain2 => strain2, :in_use => true}).count
+                puts "#{r}: #{c}: #{cage_ids}"
+                array.push([ "#{r[0]}-#{r[1]} months, #{c}",c,mice_count,cage_ids.count])
+                cage_ids.each do |i|
+                    suffix = "#{c == 'single-f' ? 'sf' :  c == 'single-m' ? 'sm' : 'ex'}#{r[0]}-#{r[1]}m"
+                    array.push(["#{Cage.find(i).cage_number}|#{suffix}", "#{r[0]}-#{r[1]} months, #{c}", Mouse.where(['dob <= ?', r[0] == 0 ? Date.today : r[0].months.ago]).where(['dob > ?', r[1].months.ago]).where(removed:[nil,'']).joins(:cage).where(:cages => {:id => i}).count, i ])
+
+                end
+
+            end
+        end
+
+
+        render :json => { :data => array, :status => :ok }
+
     end
 
     def cage_timeline_dates
@@ -379,3 +404,22 @@ class HomeController < ApplicationController
         params.permit(:cage)
     end
 end
+
+=begin
+algorithm for pulling and organizing mouse and cage data points for the treemap
+
+All the data points are mouse counts. The tree branches (blocks) are essentially filters
+
+The first filter is living/dead
+Second filter is matching strain
+third filter is cage type (breeding, single, experiment)
+fourth is age-range
+
+
+                                                                                                                    Living
+                                                                                                                       |
+                                                                                                                    Strain
+                                                                                                                       |
+                                        Cage-type:          breeding            single                experiment  
+
+=end

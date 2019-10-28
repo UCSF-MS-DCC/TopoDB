@@ -5,7 +5,6 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
     # or in aliased_join_table.column_name format
     @view_columns ||= {
       cage_number:            { source:"Cage.cage_number" },
-      location:               { source:"Cage.location"},
       cage_type:              { source:"Cage.cage_type" },
       genotype:               { source:"Cage.genotype" },
       dob:                    { source:"Cage.cage_number"},
@@ -20,7 +19,6 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
     records.map do |record|
       {
         cage_number:            record.decorate.link_to_cage,
-        location:               record.location.capitalize,
         cage_type:              record.cage_type,
         genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( (record.genotype2 == nil || record.genotype2 == "" || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" ),
         dob:                    record.cage_type != 'breeding' ? ( record.mice.where(removed:nil).where.not(dob:nil).count > 0 ? record.mice.where(removed:nil).where.not(dob:nil).order(dob: :asc).last[:dob].strftime("%Y-%m-%d") : "") : "",
