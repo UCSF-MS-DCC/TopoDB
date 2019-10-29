@@ -100,7 +100,7 @@
                                 <% end %>
                                 <td id="ear-punch-<%= m.id %>">
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :ear_punch, :as => :select, :collection => [[1,"-"],[2,"N"],[3,"R"],[4,"L"],[5,"RL"],[6,"RR"],[7,"LL"],[8,"RLL"],[9,"LRR"],[10,"RRLL"]], :html_attrs => { :selected => m.ear_punch }, :default => m.ear_punch, 
+                                    <%= best_in_place m, :ear_punch, :as => :select, :collection => [[1,"-"],[2,"N"],[3,"R"],[4,"L"],[5,"RR"],[6,"RL"],[7,"LL"],[8,"RRL"],[9,"RRL"],[10,"RRLL"]], :html_attrs => { :selected => m.ear_punch }, :default => m.ear_punch, 
                                     :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#ear-punch-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
