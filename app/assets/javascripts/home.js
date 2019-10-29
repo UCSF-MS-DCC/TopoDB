@@ -145,7 +145,6 @@ $(document).on('turbolinks:load',function() {
             var ageStr = ageRange.join(" ").replace("(","").replace(")","");
             return '<div style="background:#000; padding:10px; border-style:solid; color:#fff">' +
             '<span><b>Cage number: ' + cageNum +'</b></span><br>'+
-            'Age Range: '+ ageStr +'<br>'+
             'Mice in age range: '+d.getValue(row,2)+'</div> ';
           }
         }
