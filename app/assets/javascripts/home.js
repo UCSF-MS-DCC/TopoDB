@@ -117,7 +117,7 @@ $(document).on('turbolinks:load',function() {
         /* Each levels' tooltips will need to be customized a little to provide the proper context and values to the user */
         /* Top level (row 0) describes the data structure */
         /* Next level (row 1) is information on the strain and its children nodes (cage_types) */
-        /* Next level are the cage_types. ID values are 'breeding', 'single-f', 'single-m', and 'experiment' */
+        /* Next level are the cage_types. ID values are 'single-f', 'single-m' */
         /* Next level are time frames and child nodes (cages). ID values consist of cage_type and a hyphen delimited span of months, with 'months' being the last word of the ID phrase */
         /* Last level are cages. ID values consist of cage_number and parenthises containing the time-frame */
         function showFullToolTip(row, size, value) {
