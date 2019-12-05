@@ -12,14 +12,16 @@
                 <li class="nav-item">
                     <%= link_to "Strains", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
+                <% unless !current_page?(root_path)%>
+                <li class="nav-item">
+                    <button class="btn btn-outline-primary" style="margin-left:15px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+                </li>
+                <% end %>
                 <li class="nav-item">
                     <%= link_to "ChangeLog", archive_index_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <li class="nav-item">
                     <%= link_to "Removed Mice", home_removed_mouse_index_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
-                </li>
-                <li class="nav-item">
-                    <%= link_to "signed in as #{current_user.first} #{current_user.last}", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <li class="nav-item">
                     <%= link_to "Log out", destroy_user_session_path, :method => :delete, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>

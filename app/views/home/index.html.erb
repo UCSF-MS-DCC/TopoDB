@@ -60,6 +60,7 @@
         </div> -->
         <div class="row justify-content-md-center">
             <div class="col-sm-8" style="margin-top:20px;">
+            <%= render 'home/partials/new_cage_form' %>
                 <table id="index-datatable" class="table table-bordered table-striped" data-source="<%= home_index_path(format: :json) %>">
                     <thead>
                         <th>Strain</th>

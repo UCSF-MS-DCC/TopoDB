@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_28_180206) do
+ActiveRecord::Schema.define(version: 2019_12_05_191352) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "cage"
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 2019_08_28_180206) do
     t.string "first"
     t.string "last"
     t.boolean "editor", default: false
+    t.boolean "approved"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
