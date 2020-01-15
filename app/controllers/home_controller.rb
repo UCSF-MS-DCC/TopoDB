@@ -207,12 +207,10 @@ class HomeController < ApplicationController
     end
 
     def remove_mouse
-        puts "REMOVE MOUSE PARAMS: #{removeMouseParams.to_json}"
         @mouse = Mouse.find(removeMouseParams[:mouse_id])
         cage_number = @mouse.cage.cage_number
         date_val = removeMouseParams[:remove_date]
         reason_val = (["",nil].include? removeMouseParams[:remove_reason]) ? nil : removeMouseParams[:remove_reason]
-        puts "REMOVE MOUSE PARSED PARAMS: #{date_val.to_json} :: #{reason_val}"
         respond_to do |format|
             if ["", nil].include? date_val
                 gflash :error => "Mouse was not removed from cage. Removal Date is required."
@@ -346,29 +344,20 @@ class HomeController < ApplicationController
     end
 
     def restore_mouse
-        # puts "RAW PARAMS: #{params.to_json}"
-        # puts "STRONG PARAMS: #{restoreMouseParams}"
-        sx = %w(nil F M)
-        if restoreMouseParams[:mouse].size && restoreMouseParams[:mouse] != ""
-            @mouse = Mouse.find_by(designation:restoreMouseParams[:mouse], cage_id:Cage.find_by(cage_number:restoreMouseParams[:cage]).id, removed:restoreMouseParams[:removed])
-            # puts ("Found by designation, cage, removed")
-        else
-            @mice = Mouse.where(cage_id:Cage.find_by(cage_number:restoreMouseParams[:cage]).id, removed:restoreMouseParams[:removed], sex:sx.index(restoreMouseParams[:sex]))
-            if @mice.count == 1
-                @mouse = @mice.first
-                # puts "Found by cage, removed, sex"
-            else
-                # handle more than one or no mouse with those criteria(?!)
-                # puts "(#{@mice.count}) mice with same cage, removed date, and sex"
+        puts restoreMouseParams
+        if restoreMouseParams[:mouse].to_i.to_s == restoreMouseParams[:mouse]
+            begin
+                @mouse = Mouse.find(restoreMouseParams[:mouse])
+                @mouse.update_attributes(removed: nil, removed_for: nil)
+                respond_to do |format|
+                    format.html
+                    format.json { render :json => { :message => "Mouse was restored to cage #{@mouse.cage.cage_number}.", :status => :accepted } }
+                end
+            rescue ActiveRecord::RecordNotFound
+
             end
-        end
-        # puts @mouse.to_json
-        @mouse.update_attributes(removed:nil)
-        respond_to do |format|
-            if @mouse && @mouse.removed == nil
-                format.html
-                format.json { render :json => { :message => "#{@mouse.designation != nil ? @mouse.designation : "Unidentified mouse"} was restored.", :status => :accepted } }
-            else
+        else
+            respond_to do |format|
                 format.html
                 format.json { render :json => { :message => "Mouse was not restored. Please see a site administrator.", :status => :unprocessable_entity } }
             end
@@ -394,7 +383,6 @@ class HomeController < ApplicationController
         strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
         strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
         location = graphDataParams[:location]
-        puts ">>>>>>>>>>>>LOCATION: #{location}"
         graph_strain = graphDataParams[:strain].include?("_") ? "#{strain}/#{strain2}" : "#{strain}"
 
         @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["",nil]).joins(:cage).where(:cages => {:cage_type => ['single-f', 'single-m'], :in_use => true, :location => location }) #add filter for cage_type here
@@ -471,7 +459,7 @@ class HomeController < ApplicationController
     end
 
     def restoreMouseParams
-        params.permit(:mouse, :cage, :removed, :sex, :strain)
+        params.permit(:mouse)
     end
 
     def graphDataParams

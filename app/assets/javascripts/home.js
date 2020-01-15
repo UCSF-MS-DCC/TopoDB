@@ -36,21 +36,36 @@ $(document).on('turbolinks:load',function() {
       "pagingType": "full_numbers",
       "order":[[5, "desc"]],
       "columns": [
-          {"data": "cage"},
-          {"data": "designation"},
-          {"data": "strain"},
-          {"data": "sex"},
-          {"data": "genotype"},
-          {"data": "removed"},
-          {"data": "removed_for"},
-          {"data": "restore"}
+        {"data": "sex"},
+        {"data": "designation"},
+        {"data": "ear_punch"},
+        {"data": "cage"},
+        {"data": "strain"},
+        {"data": "genotype"},
+        {"data": "removed"},
+        {"data": "removed_for"},
+        {"data": "restore"},
+        {"data": "mouseid"}
       ],
+      "columnDefs": [
+        {
+          "targets": [9],
+          "visible": false,
+          "searchable": false
+        },
+        {
+          "targets": [8],
+          "render" : function( data, type, row) {
+            return "<button onClick='restoreMouse("+row['mouseid']+",this)' class='btn btn-sm btn-primary' >Restore</button>"
+          }
+        }
+      ]
       /* initComplete is a Datatables callback that fires after the table is drawn. The function below adds a checkbox to the eighth cell of each row in the table. */
-      "initComplete": function(settings, json) {
-        $('tr td:nth-child(8)').each(function(idx) {
-          $(this).append('<input type="checkbox" onChange="restoreMouse(this)">')
-        })
-      }
+      // "initComplete": function(settings, json) {
+      //   $('tr td:nth-child(9)').each(function(idx) {
+      //     $(this).append('<input type="checkbox" onChange="restoreMouse(this)">')
+      //   });
+      // }
   });
     /* Activating Best In Place */
     jQuery(".best_in_place").best_in_place();
@@ -254,23 +269,16 @@ $.datepicker.setDefaults({
 
 /* clicking on the checkbox in the restore column of the removed mice table activates this function. First, the checkbox becomes disabled. Then specific values are read from the table row. Finally an AJAX call
 is made to the controller method, which will set the 'removed' column to nil, "restoring" the mouse to the world of the living. */
-function restoreMouse(obj) {
-  if (obj.checked === true) {
-    $(obj).prop("disabled", true); 
-    var cageNumber = $(obj).parent().parent().children('td').eq(0).html();
-    var mouseID = $(obj).parent().parent().children('td').eq(1).html();
-    var strain = $(obj).parent().parent().children('td').eq(2).html();
-    var sex = $(obj).parent().parent().children('td').eq(3).html();
-    var removedDate = $(obj).parent().parent().children('td').eq(5).html();
-    $.ajax({
-      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-      type:"POST",
-      url:"/home/restore_mouse",
-      data:{"mouse":mouseID, "cage":cageNumber, "strain":strain, "removed":removedDate, "sex":sex},
-      dataType:"json",
-      success:function(reply) { alert(JSON.stringify(reply.message)); },
-      error:function(jqxhr,reply,status) { alert("Mouse was not restored, please notify a site administrator."); }
-    })
-  }
+function restoreMouse(idx, button) {
+  console.log(button)
+  $.ajax({
+    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+    type:"POST",
+    url:"/home/restore_mouse",
+    data:{"mouse":idx},
+    dataType:"json",
+    success:function(reply) { alert(JSON.stringify(reply.message)); $(button).attr("disabled",true); $(button).text("Restored"); },
+    error:function(jqxhr,reply,status) { alert("Mouse was not restored, please notify a site administrator."); }
+  });
 }
 
