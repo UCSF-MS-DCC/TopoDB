@@ -2,29 +2,29 @@
 // # All this logic will automatically be available in application.js.
 // # You can use CoffeeScript in this file: http://coffeescript.org/
 $(document).on('turbolinks:load',function() {
-    $('#strain-datatable').dataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": $('#strain-datatable').data('source')
-        },
-        "pagingType": "full_numbers",
-        "columns": [
-            {"data": "cage_number"},
-            {"data": "cage_type"},
-            {"data": "genotype"},
-            {"data": "dob"},
-            {"data": "number_mice"}
-        ],
-        "language": {
-          "paginate": {
-            "previous": "<<-",
-            "next": "->>"
+    $('.strain-datatable').each(function(idx) {
+      var url = $(this).data('source')+"&cage_type="+$(this).data('cagetype')
+      $("#"+$(this).prop("id")).dataTable({
+          "processing": true,
+          "serverSide": true,
+          "ajax": {
+              "url": url
+          },
+          "pagingType": "full_numbers",
+          "columns": [
+              {"data": "cage_number"},
+              {"data": "cage_type"},
+              {"data": "genotype"},
+              {"data": "dob"},
+              {"data": "number_mice"}
+          ],
+          "language": {
+            "paginate": {
+              "previous": "<<-",
+              "next": "->>"
+            }
           }
-        }
-        // pagingType is optional, if you want full pagination controls.
-        // Check dataTables documentation to learn more about
-        // available options.
+      })
     });
 
     $('#removed-mice-datatable').dataTable({
@@ -34,6 +34,7 @@ $(document).on('turbolinks:load',function() {
           "url": $('#removed-mice-datatable').data('source')
       },
       "pagingType": "full_numbers",
+      "order":[[5, "desc"]],
       "columns": [
           {"data": "cage"},
           {"data": "designation"},
@@ -44,15 +45,12 @@ $(document).on('turbolinks:load',function() {
           {"data": "removed_for"},
           {"data": "restore"}
       ],
-      /* initComplete is a Datatables callback that fires once the table is drawn and populated. The function below adds a checkbox to the eighth cell of each row in the table. */
+      /* initComplete is a Datatables callback that fires after the table is drawn. The function below adds a checkbox to the eighth cell of each row in the table. */
       "initComplete": function(settings, json) {
         $('tr td:nth-child(8)').each(function(idx) {
           $(this).append('<input type="checkbox" onChange="restoreMouse(this)">')
         })
       }
-      // pagingType is optional, if you want full pagination controls.
-      // Check dataTables documentation to learn more about
-      // available options.
   });
     /* Activating Best In Place */
     jQuery(".best_in_place").best_in_place();
@@ -64,9 +62,11 @@ $(document).on('turbolinks:load',function() {
   if (window.location.pathname === "/home/strain") {
     var ctx = $('#sex-chart');
     var ctx2 = $('#age-chart');
-    var strain = window.location.href.split("=")[1]
+    var qstring = window.location.href.split("?")[1]
+    var strain, location
+    qstring.split("&").forEach(function(kvpair) {if (kvpair.split("=")[0] === "location") { location = kvpair.split("=")[1] } if (kvpair.split("=")[0] === "strain") { strain = kvpair.split("=")[1] } })
 
-    $.get("/home/graph_data_sex?strain="+strain, function(data) {
+    $.get("/home/graph_data_sex?strain="+strain+"&location="+location, function(data) {
       var sexChart = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -105,9 +105,7 @@ $(document).on('turbolinks:load',function() {
       }); /* close sexChart instantiation */
     }); /* close AJAX call to graph_data_sex endpoint */
 
-    $.get("/home/graph_data_age?strain="+strain, function(data){
-      console.log(data)
-      console.log(data.data)
+    $.get("/home/graph_data_age?strain="+strain+"&location="+location, function(data){
       google.charts.load('current', {'packages':['treemap']});
       google.charts.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -131,7 +129,6 @@ $(document).on('turbolinks:load',function() {
             '<span><b>Cage type: ' + d.getValue(row, 0).split(" ")[0] +'</b></span><br>'+
             'mice: '+d.getValue(row,2)+'</div> ';
           } else if (["single-f", "single-m"].indexOf(d.getValue(row,1)) !== -1 ) {
-            console.log(row, d.getValue(row,0), d.getValue(row,1), d.getValue(row,2), d.getValue(row,3))
             var ageRange = d.getValue(row, 0).split(" ")
             var cat = ageRange.shift();
             var ageStr = ageRange.join(" ");
@@ -179,12 +176,75 @@ $(document).on('turbolinks:load',function() {
       .render(data.timepoints);
     }); /* close ajax get callback */
   } /* close 'if (window.location.pathname === "/home/cage") {} block */
+
+  /* new/edit cage forms location field input selector listeners/logic here */
+  function chooseLocationInput(buttonValue) {
+    console.log(buttonValue)
+  }
+  $(".location-select-radio").on('click', function(obj) {
+    // alert($("input[name='location-select-radio']:checked").val())
+    /* if "New", disable the select menu and focus the input box, if "Existing", enable the select, and disable the input box */
+    console.log(obj.target.value)
+    if (obj.target.value === "New") {
+      $('#cage_location').prop("disabled", true);
+      $('#location-input-text').prop("disabled", false);
+    }
+    if (obj.target.value === "Existing") {
+      $('#location-input-text').prop("disabled", true);
+      $('#cage_location').prop("disabled", false);
+    }
+   });
+
+   /* remove mouse from cage front end code here. On modal activation, there is an AJAX call to get the most up-to-date state of the mouse to be removed. Modal body is populated with returned variables.
+   A datepicker and text box allow for user input. Date is required for successful deletion of a mouse. When user clicks on the Yes, I'm sure button, another AJAX call is made to update the mouse with a removal date. */
+  $('.modal').on('show.bs.modal', function(e) {
+    var parsed = $(e.relatedTarget).data("dependencies");
+    var mouseIdx = parsed["mouseid"];
+    var mouseData;
+  
+    $.ajax({
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      type:"GET",
+      url:"/home/mouse",
+      data:{"mouse":mouseIdx},
+      dataType:"json",
+      success:function(reply) {;
+         mouseData = reply["data"];
+         $('#modal-mouse-remove-date').datepicker().datepicker("setDate", new Date());
+         $('#modal-mouse-designation').text(mouseData["three_digit_code"])
+         $('#modal-mouse-sex').text(["N/A","F", "M"][mouseData["sex"]])
+         $('#modal-mouse-cage-number').text(parsed["mousecage"])
+         $('#modal-mouse-earpunch').text(["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][mouseData["ear_punch"]-1])
+         $('#modal-mouse-dob').text(mouseData["dob"])
+        },
+      error:function(jqxhr,reply,status) { alert("Mouse data was not fetched, please notify a site administrator."); }
+    });
+    //AJAX call to remove_mouse controller method
+    $('#destroyMouseConfirm').on('click', function(){
+      var rDate = $('#modal-mouse-remove-date').val();
+      var rReason = $('#modal-mouse-remove-reason').val();
+
+      $.ajax({
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        type:"PUT",
+        url:"/home/remove_mouse",
+        data:{"mouse":{"mouse_id":mouseIdx, "remove_date":rDate, "remove_reason":rReason}},
+        dataType:"json",
+        success:function(reply) { window.location.reload(); },
+        error:function(jqxhr,reply,status) { alert("Mouse was not removed, please notify a site administrator."); }
+      })
+    })
+  });
+
 }); /* close 'on turbolinks:load' function */
 
-/* Datepicker jquery code here */
+/* Datepicker jquery initialization code here */
 $('#pups_birthdate').datepicker();
+$.datepicker.setDefaults({
+  dateFormat: 'yy-mm-dd'
+})
 
-/* clicking on the checkbox in the restore column of the removed mice table activates this function. First, the checkbox becomes disabled. Then specific values are taken from the table row. Finally an AJAX call
+/* clicking on the checkbox in the restore column of the removed mice table activates this function. First, the checkbox becomes disabled. Then specific values are read from the table row. Finally an AJAX call
 is made to the controller method, which will set the 'removed' column to nil, "restoring" the mouse to the world of the living. */
 function restoreMouse(obj) {
   if (obj.checked === true) {
@@ -204,5 +264,5 @@ function restoreMouse(obj) {
       error:function(jqxhr,reply,status) { alert("Mouse was not restored, please notify a site administrator."); }
     })
   }
-
 }
+

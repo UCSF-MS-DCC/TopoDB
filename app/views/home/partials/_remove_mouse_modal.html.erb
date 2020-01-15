@@ -1,0 +1,73 @@
+<div class="modal" id="removeMouseModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Remove this mouse from cage <span id="modal-mouse-cage-number"></span>?</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>Sex:</h6>
+            </div>
+            <div class="col-sm-8">
+                <span id="modal-mouse-sex"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <h6 id="">ID:</h6>
+            </div>
+            <div class="col-sm-8">
+                <span id="modal-mouse-designation"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>Ear punch:</h6>
+            </div>
+            <div class="col-sm-8">
+                <span id="modal-mouse-earpunch"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>Date of birth:</h6>
+            </div>
+            <div class="col-sm-8">
+                <span id="modal-mouse-dob"></span>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>Remove date:</h6>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" id="modal-mouse-remove-date">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>Reason for removal:</h6>
+            </div>
+            <div class="col-sm-8">
+                <input type="text" id="modal-mouse-remove-reason">
+            </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-success float-left" id="destroyMouseConfirm">Yes, I'm sure</button>
+        <button class="btn btn-sm btn-danger float-right" id="destroyMouseStop" data-dismiss="modal">No, I changed my mind</button>
+      </div>
+
+    </div>
+  </div>
+</div>

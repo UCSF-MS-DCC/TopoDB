@@ -1,0 +1,4 @@
+<div class="row">
+    <span style="font-size:14px;padding-left:25px;padding-top:15px;"><%= link_to "home", root_path %> >>> location: <%= link_to @location, home_main_path(:location => @location) %>
+     >>> strain: <%= link_to ( (/_/.match(@strain) != nil) ? @strain.sub!("_", "/") : @strain ) , home_strain_path(:location => @location, :strain => @strain) %></span>
+</div>

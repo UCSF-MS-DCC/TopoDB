@@ -16,27 +16,37 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
 
   def data
     gts = %w(\  n/a +/+ +/- -/-)
+    @dob_val = nil
     records.map do |record|
+      if record.cage_type == "breeding"
+        @dob_val = record.mice.where(removed:nil).where(sex:2).where(["dob < ?", Date.today - 21 ]).count > 0 ? "M: #{record.mice.where(removed:nil).where(sex:2).where(["dob < ?", Date.today - 21 ]).first.dob.strftime("%m-%d-%Y")}" : ""
+        if record.mice.where(removed:nil).where(sex:1).where(["dob < ?", Date.today - 21 ]).size == 1
+          @dob_val += ", F: #{record.mice.where(removed:[nil,""]).where(sex:1).where(["dob < ?", Date.today - 21 ]).first.dob.strftime("%m-%d-%Y")}"
+        elsif record.mice.where(removed:nil).where(sex:1).where(["dob < ?", Date.today - 21 ]).size >= 2
+          @dob_val += ", F1: #{record.mice.where(removed:[nil,""]).where(sex:1).where(["dob < ?", Date.today - 21 ]).first.dob.strftime("%m-%d-%Y")}, F2: #{record.mice.where(removed:[nil,""]).where(sex:1).where(["dob < ?", Date.today - 21 ]).second.dob.strftime("%m-%d-%Y")}"
+        end
+      elsif record.cage_type == "single-f" || record.cage_type == "single-m"
+        @dob_val = record.mice.where(removed:nil).pluck(:dob).uniq.join(", ")
+      else
+        "-"
+      end
+      puts "DOB_VAL: #{@dob_val}"
       {
         cage_number:            record.decorate.link_to_cage,
         cage_type:              record.cage_type,
         genotype:               (record.genotype == nil || record.genotype == "" || record.genotype == "0") ? "" : ( (record.genotype2 == nil || record.genotype2 == "" || record.genotype2 == "0") ? gts[record.genotype.to_i] : "#{gts[record.genotype.to_i]} | #{gts[record.genotype2.to_i]}" ),
-        dob:                    record.cage_type != 'breeding' ? ( record.mice.where(removed:nil).where.not(dob:nil).count > 0 ? record.mice.where(removed:nil).where.not(dob:nil).order(dob: :asc).last[:dob].strftime("%Y-%m-%d") : "") : "",
-        number_mice:            record.cage_type != 'breeding' ? record.mice.where(removed:nil).count : ""
-        # example:
-        # id: record.id,
-        # name: record.name
+        dob:                    @dob_val,
+        number_mice:            record.cage_type != 'breeding' ? record.mice.where(removed:nil).count : record.mice.where(removed:nil).where(["dob >= ?", Date.today - 21]).count
       }
     end
   end
 
   def get_raw_records
-    
     records = nil
     if options[:strain2] && ![nil, ""].include?(options[:strain2]) 
-      records = Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(in_use:true)
+      records = Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(location:options[:location]).where(["cage_type LIKE ? ","%#{options[:cage_type]}%"]).where(in_use:true)
     else
-      records = Cage.where(strain:options[:strain]).where(strain2:[nil, ""]).where(in_use:true)
+      records = Cage.where(strain:options[:strain]).where(strain2:[nil, ""]).where(location:options[:location]).where(["cage_type LIKE ? ","%#{options[:cage_type]}%"]).where(in_use:true)
     end
     records
     # insert query here
@@ -46,7 +56,8 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
 end
 class CageDecorator < ApplicationDecorator
   def link_to_cage
-    h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number)
+    h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number, :location => object.location)
   end
 
 end
+#record.mice.where(removed:nil).where(sex:1).where(["dob < ?", Date.today - 21 ]).second.dob.strftime("%m-%d-%Y") : "n/a"

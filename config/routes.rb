@@ -6,8 +6,11 @@ Rails.application.routes.draw do
 
   namespace :home do
     get 'index'
+    get 'main'
     get 'cage'
+    get 'mouse'
     get 'strain'
+    get 'strain_table'
     post 'create_cage'
     patch 'update_cage'
     put 'update_mouse'

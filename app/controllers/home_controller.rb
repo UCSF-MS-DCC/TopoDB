@@ -1,9 +1,20 @@
 class HomeController < ApplicationController
     include HomeHelper
+
+    before_action :authenticate_user!
     def index 
+        @locations = Cage.where(in_use:true).pluck(:location).uniq
+    end
+
+    def main 
+        puts "LOCATION: #{params[:location]}"
+        @location = params[:location]
         @new_cage = Cage.new
-        @strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
-        @hybrids = Cage.where(in_use:true).where.not(strain2:[nil,""]).map { |cage| "#{cage.strain}/#{cage.strain2}" }.uniq
+        @loc_strains = Cage.where(in_use:true).where(strain2:["",nil]).where(location:@location).pluck(:strain).uniq
+        @loc_hybrids = Cage.where(in_use:true).where.not(strain2:[nil,""]).where(location:@location).map { |cage| "#{cage.strain}/#{cage.strain2}" }.uniq
+        @all_locations = Cage.pluck(:location).uniq
+        @all_strains = Cage.pluck(:strain).uniq
+        @locations = Cage.pluck(:location).uniq
     end
 
     def create_cage
@@ -14,21 +25,26 @@ class HomeController < ApplicationController
         end
         createParams[:genotype] = gts.find_index(createCageParams[:genotype])
         createParams[:genotype2] = gts.find_index(createCageParams[:genotype2])
+        location = createCageParams[:location]
 
         @newCage = Cage.new(createParams)
         strainpath = (createParams[:strain2] == nil || createParams[:strain2] == "") ? createParams[:strain] : "#{createParams[:strain]}_#{createParams[:strain2]}"
         if @newCage.save 
             log_new_cage(@newCage, current_user)
             gflash :success => "New cage #{@newCage.cage_number} successfully created"
-            redirect_to home_strain_path(:strain => strainpath) 
+            redirect_to home_strain_path(:strain => strainpath, :location => location) 
         else
-            gflash :error =>  "Something went wrong #{@newCage.errors.full_messages}"
-            redirect_to root_path
+            gflash :error =>  "New cage was not saved #{@newCage.errors.full_messages}"
+            redirect_to home_strain_path(:strain => strainpath, :location => location)
         end
     end
 
     def cage 
         @cage = Cage.find_by(cage_number:singleCageParams[:cage_number])
+        @strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
+        @strain = (["",nil].include? @cage.strain2) ? @cage.strain : "#{@cage.strain}_#{@cage.strain2}"
+        @locations = Cage.pluck(:location).uniq
+        @location = singleCageParams[:location]
         if @cage == nil
             redirect_to :controller => "error", :action => "error_404"
         elsif @cage.in_use == false
@@ -37,6 +53,9 @@ class HomeController < ApplicationController
         else
             @gts = %w(\  n/a +/+ +/- -/-)
             @mice = @cage.mice.where(removed:nil)
+            @mice.each do |mouse|
+                mouse[:parent_cage_id] = ( [nil,"",0].include? mouse[:parent_cage_id] ) ? "n/a" : Cage.find(mouse.parent_cage_id.to_i).cage_number 
+            end
             @can_update_remove = @mice.count == 0 ? false : true
             @can_add_pups = @cage.cage_type != 'breeding' ? true : false
             @target_cages = Cage.where(strain:@cage.strain)
@@ -47,6 +66,10 @@ class HomeController < ApplicationController
     def strain
         @strain = singleStrainParams[:strain]
         @strain2 = nil
+        @all_strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
+        @all_locations = Cage.pluck(:location).uniq
+        @loc = params[:location]
+        @type = params[:cage_type]
         if singleStrainParams[:strain].include?("_")
             @strain = singleStrainParams[:strain].split("_")[0]
             @strain2 = singleStrainParams[:strain].split("_")[1]
@@ -58,7 +81,27 @@ class HomeController < ApplicationController
         @new_cage = Cage.new
         respond_to do |format|
             format.html 
-            format.json { render json: StrainDatatable.new(params, strain: @strain, strain2: @strain2)}
+        end
+    end
+
+    def strain_table
+        @strain = singleStrainParams[:strain]
+        @strain2 = nil
+        @all_strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
+        @all_locations = Cage.pluck(:location).uniq
+        @loc = params[:location]
+        @type = params[:cage_type]
+        if singleStrainParams[:strain].include?("_")
+            @strain = singleStrainParams[:strain].split("_")[0]
+            @strain2 = singleStrainParams[:strain].split("_")[1]
+        elsif 
+            singleStrainParams[:strain2] != nil
+            @strain2 = singleStrainParams[:strain2]
+        else
+        end
+        respond_to do |format|
+            format.html 
+            format.json { render json: StrainDatatable.new(params, strain: @strain, strain2: @strain2, location: @loc, cage_type:@type) }
         end
     end
 
@@ -71,6 +114,7 @@ class HomeController < ApplicationController
         index_fields = %w(genotype genotype2)
         bool_fields = %w(in_use cage_number_changed)
         updateParams = updateCageParams
+        @location = (["",nil].include? updateParams[:location]) ? nil : updateParams[:location]
         updateParams.each do |k, v| 
             if bool_fields.include?(k)
                 updateParams[k.to_sym] = ActiveModel::Type::Boolean.new.cast(v)
@@ -96,7 +140,7 @@ class HomeController < ApplicationController
                 redirect_to root_path
             else
                 gflash :success => "Cage #{@c.cage_number} was successfully updated."
-                redirect_to home_cage_path(:cage_number => @c.cage_number)
+                redirect_to home_cage_path(:cage_number => @c.cage_number, :location => @location)
             end
         else
             gflash :error => "Cage #{cage_no} failed to update.#{@c.errors.full_messages}"
@@ -105,57 +149,91 @@ class HomeController < ApplicationController
     end
 
     def update_mouse
-        mouse = params.keys.select{ |k| k.include?("mouse-") }.first
-        mouse_id = mouse.split("-").second
-        key = params[mouse].keys.first
-        val = params[mouse][key.to_sym]
-        @mouse = Mouse.find(mouse_id)
-        old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
-        log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
-
-        respond_to do |format| 
-            if key == "designation"
-                if tdc_is_valid?(@mouse, val)
-                    tdc = val.scan(/\d+/)
-                    @mouse.update_attributes(three_digit_code:tdc.first, designation:val, tdc_generated:Time.now)
+        if params[:removed]
+            # Removing a mouse UX has been shifted to a modal, requiring some modification of the controller method. Forking the flow based on the presence of the "removed" parameter.
+            @mouse = Mouse.find(params[:mouse][:id])
+            cage_number = params[:cage]
+            if @mouse
+                @mouse.update_attributes(removed:params[:removed], removed_for:params[:removed_for])
+                log_remove_mouse(cage_number, @mouse_id, current_user)
+                gflash :success => "Mouse was deleted."
+                redirect_to home_cage_path(:cage_number => params[:cage])
+            else
+                gflash :error => "Mouse was not deleted. #{@mouse.errors.full_messages}"
+                redirect_to home_cage_path(:cage_number => params[:cage])
+            end
+        else
+            # For all other updating of the cage's mouse attributes
+            mouse = params.keys.select{ |k| k.include?("mouse-") }.first
+            mouse_id = mouse.split("-").second
+            key = params[mouse].keys.first
+            val = params[mouse][key.to_sym]
+            @mouse = Mouse.find(mouse_id)
+            old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
+            log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
+            
+            respond_to do |format| 
+                if key == "designation"
+                    if tdc_is_valid?(@mouse, val)
+                        tdc = val.scan(/\d+/)
+                        @mouse.update_attributes(three_digit_code:tdc.first, designation:val, tdc_generated:Time.now)
+                        format.html
+                        format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
+                    else
+                        format.html
+                        format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
+                    end
+                elsif key == "parent_cage_id"
+                    cage_id = Cage.find_by(cage_number:val).id
+                    if cage_id
+                        @mouse.update_attributes(parent_cage_id:cage_id)
+                        log_update_mouse(@mouse, log_params, current_user)
+                        format.html
+                        format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
+                    else
+                        format.html
+                        format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
+                    end
+                elsif @mouse.update_attributes(key.to_sym => val)         
+                    log_update_mouse(@mouse, log_params, current_user)
                     format.html
                     format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
                 else
                     format.html
                     format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
                 end
-            elsif @mouse.update_attributes(key.to_sym => val)         
-                log_update_mouse(@mouse, log_params, current_user)
-                format.html
-                format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
-            else
-                format.html
-                format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
             end
         end
     end
 
     def remove_mouse
-        mouse = params.keys.select{ |k| k.include?("mouse-") }.first
-        mouse_id = mouse.split("-").second
-        key = params[mouse].keys.first
-        val = params[mouse][key.to_sym]
-        date_val = Date.strptime(val,'%m/%d/%Y').to_s
-        @mouse = Mouse.find(mouse_id)
+        puts "REMOVE MOUSE PARAMS: #{removeMouseParams.to_json}"
+        @mouse = Mouse.find(removeMouseParams[:mouse_id])
         cage_number = @mouse.cage.cage_number
-        old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
-        log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
-
+        date_val = removeMouseParams[:remove_date]
+        reason_val = (["",nil].include? removeMouseParams[:remove_reason]) ? nil : removeMouseParams[:remove_reason]
+        puts "REMOVE MOUSE PARSED PARAMS: #{date_val.to_json} :: #{reason_val}"
         respond_to do |format|
-            if validate_date(date_val)
-                @mouse.update_attributes(key.to_sym => date_val)  
-                log_remove_mouse(cage_number, @mouse.id, current_user)
+            if ["", nil].include? date_val
+                gflash :error => "Mouse was not removed from cage. Removal Date is required."
                 format.html
-                format.json { render :json => { :message => "Mouse removed" }, :status => :ok }
+                format.json { render :json => { :message => "No date "}, :status => :unprocessable_entity }
             else
-                format.html
-                format.json { render :json => { :error_message => "Invalid date" }, :status => :unprocessable_entity }
+                @mouse.update_attributes(removed: date_val, removed_for: reason_val)  
+                log_remove_mouse(cage_number, @mouse.id, current_user)
+                gflash :success => "Mouse was successfully removed"
+                format.html 
+                format.json { render :json => { :message => "Mouse removed" }, :status => :ok }
             end
+        end
+    end
+
+    def mouse
+        puts params.to_json
+        @mouse = Mouse.find(params[:mouse])
+        respond_to do |format|
+            format.html
+            format.json { render :json => { :message => "Mouse found", :data => @mouse }, :status => :ok }
         end
     end
 
@@ -163,8 +241,7 @@ class HomeController < ApplicationController
         mouse = params.keys.select{ |k| k.include?("mouse-") }.first
         mouse_id = mouse.split("-").second
         key = params[mouse].keys.first
-        val = params[mouse][key.to_sym]
-        date_val = Date.strptime(val, "%m/%d/%Y").to_s
+        date_val = params[mouse][key.to_sym]
         @mouse = Mouse.find(mouse_id)
         old_value = @mouse[key.to_sym] == nil ? -1 : @mouse[key.to_sym]
         log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => date_val } }
@@ -308,7 +385,7 @@ class HomeController < ApplicationController
     def graph_data_sex
         strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
         strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
-        single_sex_cage_ids = Cage.where(cage_type:["single-m","single-f"]).pluck(:id)
+        single_sex_cage_ids = Cage.where(cage_type:["single-m","single-f"]).where(location:graphDataParams[:location]).pluck(:id)
         @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["", nil]).where(cage_id:single_sex_cage_ids)
         render :json => { :numbers => [@mice.where(sex:1).count, @mice.where(sex:2).count], :status => :ok }
     end
@@ -316,10 +393,11 @@ class HomeController < ApplicationController
     def graph_data_age
         strain = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").first : graphDataParams[:strain]
         strain2 = graphDataParams[:strain].include?("_") ? graphDataParams[:strain].split("_").second : ["",nil]
-
+        location = graphDataParams[:location]
+        puts ">>>>>>>>>>>>LOCATION: #{location}"
         graph_strain = graphDataParams[:strain].include?("_") ? "#{strain}/#{strain2}" : "#{strain}"
 
-        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["",nil]).joins(:cage).where(:cages => {:cage_type => ['single-f', 'single-m'], :in_use => true}) #add filter for cage_type here
+        @mice = Mouse.where(strain:strain).where(strain2:strain2).where(removed:["",nil]).joins(:cage).where(:cages => {:cage_type => ['single-f', 'single-m'], :in_use => true, :location => location }) #add filter for cage_type here
 
         # create an empty matrix and add the category descriptors (required by the graph API) and the top-line data points in this format: [category ID, category parent, quantity of mice in the category, secondary data point]
         array = []
@@ -329,13 +407,11 @@ class HomeController < ApplicationController
         cage_types = %w(single-f single-m)
         age_ranges = [[0,3],[3,6],[6,9],[9,12],[12,15],[15,20],[20,24]]
         cage_types.each do |c|
-            @cages = Cage.where(cage_type:c).where(strain:strain).where(strain2:strain2).where(in_use:true)
+            @cages = Cage.where(cage_type:c).where(strain:strain).where(strain2:strain2).where(in_use:true).where(location:location)
             array.push([c,graph_strain,@mice.where(cage_id:@cages.pluck(:id)).where(removed:[nil,""]).where(["dob <= ?", Date.today]).where(["dob > ?", 24.months.ago]).count,@cages.count])
             age_ranges.each do |r|
-                puts r[0]
-                puts r[1]
-                cage_ids = Mouse.where(["dob <= ?", r[0] == 0 ? Date.today : r[0].months.ago]).where(["dob > ?", r[1].months.ago]).where(removed:[nil,""]).joins(:cage).where(:cages => {:cage_type => c, :strain => strain, :strain2 => strain2, :in_use => true}).pluck(:cage_id).uniq
-                mice_count = Mouse.where(["dob <= ?", r[0] == 0 ? Date.today : r[0].months.ago]).where(["dob > ?", r[1].months.ago]).where(removed:[nil,""]).joins(:cage).where(:cages => {:cage_type => c, :strain => strain, :strain2 => strain2, :in_use => true}).count
+                cage_ids = Mouse.where(["dob <= ?", r[0] == 0 ? Date.today : r[0].months.ago]).where(["dob > ?", r[1].months.ago]).where(removed:[nil,""]).joins(:cage).where(:cages => {:cage_type => c, :strain => strain, :strain2 => strain2, :in_use => true, :location => location}).pluck(:cage_id).uniq
+                mice_count = Mouse.where(["dob <= ?", r[0] == 0 ? Date.today : r[0].months.ago]).where(["dob > ?", r[1].months.ago]).where(removed:[nil,""]).joins(:cage).where(:cages => {:cage_type => c, :strain => strain, :strain2 => strain2, :in_use => true, :location => location}).count
                 puts "#{r}: #{c}: #{cage_ids}"
                 array.push([ "#{r[0]}-#{r[1]} months, #{c}",c,mice_count,cage_ids.count])
                 cage_ids.each do |i|
@@ -346,8 +422,6 @@ class HomeController < ApplicationController
 
             end
         end
-
-
         render :json => { :data => array, :status => :ok }
 
     end
@@ -366,11 +440,11 @@ class HomeController < ApplicationController
     private
 
     def singleCageParams
-        params.permit(:cage_number)
+        params.permit(:cage_number, :location)
     end
 
     def singleStrainParams
-        params.permit(:strain, :strain2)
+        params.permit(:strain, :strain2, :location, :cage_type)
     end
 
     def createCageParams
@@ -382,6 +456,10 @@ class HomeController < ApplicationController
     end
 
     def removeCageParams
+    end
+
+    def removeMouseParams
+        params.require(:mouse).permit(:mouse_id, :remove_date, :remove_reason)
     end
 
     def updateMouseParams
@@ -397,7 +475,7 @@ class HomeController < ApplicationController
     end
 
     def graphDataParams
-        params.permit(:strain)
+        params.permit(:strain, :location)
     end
 
     def cageTimelineParams

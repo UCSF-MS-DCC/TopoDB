@@ -5,9 +5,9 @@ class ArchiveDatatable < AjaxDatatablesRails::ActiveRecord
     # or in aliased_join_table.column_name format
     @view_columns ||= {
       date:           { source:"Archive.created_at" },
-      time:           { source:"Archive.created_at"},
-      user:           { source:"Archive.id"},
-      description:    { source:"Archive.id"}
+      time:           { source:"Archive.created_at" },
+      user:           { source:"Archive.id" },
+      description:    { source:"Archive.id" }
 
       # id: { source: "User.id", cond: :eq },
       # name: { source: "User.name", cond: :like }
@@ -48,11 +48,11 @@ class ArchiveDatatable < AjaxDatatablesRails::ActiveRecord
       elsif @arc.acttype == "Remove Cage"
         desc = "Cage ##{@arc.cage} was removed."
       elsif @arc.acttype == "New Pups"
-        desc = "Cage ##{@arc.cage}: #{@arc.newval} pups were added"
+        desc = "Cage ##{@arc.cage}: #{@arc.newval} were added"
       elsif @arc.acttype == "New Mouse ID"
         desc = "Cage ##{@arc.cage}: IDs #{@arc.newval} assigned to pups."
       elsif @arc.acttype == "Remove mouse"
-        desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} was removed from Cage ##{@arc.cage}"
+        desc = "Mouse #{genMouseIDString(@arc.mouse.to_i)} was removed from Cage ##{@arc.cage}"
       elsif @arc.acttype == "Update Mouse"
         desc = "Mouse #{Mouse.find(@arc.mouse.to_i).designation} in Cage ##{@arc.cage} was updated: #{@arc.changed_attr} changed from #{@arc.priorval} to #{@arc.newval}"
       elsif @arc.acttype == "Tail Cut Date"
@@ -68,6 +68,15 @@ class ArchiveDatatable < AjaxDatatablesRails::ActiveRecord
       @arc = Archive.find(id)
       @u = User.find(@arc.who)
       "#{@u.first} #{@u.last}"
+    end
+
+    def genMouseIDString(id)
+      @m = Mouse.find(id)
+      sex = (["",nil].include? @m.sex) ? "|no sex|" : [nil,"F","M"][@m.sex.to_i]
+      tdc = (["",nil].include? @m.three_digit_code) ? "|no id|" : @m.three_digit_code
+      ear = (["",nil].include? @m.ear_punch) ? "|no ear punch|" : [nil,"-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][@m.ear_punch.to_i]
+
+      "#{sex}#{tdc}#{ear}"
     end
 end
 
