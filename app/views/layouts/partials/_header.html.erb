@@ -12,7 +12,7 @@
                 <li class="nav-item">
                     <%= link_to "Locations", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
-                <% unless !current_page?(root_path)%>
+                <% if current_page?(root_path) || current_page?(home_main_path) %>
                 <li class="nav-item">
                     <button class="btn btn-outline-primary" style="margin-left:15px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
                 </li>

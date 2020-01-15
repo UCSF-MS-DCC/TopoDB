@@ -4,6 +4,9 @@ class HomeController < ApplicationController
     before_action :authenticate_user!
     def index 
         @locations = Cage.where(in_use:true).pluck(:location).uniq
+        @all_locations = Cage.where(in_use:true).pluck(:location).uniq
+        @all_strains = Cage.pluck(:strain).uniq
+        @new_cage = Cage.new
     end
 
     def main 
@@ -345,7 +348,7 @@ class HomeController < ApplicationController
 
     def restore_mouse
         puts restoreMouseParams
-        if restoreMouseParams[:mouse].to_i.to_s == restoreMouseParams[:mouse]
+        if restoreMouseParams[:mouse].to_i.to_s == restoreMouseParams[:mouse] && Mouse.find(restoreMouseParams[:mouse]).cage.in_use == true
             begin
                 @mouse = Mouse.find(restoreMouseParams[:mouse])
                 @mouse.update_attributes(removed: nil, removed_for: nil)
