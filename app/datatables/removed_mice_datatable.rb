@@ -20,7 +20,7 @@ class RemovedMiceDatatable < AjaxDatatablesRails::ActiveRecord
 
   def data
     records.map do |record|
-      gts = %w(\  n/a +/+ +/- -/+ -/-)
+      gts = %w(\  n/a +/+ +/- -/-)
       sx = %w(nil F M)
       {
         cage:             Cage.find(record.cage_id).cage_number,

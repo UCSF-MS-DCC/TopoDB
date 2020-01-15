@@ -210,12 +210,20 @@ $(document).on('turbolinks:load',function() {
       dataType:"json",
       success:function(reply) {;
          mouseData = reply["data"];
+         console.log(mouseData)
          $('#modal-mouse-remove-date').datepicker().datepicker("setDate", new Date());
-         $('#modal-mouse-designation').text(mouseData["three_digit_code"])
-         $('#modal-mouse-sex').text(["N/A","F", "M"][mouseData["sex"]])
-         $('#modal-mouse-cage-number').text(parsed["mousecage"])
-         $('#modal-mouse-earpunch').text(["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][mouseData["ear_punch"]-1])
-         $('#modal-mouse-dob').text(mouseData["dob"])
+         $('#modal-mouse-designation').text(mouseData["three_digit_code"]);
+         $('#modal-mouse-sex').text(["N/A","F", "M"][mouseData["sex"]]);
+         $('#modal-mouse-cage-number').text(parsed["mousecage"]);
+         $('#modal-mouse-earpunch').text(["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][mouseData["ear_punch"]-1]);
+         $('#modal-mouse-strain').text(mouseData["strain"]+":");
+         $('#modal-mouse-genotype').text(["","N/A","+/+","+/-","-/-"][mouseData["genotype"]]);
+         $('#modal-mouse-dob').text(mouseData["dob"]);
+         if (mouseData["strain2"] != null) {
+           $('#second-strain-modal-row').css("display", "flex");
+           $('#modal-mouse-strain2').text(mouseData["strain2"]+":");
+           $('#modal-mouse-genotype2').text(["","N/A","+/+","+/-","-/-"][mouseData["genotype2"]]);
+         }
         },
       error:function(jqxhr,reply,status) { alert("Mouse data was not fetched, please notify a site administrator."); }
     });
