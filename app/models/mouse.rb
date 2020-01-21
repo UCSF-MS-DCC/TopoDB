@@ -8,7 +8,7 @@ class Mouse < ApplicationRecord
   # validate :ear_punch_matches_designation
   # validate :designation_is_available, on: :create
   validates_uniqueness_of :three_digit_code, :scope => [:strain, :strain2, :removed], on: :update, allow_nil: true, allow_blank: true
-  validates_uniqueness_of :ear_punch, :scope => [:cage_id, :dob, :sex], on: :update, allow_nil: true, allow_blank: true
+  # validates_uniqueness_of :ear_punch, :scope => [:cage_id, :dob, :sex], on: :update, allow_nil: true, allow_blank: true
   
   def assign_full_designation
     # find the most recent id of a living mouse in the same strain/hybrid strain
