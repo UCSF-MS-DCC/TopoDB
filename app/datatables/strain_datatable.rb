@@ -15,6 +15,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def data
+    puts options.to_json
     gts = %w(\  n/a +/+ +/- -/-)
     @dob_val = nil
     records.map do |record|
@@ -56,8 +57,11 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
 end
 class CageDecorator < ApplicationDecorator
   def link_to_cage
-    h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number, :location => object.location)
+    if ![nil, ""].include? object.strain2
+      h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number, :location => object.location, :strain => "#{object.strain}_#{object.strain2}")
+    else
+      h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number, :location => object.location, :strain => object.strain)
+    end
   end
-
 end
 #record.mice.where(removed:nil).where(sex:1).where(["dob < ?", Date.today - 21 ]).second.dob.strftime("%m-%d-%Y") : "n/a"

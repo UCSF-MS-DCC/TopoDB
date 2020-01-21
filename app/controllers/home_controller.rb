@@ -43,7 +43,9 @@ class HomeController < ApplicationController
     end
 
     def cage 
-        @cage = Cage.find_by(cage_number:singleCageParams[:cage_number])
+        cageStrain = (/_/.match(singleCageParams[:strain]) == nil) ? singleCageParams[:strain] : singleCageParams[:strain].split("_").first
+        cageStrain2 = (/_/.match(singleCageParams[:strain]) == nil) ? nil : singleCageParams[:strain].split("_").last
+        @cage = cageStrain2 == nil ? Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain) : Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain, strain2:cageStrain2)
         @strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
         @strain = (["",nil].include? @cage.strain2) ? @cage.strain : "#{@cage.strain}_#{@cage.strain2}"
         @locations = Cage.pluck(:location).uniq
@@ -431,7 +433,7 @@ class HomeController < ApplicationController
     private
 
     def singleCageParams
-        params.permit(:cage_number, :location)
+        params.permit(:cage_number, :location, :strain)
     end
 
     def singleStrainParams
