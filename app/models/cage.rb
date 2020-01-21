@@ -8,7 +8,7 @@ class Cage < ApplicationRecord
     validates_presence_of :cage_number
     validates_numericality_of :cage_number
     validates_presence_of :strain
-    validates_uniqueness_of :cage_number
+    validates_uniqueness_of :cage_number, scope: [:strain, :strain2, :location] 
 
     # before_create :set_default_values
     # validates :pups, absence: true, if: :is_single_sex?
