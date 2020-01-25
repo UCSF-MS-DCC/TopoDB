@@ -145,11 +145,11 @@ class HomeController < ApplicationController
                 redirect_to root_path
             else
                 gflash :success => "Cage #{@c.cage_number} was successfully updated."
-                redirect_to home_cage_path(:cage_number => @c.cage_number, :location => @location)
+                redirect_to home_cage_path(:cage_number => @c.cage_number, :location => @location, :strain => ([nil,""].include? @c.strain2 ) ? @c.strain : "#{@c.strain}_#{@c.strain2}")
             end
         else
             gflash :error => "Cage #{cage_no} failed to update.#{@c.errors.full_messages}"
-            redirect_to home_cage_path(:cage_number => cage_no)
+            redirect_to home_cage_path(:cage_number => cage_no, :location => @location, :strain => ([nil,""].include? @c.strain2 ) ? @c.strain : "#{@c.strain}_#{@c.strain2}")
         end
     end
 
@@ -178,10 +178,11 @@ class HomeController < ApplicationController
             log_params = { :updateattr => key.to_s, :values => { :priorval => old_value, :newval => val } }
             
             respond_to do |format| 
-                if key == "designation"
+                if key == "three_digit_code"
                     if tdc_is_valid?(@mouse, val)
                         tdc = val.scan(/\d+/)
                         @mouse.update_attributes(three_digit_code:tdc.first, designation:val, tdc_generated:Time.now)
+                        log_update_mouse(@mouse, log_params, current_user)
                         format.html
                         format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
                     else

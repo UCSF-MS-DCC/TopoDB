@@ -68,7 +68,9 @@ module HomeHelper
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Update Mouse", changed_attr:"ear punch", priorval:updateParams[:values][:priorval].to_i >= 0 ? ep[(updateParams[:values][:priorval].to_i - 1)] : "null", newval:ep[(updateParams[:values][:newval].to_i - 1)], who:user.id)
         elsif updateParams[:updateattr] == "sex"
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Update Mouse", changed_attr:"sex", priorval:updateParams[:values][:priorval].to_i >= 0 ? sx[(updateParams[:values][:priorval].to_i  - 1)] : "null", newval:sx[(updateParams[:values][:newval].to_i - 1)], who:user.id)
-        elsif updateParams[:updateattr] == "designation"
+        elsif updateParams[:updateattr] == "three_digit_code"
+            @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Update Mouse", changed_attr:"mouse id", priorval:updateParams[:values][:priorval], newval:updateParams[:values][:newval], who:user.id)
+        elsif updateParams[:updateattr] == "dob"
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Update Mouse", changed_attr:"mouse id", priorval:updateParams[:values][:priorval], newval:updateParams[:values][:newval], who:user.id)
         elsif updateParams[:updateattr] == "tail_cut_date"
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Tail Cut Date", changed_attr:"tail cut date", priorval:updateParams[:values][:priorval] != "-1" ? updateParams[:values][:priorval] : "null", newval:updateParams[:values][:newval], who:user.id)
