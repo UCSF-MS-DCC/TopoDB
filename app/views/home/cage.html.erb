@@ -50,14 +50,16 @@
         <div class="row hide-on-print" style="margin-top:20px;">
             <div class="col-11">
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#newMouseFormDiv" type="button" aria-expanded=false>Add New Mouse</button>
                 <% if @cage.cage_type == "breeding" %>
                     <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false >Record New Pups</button>
-                    <% end %>
+                <% end %>
                 <%= link_to 'Print Table', home_strain_path(:strain => @cage.strain), :onclick => 'window.print();return false;', :class => "btn btn-sm btn-primary"%>
             </div>
         </div>
         <%= render 'home/partials/edit_cage_form' %>
-        <%= render 'home/partials/new_pups_form'%>
+        <%= render 'home/partials/new_mouse_form' %>
+        <%= render 'home/partials/new_pups_form' %>
         <div class="row justify-content-md-center" style="margin-top:20px;">
             <div class="col-12">
             <%= form_tag home_update_mouse_path(:cage => @cage.cage_number), method: :put do %>

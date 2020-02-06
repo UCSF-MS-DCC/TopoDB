@@ -193,13 +193,9 @@ $(document).on('turbolinks:load',function() {
   } /* close 'if (window.location.pathname === "/home/cage") {} block */
 
   /* new/edit cage forms location field input selector listeners/logic here */
-  function chooseLocationInput(buttonValue) {
-    console.log(buttonValue)
-  }
   $(".location-select-radio").on('click', function(obj) {
     // alert($("input[name='location-select-radio']:checked").val())
     /* if "New", disable the select menu and focus the input box, if "Existing", enable the select, and disable the input box */
-    console.log(obj.target.value)
     if (obj.target.value === "New") {
       $('#cage_location').prop("disabled", true);
       $('#location-input-text').prop("disabled", false);
@@ -225,7 +221,6 @@ $(document).on('turbolinks:load',function() {
       dataType:"json",
       success:function(reply) {;
          mouseData = reply["data"];
-         console.log(mouseData)
          $('#modal-mouse-remove-date').datepicker().datepicker("setDate", new Date());
          $('#modal-mouse-designation').text(mouseData["three_digit_code"]);
          $('#modal-mouse-sex').text(["N/A","F", "M"][mouseData["sex"]]);
@@ -263,14 +258,14 @@ $(document).on('turbolinks:load',function() {
 
 /* Datepicker jquery initialization code here */
 $('#pups_birthdate').datepicker();
+$('#new_mouse_birthdate').datepicker();
 $.datepicker.setDefaults({
   dateFormat: 'yy-mm-dd'
-})
+});
 
 /* clicking on the checkbox in the restore column of the removed mice table activates this function. First, the checkbox becomes disabled. Then specific values are read from the table row. Finally an AJAX call
 is made to the controller method, which will set the 'removed' column to nil, "restoring" the mouse to the world of the living. */
 function restoreMouse(idx, button) {
-  console.log(button)
   $.ajax({
     beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
     type:"POST",

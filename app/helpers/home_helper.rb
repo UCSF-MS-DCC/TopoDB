@@ -10,13 +10,16 @@ module HomeHelper
     end
 
     def log_new_cage(cage, user)
-        puts "LOG METHOD CAGE # #{cage.cage_number}"
         @archive = Archive.new(cage:cage.cage_number, acttype:"New Cage", who:user.id)
         if @archive.save
            # puts "Archive created"
         else
            # puts @archive.errors.full_messages
         end
+    end
+
+    def log_new_mouse(mouse, user)
+        @archive = Archive.new(mouse:mouse.id, acttype:"New Mouse", who:user.id).save
     end
 
     def log_new_pups(cage, number, user)
@@ -95,7 +98,6 @@ module HomeHelper
         end
     end
     def validate_date(input)
-        puts "VALIDATE DATE INPUT: #{input}"
         /\d{4}\-\d{2}-\d{2}/.match(input) || input == nil
     end
 

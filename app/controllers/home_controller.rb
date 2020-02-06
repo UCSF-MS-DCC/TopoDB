@@ -42,7 +42,36 @@ class HomeController < ApplicationController
         end
     end
 
+    def create_mouse
+        ear_notch = [nil,"-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"]
+        gts = %w(\  n/a +/+ +/- -/-)
+        sx = %w(nil F M)
+        cage = Cage.find(createMouseParams[:cage_id])
+        strain = !([nil,""].include? createMouseParams[:strain]) ? createMouseParams[:strain] : cage[:strain]
+        strain2 = !([nil,""].include? createMouseParams[:strain2]) ? createMouseParams[:strain2] : cage[:strain2]
+        puts "CREATE MOUSE STRAIN: #{strain}, STRAIN2:#{strain2}"
+        # birthcage may not exist, handle error here
+        begin
+            @birthcage = Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).first.id # Using parent_cage_id as a parameter in createMouseParams when cage_number is what is passed is confusing.
+        rescue NoMethodError
+            # notify user of error via gflash, redirect to cage, early return
+            gflash :error => "Birthcage #{createMouseParams[:cage_number]} for strain #{strain} is not in the database."
+            redirect_to home_cage_path(:location => cage.location, :strain => ([nil,""].include? cage.strain2) ? cage.strain : "#{cage.strain}_#{cage.strain2}" , :cage_number => cage.cage_number)
+            return
+        end
+        @mouse = Mouse.new(cage_id:createMouseParams[:cage_id], sex:sx.index(createMouseParams[:sex]), three_digit_code:createMouseParams[:three_digit_code], strain:strain, strain2:strain2, dob: createMouseParams[:dob], parent_cage_id: @birthcage,
+                            ear_punch:ear_notch.index(createMouseParams[:ear_notch]), genotype: gts.index(createMouseParams[:genotype]), weaning_date:createMouseParams[:weaning_date], tail_cut_date:createMouseParams[:tail_cut_date])
+        if @mouse.save
+            gflash :success => "Mouse was successfully added to cage #{cage.cage_number}"
+            log_new_mouse(@mouse, current_user)
+        else
+            gflash :error => "There was an error adding a mouse to cage #{cage.cage_number}: #{@mouse.errors.full_messages}"
+        end
+        redirect_to home_cage_path(:location => cage.location, :strain => ([nil,""].include? cage.strain2) ? cage.strain : "#{cage.strain}_#{cage.strain2}" , :cage_number => cage.cage_number)
+    end
+
     def cage 
+        puts singleCageParams.to_json
         cageStrain = (/_/.match(singleCageParams[:strain]) == nil) ? singleCageParams[:strain] : singleCageParams[:strain].split("_").first
         cageStrain2 = (/_/.match(singleCageParams[:strain]) == nil) ? nil : singleCageParams[:strain].split("_").last
         @cage = cageStrain2 == nil ? Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain) : Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain, strain2:cageStrain2)
@@ -50,6 +79,11 @@ class HomeController < ApplicationController
         @strain = (["",nil].include? @cage.strain2) ? @cage.strain : "#{@cage.strain}_#{@cage.strain2}"
         @locations = Cage.pluck(:location).uniq
         @location = singleCageParams[:location]
+        @new_mouse = Mouse.new
+        @all_strains = Cage.pluck(:strain).uniq
+        @cageStrain = cageStrain
+        @cageStrain2 = cageStrain2
+
         if @cage == nil
             redirect_to :controller => "error", :action => "error_404"
         elsif @cage.in_use == false
@@ -57,7 +91,7 @@ class HomeController < ApplicationController
             redirect_to root_path
         else
             @gts = %w(\  n/a +/+ +/- -/-)
-            @mice = @cage.mice.where(removed:nil)
+            @mice = @cage.mice.where(removed:nil).order('sex DESC')
             @mice.each do |mouse|
                 mouse[:parent_cage_id] = ( [nil,"",0].include? mouse[:parent_cage_id] ) ? "n/a" : Cage.find(mouse.parent_cage_id.to_i).cage_number 
             end
@@ -321,10 +355,10 @@ class HomeController < ApplicationController
         else
             gflash :success => "Pups were successfully added to Cage ##{Cage.find(cage_id).cage_number}."
         end
-        redirect_to home_cage_path(:cage_number => Cage.find(cage_id).cage_number)
+        redirect_to home_cage_path(:cage_number => @cage.cage_number, :location => @cage.location, :strain => ([nil,""].include? strain2) ? strain : "#{strain}_#{strain2}" )
     end
 
-    def assign_new_ids
+    def assign_new_ids # deprecated
         #first assign designations to all the pups, then log the list of designations and the cage to the Archive table
         @mice = Cage.find(params[:cage_id]).mice.where(weaning_date:nil).where(three_digit_code:nil)
         @mice_ids = []
@@ -443,6 +477,10 @@ class HomeController < ApplicationController
 
     def createCageParams
         params.require(:cage).permit(:cage_number, :strain, :strain2, :cage_type, :location, :genotype, :genotype2)
+    end
+
+    def createMouseParams
+        params.require(:mouse).permit(:sex, :three_digit_code, :strain, :ear_notch, :dob, :tail_cut_date, :weaning_date, :cage_id, :genotype, :parent_cage_id)
     end
 
     def updateCageParams

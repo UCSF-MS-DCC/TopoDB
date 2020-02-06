@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     get 'strain_table'
     post 'create_cage'
     patch 'update_cage'
+    post 'create_mouse'
     put 'update_mouse'
     put 'new_pups'
     put 'update_mouse_cage'
