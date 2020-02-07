@@ -51,13 +51,10 @@ class HomeController < ApplicationController
         strain2 = !([nil,""].include? createMouseParams[:strain2]) ? createMouseParams[:strain2] : cage[:strain2]
         puts "CREATE MOUSE STRAIN: #{strain}, STRAIN2:#{strain2}"
         # birthcage may not exist, handle error here
-        begin
-            @birthcage = Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).first.id # Using parent_cage_id as a parameter in createMouseParams when cage_number is what is passed is confusing.
-        rescue NoMethodError
-            # notify user of error via gflash, redirect to cage, early return
-            gflash :error => "Birthcage #{createMouseParams[:cage_number]} for strain #{strain} is not in the database."
-            redirect_to home_cage_path(:location => cage.location, :strain => ([nil,""].include? cage.strain2) ? cage.strain : "#{cage.strain}_#{cage.strain2}" , :cage_number => cage.cage_number)
-            return
+        if createMouseParams[:parent_cage_id].length > 0 && Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).count > 0
+            @birthcage = Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).first.id
+        else
+            @birthcage = nil
         end
         @mouse = Mouse.new(cage_id:createMouseParams[:cage_id], sex:sx.index(createMouseParams[:sex]), three_digit_code:createMouseParams[:three_digit_code], strain:strain, strain2:strain2, dob: createMouseParams[:dob], parent_cage_id: @birthcage,
                             ear_punch:ear_notch.index(createMouseParams[:ear_notch]), genotype: gts.index(createMouseParams[:genotype]), weaning_date:createMouseParams[:weaning_date], tail_cut_date:createMouseParams[:tail_cut_date])
@@ -480,7 +477,7 @@ class HomeController < ApplicationController
     end
 
     def createMouseParams
-        params.require(:mouse).permit(:sex, :three_digit_code, :strain, :ear_notch, :dob, :tail_cut_date, :weaning_date, :cage_id, :genotype, :parent_cage_id)
+        params.require(:mouse).permit(:sex, :three_digit_code, :strain, :strain2, :ear_notch, :dob, :tail_cut_date, :weaning_date, :cage_id, :genotype, :parent_cage_id)
     end
 
     def updateCageParams
