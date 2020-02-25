@@ -14,6 +14,7 @@
     <% else %>
         <div class="row justify-content-md-center">
             <div class="col-sm-8" style="margin-top:20px;">
+            <%= render 'home/partials/main_breadcrumb' %>
             <%= render 'home/partials/new_cage_form' %>
                 <h2><%= @location %></h2>
                 <table id="index-datatable" class="table table-bordered table-striped" data-source="<%= home_index_path(format: :json) %>">

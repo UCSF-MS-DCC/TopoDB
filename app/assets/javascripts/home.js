@@ -70,8 +70,19 @@ $(document).on('turbolinks:load',function() {
     /* Activating Best In Place */
     jQuery(".best_in_place").best_in_place();
     /* Show/hide the green check and red x in each editable cell in the best-in-place enabled table depending on the outcome of the AJAX call */
-    $('.highlight-on-success').bind("ajax:success", function () { if (!$(this).next("span").hasClass("hidden")) { $(this).next("span").addClass("hidden") }; $(this).prev("span").removeClass("hidden"); });
+    $('.highlight-on-success').bind("ajax:success", function (e) { 
+                                                                    // if (e.target.dataset.bipAttribute === "sex") {
+                                                                    //   console.log(e.target.dataset.bipValue);
+
+                                                                    // }
+                                                                    if (!$(this).next("span").hasClass("hidden")) {
+                                                                        $(this).next("span").addClass("hidden") 
+                                                                      };
+                                                                      $(this).prev("span").removeClass("hidden"); 
+                                                                    });
     $('.highlight-on-success').bind("ajax:error", function () { if (!$(this).prev("span").hasClass("hidden")) { $(this).prev("span").addClass("hidden") }; $(this).next("span").removeClass("hidden"); });
+    /* In breeding cage views, color code the rows that aren't pups (ie parents) */
+    $('.cage-parent-row').css("background-color","greenyellow");
     
 /* only run this block for the single strain view */
   if (window.location.pathname === "/home/strain") {

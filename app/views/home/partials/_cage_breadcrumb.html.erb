@@ -1,6 +1,6 @@
 <div class="row">
     <span style="font-size:14px;padding-left:25px;padding-top:15px;">
-        <%= link_to "home", root_path %> >>> location: <%= link_to @location, home_main_path(:location => @location) %> >>> strain: 
+        <%= link_to "Main Index", root_path %> >>> location: <%= link_to @location, home_main_path(:location => @location) %> >>> strain: 
                 <% if @cage.strain2 == nil || @cage.strain2 == "" %>
                     <%= link_to @cage.strain, home_strain_path(strain: @cage.strain, location: @location) %>
                 <% else %>

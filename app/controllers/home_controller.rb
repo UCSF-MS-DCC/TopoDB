@@ -10,7 +10,6 @@ class HomeController < ApplicationController
     end
 
     def main 
-        puts "LOCATION: #{params[:location]}"
         @location = params[:location]
         @new_cage = Cage.new
         @loc_strains = Cage.where(in_use:true).where(strain2:["",nil]).where(location:@location).pluck(:strain).uniq
@@ -49,7 +48,6 @@ class HomeController < ApplicationController
         cage = Cage.find(createMouseParams[:cage_id])
         strain = !([nil,""].include? createMouseParams[:strain]) ? createMouseParams[:strain] : cage[:strain]
         strain2 = !([nil,""].include? createMouseParams[:strain2]) ? createMouseParams[:strain2] : cage[:strain2]
-        puts "CREATE MOUSE STRAIN: #{strain}, STRAIN2:#{strain2}"
         # birthcage may not exist, handle error here
         if createMouseParams[:parent_cage_id].length > 0 && Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).count > 0
             @birthcage = Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).first.id
@@ -68,7 +66,6 @@ class HomeController < ApplicationController
     end
 
     def cage 
-        puts singleCageParams.to_json
         cageStrain = (/_/.match(singleCageParams[:strain]) == nil) ? singleCageParams[:strain] : singleCageParams[:strain].split("_").first
         cageStrain2 = (/_/.match(singleCageParams[:strain]) == nil) ? nil : singleCageParams[:strain].split("_").last
         @cage = cageStrain2 == nil ? Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain) : Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain, strain2:cageStrain2)
@@ -88,7 +85,7 @@ class HomeController < ApplicationController
             redirect_to root_path
         else
             @gts = %w(\  n/a +/+ +/- -/-)
-            @mice = @cage.mice.where(removed:nil).order('sex DESC')
+            @mice = @cage.mice.where(removed:nil).order(pup: :asc, sex: :desc, dob: :asc)
             @mice.each do |mouse|
                 mouse[:parent_cage_id] = ( [nil,"",0].include? mouse[:parent_cage_id] ) ? "n/a" : Cage.find(mouse.parent_cage_id.to_i).cage_number 
             end
@@ -234,7 +231,7 @@ class HomeController < ApplicationController
                 elsif @mouse.update_attributes(key.to_sym => val)         
                     log_update_mouse(@mouse, log_params, current_user)
                     format.html
-                    format.json { render :json => { :message => "Mouse updated" }, :status => :accepted }
+                    format.json { render :json => { :message => "Mouse updated", key.to_sym => val }, :status => :accepted }
                 else
                     format.html
                     format.json { render :json => { :error_message => @mouse.errors.full_messages }, :status => :unprocessable_entity }
@@ -300,7 +297,7 @@ class HomeController < ApplicationController
         source_cage_id = params[mouse][:cage_id].split("->").first
         target_cage_id = params[mouse][:cage_id].split("->").second
         @mouse = Mouse.find(mouse_id)
-        mouse_updates = {:cage_id => target_cage_id}
+        mouse_updates = {:cage_id => target_cage_id, :pup => false}
         # set weaning date for pups being transfered from their birth cage
         if @mouse.weaning_date == nil
             mouse_updates[:weaning_date] = Date.today
@@ -329,7 +326,6 @@ class HomeController < ApplicationController
     end
 
     def new_pups # will need to refactor to fail the whole process if any pup is not added.
-        puts params
         cage_id = params[:cage].to_i
         @cage = Cage.find(cage_id)
         strain = @cage.strain
@@ -337,7 +333,7 @@ class HomeController < ApplicationController
         successful_saves = 0
         error_messages = []
         params[:pups].to_i.times.each do |p|
-           @m = Mouse.new(sex:nil, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2)
+           @m = Mouse.new(sex:nil, dob:params[:birthdate], parent_cage_id:cage_id, cage_id: cage_id, strain:strain, strain2:strain2, pup:true)
             if @m.save
                 successful_saves += 1
             else
@@ -348,6 +344,7 @@ class HomeController < ApplicationController
             log_new_pups(@cage.cage_number, "#{successful_saves} pups", current_user)
         end
         if error_messages.count > 0
+            puts error_messages
             gflash :error => "There was a problem adding new pups to Cage ##{Cage.find(cage_id).cage_number}. Contact an administrator for assistance."
         else
             gflash :success => "Pups were successfully added to Cage ##{Cage.find(cage_id).cage_number}."

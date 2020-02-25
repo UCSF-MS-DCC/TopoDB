@@ -16,7 +16,8 @@
             <button class="btn btn-primary btn-block" style="margin-top:10px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
          </div>
 
-        <div class="col-sm-9"  style="margin-top:50px;padding-left:50px;">
+        <div class="col-sm-9"  style="padding-left:50px;">
+            <%= render 'home/partials/strain_breadcrumb' %>
             <%= render 'home/partials/new_cage_form' %>
             <!-- Add tabbed view to hold breeding and single sex cage tables in separate views -->
             <ul class="nav nav-tabs">

@@ -4,23 +4,44 @@ class Mouse < ApplicationRecord
 
   # validates_uniqueness_of :designation, :scope => [:strain],  :message => "not unique"
   # validates_inclusion_of :ear_punch, :in => %w(N R L RL RR LL RLL RRL RRLL), :if => :has_ear_punch?
-  # validate :sex_matches_designation
+  validate :sex_matches_cage_type
   # validate :ear_punch_matches_designation
   # validate :designation_is_available, on: :create
-  validates_uniqueness_of :three_digit_code, :scope => [:strain, :strain2, :removed], on: :update, allow_nil: true, allow_blank: true
+  validates_uniqueness_of :three_digit_code, :scope => [:strain, :strain2, :removed], allow_nil: true, allow_blank: true, :message => "This mouse ID is already in use in this strain"
+  #validate :one_male_per_breeding_cage
+  #validate :up_to_two_females_per_breeding_cage
   # validates_uniqueness_of :ear_punch, :scope => [:cage_id, :dob, :sex], on: :update, allow_nil: true, allow_blank: true
   
   def assign_full_designation
     # find the most recent id of a living mouse in the same strain/hybrid strain
     current_max_id = Mouse.where(strain:self.strain).where(strain2:self.strain2).(removed:nil).order(:tdc_generated).last.three_digit_code
-    puts "CURRENT MAX ID: #{current_max_id}"
   end
 
   private
 
+    def sex_matches_cage_type
+      if self.cage.cage_type.match(/single/)
+        cage_sex = self.cage.cage_type.split("-")[1]
+        if cage_sex == "m" && self.sex.to_i == 2
+          true
+        elsif cage_sex == "f" && self.sex.to_i == 1
+          true
+        else
+          errors.add(:sex,"Mouse has incorrect sex for this single-sex cage")
+        end
+      end
+    end
+
+    def one_male_per_breeding_cage
+      
+    end
+
+    def up_to_two_females_per_breeding_cage
+      
+    end
+
     def three_digit_code_is_valid
       tdc_array = three_digit_code.scan(/\d+|\D+/)
-
     end
 
     def has_ear_punch?

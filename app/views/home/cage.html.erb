@@ -81,10 +81,10 @@
                     <% if @mice.count > 0 %>
                         <% @mice.each do |m| %>
                             <% sx = ["f", "m"][(m.sex.to_i - 1)] %>
-                            <tr>
+                            <tr class=<%= (m.pup == false && @cage.cage_type == "breeding") ? "cage-parent-row" : nil %> >
                                 <td id="sex-<%= m.id %>" >
                                     <span class="hidden green-check">&#10003;</span>
-                                    <%= best_in_place m, :sex, :as => :select, :collection => [[1,"F"], [2,"M"]], :value => m.sex, :html_attrs => { :selected => m.sex }, 
+                                    <%= best_in_place m, :sex, :as => :select, :collection => [[0,"-"],[1,"F"], [2,"M"]], :value => m.sex, :html_attrs => { :selected => m.sex }, 
                                     :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#sex-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
@@ -139,12 +139,12 @@
                                 <% end %>
                                 <td id="transfer-<%= m.id %>">
                                     <% @genotypes = %w(\  n/a +/+ +/- -/-)%>
-                                    <% @target_cages = @null_vals.include?(m.strain2) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}", "experiment"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
-                                    <% @target_cage_list = @target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] }.push(["#{@cage.id}->#{@cage.id}", "CANCEL TRANSFER"]) %>
+                                    <% target_cages = @null_vals.include?(m.strain2) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}", "experiment"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
+                                    <% target_cage_list = target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] }.push(["#{@cage.id}->#{@cage.id}", "CANCEL TRANSFER"]) %>
                                     <span class="hidden green-check">&#10003;</span>
                                     <%= best_in_place m, :cage_id, :as => :select, 
-                                    :collection => @target_cage_list,
-                                    :html_attrs => { :selected => m.cage.cage_number }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}"%>
+                                    :collection => target_cage_list,
+                                    :html_attrs => { :selected => m.cage.cage_number, :disabled => (["1","2"].include? m.sex) ? false:true }, :url => home_update_mouse_cage_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}", :id => "mouse-#{m.id}-transfer-select-menu"%>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
                                 <td id="remove-<%=m.id%>">
@@ -164,7 +164,7 @@
                     </tbody>
                     <tfoot class="hide-on-print">
                         <tr rowspan="2">
-                            <td colspan="15"><div style="display:inline-block;height:15px;min-width:15px;border:1px solid black;background-color:lightblue;"></div>&nbsp;&nbsp;indicates column that can be edited. Click on a table cell to edit it. A "-" indicates the field has no set value.<br>
+                            <td colspan="15"><div style="display:inline-block;height:15px;min-width:15px;border:1px solid black;background-color:greenyellow"></div>&nbsp;&nbsp;indicates a parent/adult mouse.<br>"-" indicates the table cell has no set value.<br>
                             <span style="font-size:20px;color:green;">&#10003;</span>&nbsp;&nbsp;Field value successfully updated.<span class="tfoot-red-x">&#10060;</span>&nbsp;&nbsp;Field failed to update</td>
                         </tr>
                     </tfoot>
