@@ -61,7 +61,6 @@ module HomeHelper
         gt = ["n/a", "+/+" , "+/-" ,"-/-"]
         ep = ["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"]
         sx = ["F", "M"]
-        puts updateParams
         @archive = nil
         if updateParams[:updateattr] == "genotype"
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Update Mouse", changed_attr:"genotype", priorval:updateParams[:values][:priorval].to_i >= 0 ? gt[(updateParams[:values][:priorval].to_i - 1)] : "null", newval:gt[(updateParams[:values][:newval].to_i - 1)], who:user.id)
@@ -79,6 +78,8 @@ module HomeHelper
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Tail Cut Date", changed_attr:"tail cut date", priorval:updateParams[:values][:priorval] != "-1" ? updateParams[:values][:priorval] : "null", newval:updateParams[:values][:newval], who:user.id)
         elsif updateParams[:updateattr] == "removed_for"
             @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Reason for Mouse Removal", changed_attr:"removed for reason", priorval:updateParams[:values][:priorval], newval:updateParams[:values][:newval], who:user.id)
+        elsif updateParams[:updateattr] == "pup"
+            @archive = Archive.new(mouse:mouse.id, cage:mouse.cage.cage_number, acttype:"Update Mouse", changed_attr:"pup status", priorval:updateParams[:values][:priorval], newval:updateParams[:values][:newval], who:user.id)
         else
         end
         if @archive && @archive.save
