@@ -17,7 +17,7 @@ class HomeController < ApplicationController
 
     def search 
         puts params.to_json
-        cages = Cage.where(["cage_number LIKE ?","%#{params[:cage_number]}%"]).pluck(:cage_number, :location, :strain)
+        cages = Cage.where(["cage_number LIKE ?","%#{params[:cage_number]}%"]).where(in_use:true).pluck(:cage_number, :location, :strain)
         respond_to do |format|
             format.json { render :json => cages }
         end
