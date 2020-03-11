@@ -27,9 +27,25 @@
 //= require_tree .
 
 $(document).on('turbolinks:load', function(){
+    function boldMatchingSubstring(sub, str) {
+        var subStartCharIdx = str.indexOf(sub);
+        var subLen = sub.length;
+        var subLastCharIdx = subStartCharIdx + subLen;
+        //console.log(str,sub,subIdx);
+        console.log(str,sub, str.substring(subStartCharIdx,subLastCharIdx));
+        if (subLen >= str.length) {
+            return "<strong><u>"+str+"</u></strong>"
+        } else if (subStartCharIdx === 0) {
+            return "<strong><u>"+str.substring(subStartCharIdx, subLastCharIdx)+"</u></strong>"+str.substring(subLastCharIdx)
+        } else if (subStartCharIdx > 0 && subLastCharIdx < str.length) {
+            return str.substring(0,subStartCharIdx)+"<strong><u>"+str.substring(subStartCharIdx, subLastCharIdx)+"</u></strong>"+str.substring(subLastCharIdx)
+        } else if (subStartCharIdx > 0) {
+            return str.substring(0,subStartCharIdx)+"<strong><u>"+str.substring(subStartCharIdx, subLastCharIdx)+"</u></strong>"
+        } else {}
+    }
     $('#navbar-search').on('keyup', function(e){
         $('.search-list-item').remove();
-        if (e.target.value.length > 0) {
+        if (e.target.value.length > 1) {
             $.ajax({
                 beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
                 type:"GET",
@@ -40,8 +56,9 @@ $(document).on('turbolinks:load', function(){
                     if (data.length > 0) {
                         $('#search-results').css('display','inline-block');
                         data.forEach(function(element) {
+                            boldMatchingSubstring(e.target.value,element[0])
                             $('#search-results-list').append('<li class="search-list-item"><a href="/home/cage?cage_number='+element[0]
-                            +'&location='+element[1]+'&strain='+element[2]+'">'+element[1]+' > '+element[0]+'</a></li>')
+                            +'&location='+element[1]+'&strain='+element[2]+'">'+element[1]+' > '+boldMatchingSubstring(e.target.value,element[0])+'</a></li>')
                         });
                     } else {
                         $('#search-results').css('display','none');
