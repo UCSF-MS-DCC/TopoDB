@@ -230,7 +230,7 @@ $(document).on('turbolinks:load',function() {
       url:"/home/mouse",
       data:{"mouse":mouseIdx},
       dataType:"json",
-      success:function(reply) {;
+      success:function(reply) {
          mouseData = reply["data"];
          $('#modal-mouse-remove-date').datepicker().datepicker("setDate", new Date());
          $('#modal-mouse-designation').text(mouseData["three_digit_code"]);

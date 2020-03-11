@@ -10,6 +10,15 @@
         
             <% if current_user %>
                 <li class="nav-item">
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="text" id="navbar-search">
+                    </form>
+                    <div id="search-results">
+                        <ul id="search-results-list">
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
                     <%= link_to "Locations", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
                 </li>
                 <% if current_page?(root_path) || current_page?(home_main_path) %>

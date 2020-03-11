@@ -1,12 +1,26 @@
 class HomeController < ApplicationController
     include HomeHelper
-
     before_action :authenticate_user!
+
+    # TODO: Turn this spaghetti code into a Rails app. The cage and mouse specific methods need to go into cage and mouse controllers. Abstract any methods possible into the model files. Experiment with turning the lists of parameters into objects
+    # (ie @mainViewParams = {:location => params[:location], :loc_strains => Cage.where(in_use:true).where(strain2:["",nil]).where(location:@location).pluck(:strain).uniq, ... } ), while keeping instantiated objects as standalone variables. Also there
+    # is quite a bit of using [nil,""].include? <value> tests to check for null values, empty strings. This is klugie and really not rails-y. Find out how to test for these values in a neater way.
+    # The hybrid strain navigation is getting to be absurd, having to split strings & whatnot. Find a way to simplify this, or abstract the translating of hybrid strains into a helper method.
+
+
     def index 
         @locations = Cage.where(in_use:true).pluck(:location).uniq
         @all_locations = Cage.where(in_use:true).pluck(:location).uniq
         @all_strains = Cage.pluck(:strain).uniq
         @new_cage = Cage.new
+    end
+
+    def search 
+        puts params.to_json
+        cages = Cage.where(["cage_number LIKE ?","%#{params[:cage_number]}%"]).pluck(:cage_number, :location, :strain)
+        respond_to do |format|
+            format.json { render :json => cages }
+        end
     end
 
     def main 
@@ -46,8 +60,8 @@ class HomeController < ApplicationController
         gts = %w(\  n/a +/+ +/- -/-)
         sx = %w(nil F M)
         cage = Cage.find(createMouseParams[:cage_id])
-        strain = !([nil,""].include? createMouseParams[:strain]) ? createMouseParams[:strain] : cage[:strain]
-        strain2 = !([nil,""].include? createMouseParams[:strain2]) ? createMouseParams[:strain2] : cage[:strain2]
+        strain = (createMouseParams[:strain].present?) ? createMouseParams[:strain] : cage[:strain]
+        strain2 = (createMouseParams[:strain2].present?) ? createMouseParams[:strain2] : cage[:strain2]
         # birthcage may not exist, handle error here
         if createMouseParams[:parent_cage_id].length > 0 && Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).count > 0
             @birthcage = Cage.where(cage_number:createMouseParams[:parent_cage_id]).where(strain:strain).where(strain2:strain2).first.id
@@ -70,7 +84,7 @@ class HomeController < ApplicationController
         cageStrain2 = (/_/.match(singleCageParams[:strain]) == nil) ? nil : singleCageParams[:strain].split("_").last
         @cage = cageStrain2 == nil ? Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain) : Cage.find_by(cage_number:singleCageParams[:cage_number], location:singleCageParams[:location],strain:cageStrain, strain2:cageStrain2)
         @strains = Cage.where(in_use:true).where(strain2:["",nil]).pluck(:strain).uniq
-        @strain = (["",nil].include? @cage.strain2) ? @cage.strain : "#{@cage.strain}_#{@cage.strain2}"
+        @strain = (@cage.strain2.blank?) ? @cage.strain : "#{@cage.strain}_#{@cage.strain2}"
         @locations = Cage.pluck(:location).uniq
         @location = singleCageParams[:location]
         @new_mouse = Mouse.new
@@ -147,11 +161,11 @@ class HomeController < ApplicationController
         index_fields = %w(genotype genotype2)
         bool_fields = %w(in_use cage_number_changed)
         updateParams = updateCageParams
-        @location = (["",nil].include? updateParams[:location]) ? nil : updateParams[:location]
+        @location = (updateParams[:location].blank?) ? nil : updateParams[:location]
         updateParams.each do |k, v| 
             if bool_fields.include?(k)
                 updateParams[k.to_sym] = ActiveModel::Type::Boolean.new.cast(v)
-            elsif string_fields.include?(k) && [nil, ""].include?(v)
+            elsif string_fields.include?(k) && v.blank?
                 updateParams[k.to_sym] = nil
             elsif index_fields.include?(k)
                 updateParams[k.to_sym] = v == "" ? "0" : gts.find_index(v).to_s 
@@ -173,11 +187,11 @@ class HomeController < ApplicationController
                 redirect_to root_path
             else
                 gflash :success => "Cage #{@c.cage_number} was successfully updated."
-                redirect_to home_cage_path(:cage_number => @c.cage_number, :location => @location, :strain => ([nil,""].include? @c.strain2 ) ? @c.strain : "#{@c.strain}_#{@c.strain2}")
+                redirect_to home_cage_path(:cage_number => @c.cage_number, :location => @location, :strain => (@c.strain2.blank? ) ? @c.strain : "#{@c.strain}_#{@c.strain2}")
             end
         else
             gflash :error => "Cage #{cage_no} failed to update.#{@c.errors.full_messages}"
-            redirect_to home_cage_path(:cage_number => cage_no, :location => @location, :strain => ([nil,""].include? @c.strain2 ) ? @c.strain : "#{@c.strain}_#{@c.strain2}")
+            redirect_to home_cage_path(:cage_number => cage_no, :location => @location, :strain => (@c.strain2.blank? ) ? @c.strain : "#{@c.strain}_#{@c.strain2}")
         end
     end
 
@@ -244,7 +258,7 @@ class HomeController < ApplicationController
         @mouse = Mouse.find(removeMouseParams[:mouse_id])
         cage_number = @mouse.cage.cage_number
         date_val = removeMouseParams[:remove_date]
-        reason_val = (["",nil].include? removeMouseParams[:remove_reason]) ? nil : removeMouseParams[:remove_reason]
+        reason_val = (removeMouseParams[:remove_reason].present?) ? removeMouseParams[:remove_reason] : nil  
         respond_to do |format|
             if ["", nil].include? date_val
                 gflash :error => "Mouse was not removed from cage. Removal Date is required."

@@ -65,3 +65,20 @@ td {
 .pupsFormLabel {
    padding-right:5px;
 }
+#search-results {
+   display:none;
+   border:1px solid lightgrey;
+   min-width:200px;
+   max-height:80px;
+   overflow-y:scroll;
+   background-color:white;
+}
+#search-results-list {
+   list-style-type:none;
+   padding-left:0;
+}
+.search-list-item {
+   margin-left:0px;
+   padding-left:3px;
+   border:1px dotted lightlightgrey;
+}

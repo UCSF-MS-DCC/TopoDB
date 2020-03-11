@@ -12,7 +12,7 @@
                 <table>
                     <tr>
                         <th>Strain:</th>
-                        <td><% if @cage.strain2 == nil || @cage.strain2 == "" %>
+                        <td><% if @cage.strain2.blank? %>
                                 <%= link_to @cage.strain, home_strain_path(strain: @cage.strain, location: @location) %>
                             <% else %>
                                 <%= link_to "#{@cage.strain}/#{@cage.strain2}", home_strain_path({:strain => "#{@cage.strain}_#{@cage.strain2}", :location => @location}) %>
@@ -107,7 +107,7 @@
                                     :url => home_update_mouse_path, :param => "mouse-#{m.id}", :class => "editableField highlight-on-success", :activator => "#genotype-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>
-                                <% if @cage.strain2 != "" && @cage.strain2 != nil %>
+                                <% if @cage.strain2.present? %>
                                     <td id="genotype2-<%= m.id %>">
                                         <span class="hidden green-check">&#10003;</span>
                                         <%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2 },
