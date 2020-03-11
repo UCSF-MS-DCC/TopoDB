@@ -41,7 +41,9 @@ $(document).on('turbolinks:load', function(){
                     console.log(data.length)
                     if (data.length > 0) {
                         $('#search-results').css('display','inline-block');
-                        data.forEach(element => $('#search-results-list').append('<li class="search-list-item"><a href="/home/cage?cage_number='+element[0]+'&location='+element[1]+'&strain='+element[2]+'">'+element[1]+' > '+element[0]+'</a></li>'))
+                        data.forEach(function(element) {
+                            $('#search-results-list').append('<li class="search-list-item"><a href="/home/cage?cage_number='+element[0]+'&location='+element[1]+'&strain='+element[2]+'">'+element[1]+' > '+element[0]+'</a></li>'))
+                        } 
                     } else {
                         $('#search-results').css('display','none');
                     }
