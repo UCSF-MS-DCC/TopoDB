@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   namespace :home do
     get 'index'
+    get 'search'
     get 'main'
     get 'cage'
     get 'mouse'
@@ -25,6 +26,10 @@ Rails.application.routes.draw do
     get 'graph_data_sex'
     get 'graph_data_age'
     get 'cage_timeline_dates'
+  end
+
+  resources :cages do
+    resources :mice 
   end
 
   namespace :archive do
