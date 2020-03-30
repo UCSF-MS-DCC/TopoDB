@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  experiment: 
+  m1: 
+  m2: 1
+
+two:
+  experiment: 
+  m1: 
+  m2: 1

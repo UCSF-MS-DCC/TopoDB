@@ -1,0 +1,124 @@
+<div class="container">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h1 id="experiment-name"><%= @experiment.name %></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h2><%= @experiment.date %></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h2 id="experiment-gene"><%=@experiment.gene %></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <p id="experiment-description"><%= @experiment.description %></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+        <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editExpFormDiv" type="button" aria-expanded=false>Edit Experiment Information</button>
+        </div>
+    </div>
+    <hr>
+    <%= render 'experiment/partials/edit_experiment'%>
+
+    <% @experiment.variables.each do |v| %>
+        <div class="row">
+            <div class="col-12">
+                <h2><%= v %></h2>
+                <table class="table table-bordered table-striped" id="experiment-mouse-datatable" data-source=<%= @experiment.id %> style = "margin-top:15px;">
+                    <thead>
+                    <th></th>
+                        <% @experiment.mice.order("id ASC").each do |m| %>
+                            <th data-mouse="<%= m.id %>"><%= m.three_digit_code%></th>
+                        <% end %>
+                        <th>ctr</th>
+                        <th>mean</th>
+                        <th>se</th>
+                    </thead>
+                    <!-- The table holdiing the data is made up columns of mice and rows of datapoints. Each table cell represents one row in the Datapoints
+                    database table. In case a mouse does not have a datapoint(column) for a particular timepoint(row), best in place will instead 
+                    instatiate a new Datapoint model -->
+                    <tbody>
+                        <%@novel_cell_num = 1%>
+                        <% @timepoints.each do |t| %>
+                            <tr>
+                                <td><%= t %></td> <!-- TODO: add best in place code in table cells. See cage#show view -->
+                                <% @experiment.mice.order("id ASC").each do |m| %>
+                                    <% if Datapoint.find_by(mouse_id:m.id, timepoint:t)%>
+                                        <% dp = Datapoint.find_by(mouse_id:m.id, timepoint:t) %>
+                                        <td class="score-cell" id="datapoint-<%=dp.id%>" >
+                                            <span class="hidden green-check">&#10003;</span>
+                                            <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/update_data", :param => "datapoint-#{dp.id}",
+                                            :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
+                                            :default => dp.var_value, :value => dp.var_value, :activator => "#datapoint-#{dp.id}", :ok_button => "OK" %>
+                                            <span class="hidden red-x">&#10060;</span>
+                                        </td>
+                                    <% else %>
+                                        <% dp = Datapoint.new(mouse_id:m.id, timepoint:t) %>
+                                        <td class="score-cell" id="novel-datapoint-<%=@novel_cell_num%>" >
+                                            <span class="hidden green-check">&#10003;</span>
+                                            <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/add_new_datapoint", :param => "datapoint",
+                                            :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
+                                            :default => "", :value => "", :activator => "#novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
+                                            <span class="hidden red-x">&#10060;</span>
+                                        </td>
+                                        <% @novel_cell_num += 1 %>
+                                    <% end %>
+                                <% end %>
+                                <td class="ctr-cell"></td>
+                                <td class="mean-cell"></td>
+                                <td class="standard-error-cell"></td>
+                            </tr>
+                        <% end %>
+                        <tr>
+                            <%= form_with :url => "/experiment/#{@experiment.id}/add_data"  do |f| %>
+                                <td><%= f.text_field :timepoint, :placeholder => "Timepoint"%></td>
+                                <% @experiment.mice.each do |m| %>
+                                    <td><%= f.text_field "mouse-#{m.id}", :placeholder => "value"%></td>
+                                <% end %> 
+                                <td colspan=3><%= f.submit "Add new data", :class => "btn btn-sm btn-primary btn-block", :disabled => (@experiment.mice.count == 0) %></td>
+                            <% end %>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <% end %>
+    <!-- for each mouse with no datapoints, create a form for those to be filled in -->
+    <% @experiment.mice.includes(:datapoints).where(:datapoints => { :mouse_id => nil }).each do |m| %>
+        <div class="row">
+            <div class="col-12">
+                <h3><%= m.three_digit_code %></h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <% @timepoints.each do |t| %>
+                            <th><%= t %></th>
+                        <% end %>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <%= form_with :url => "/experiment/#{@experiment.id}/add_single_mouse_data", :mouse_id => m.id do |f| %>
+                                <%= f.hidden_field :mouse_id, :value => m.id %>
+                                <% @timepoints.each do |t| %>
+                                    <td>
+                                        <%= f.text_field "timepoint-#{t}" %>
+                                    </td>
+                                <% end %>
+                                <td><%= f.submit "Enter", :class => "btn btn-small btn-primary"%></td>
+                            <% end %>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    <% end %>
+
+</div>

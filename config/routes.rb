@@ -28,8 +28,19 @@ Rails.application.routes.draw do
     get 'cage_timeline_dates'
   end
 
-  resources :cages do
-    resources :mice 
+  resources :cage do
+    post 'create_pups'
+    resources :mouse
+  end
+
+  resources :experiment do 
+    post 'add_data'
+    put 'update_data'
+    post 'add_new_datapoint'
+    resources :mouse do
+      resource :datapoint do 
+      end
+    end
   end
 
   namespace :archive do

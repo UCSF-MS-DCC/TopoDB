@@ -78,12 +78,13 @@
         </div>
         <div class="row">
             <div class="col-sm-4">
-                <h6>Use in experiment:</h6>
+                <h6>Add to experiment:</h6>
             </div>
             <div class="col-sm-8">
                 <select id="modal-mouse-remove-experiment" class="form-control">
-                    <% Experiment.all.each do |e| %>
-                        <option value="<%= e.id %>"><%= e.name %></option>
+                    <option value="">None</option>
+                    <% Experiment.where(gene:@cage.strain).each do |e| %>
+                        <option value="<%= e.id %>" class="experiment-targets" ><%= e.name %></option>
                     <% end %>
                 </select>
             <div>

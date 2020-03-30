@@ -16,7 +16,6 @@ class HomeController < ApplicationController
     end
 
     def search 
-        puts params.to_json
         cages = Cage.where(["cage_number LIKE ?","%#{params[:cage_number]}%"]).where(in_use:true).pluck(:cage_number, :location, :strain)
         respond_to do |format|
             format.json { render :json => cages }
@@ -36,7 +35,7 @@ class HomeController < ApplicationController
     def create_cage
         gts = [nil, "n/a", "+/+", "+/-", "-/-"]
         createParams = createCageParams
-        if createCageParams[:strain2] == ""
+        if createCageParams[:strain2].blank?
             createParams[:strain2] = nil
         end
         createParams[:genotype] = gts.find_index(createCageParams[:genotype])
@@ -44,7 +43,7 @@ class HomeController < ApplicationController
         location = createCageParams[:location]
 
         @newCage = Cage.new(createParams)
-        strainpath = (createParams[:strain2] == nil || createParams[:strain2] == "") ? createParams[:strain] : "#{createParams[:strain]}_#{createParams[:strain2]}"
+        strainpath = createParams[:strain2].blank? ? createParams[:strain] : "#{createParams[:strain]}_#{createParams[:strain2]}"
         if @newCage.save 
             log_new_cage(@newCage, current_user)
             gflash :success => "New cage #{@newCage.cage_number} successfully created"
@@ -69,7 +68,7 @@ class HomeController < ApplicationController
             @birthcage = nil
         end
         @mouse = Mouse.new(cage_id:createMouseParams[:cage_id], sex:sx.index(createMouseParams[:sex]), three_digit_code:createMouseParams[:three_digit_code], strain:strain, strain2:strain2, dob: createMouseParams[:dob], parent_cage_id: @birthcage,
-                            ear_punch:ear_notch.index(createMouseParams[:ear_notch]), genotype: gts.index(createMouseParams[:genotype]), weaning_date:createMouseParams[:weaning_date], tail_cut_date:createMouseParams[:tail_cut_date])
+                            ear_punch:ear_notch.index(createMouseParams[:ear_notch]), genotype: gts.index(createMouseParams[:genotype]), weaning_date:createMouseParams[:weaning_date], biopsy_collection_date:createMouseParams[:biopsy_collection_date])
         if @mouse.save
             gflash :success => "Mouse was successfully added to cage #{cage.cage_number}"
             log_new_mouse(@mouse, current_user)
@@ -255,17 +254,23 @@ class HomeController < ApplicationController
     end
 
     def remove_mouse
+        puts "REMOVE MOUSE PARAMS: #{removeMouseParams.to_json}"
         @mouse = Mouse.find(removeMouseParams[:mouse_id])
         cage_number = @mouse.cage.cage_number
         date_val = removeMouseParams[:remove_date]
-        reason_val = (removeMouseParams[:remove_reason].present?) ? removeMouseParams[:remove_reason] : nil  
+        reason_val = (removeMouseParams[:remove_reason].present?) ? removeMouseParams[:remove_reason] : nil
+        experiment = (removeMouseParams[:experiment].present?) ? removeMouseParams[:experiment].to_i : nil
         respond_to do |format|
-            if ["", nil].include? date_val
+            if date_val.blank?
                 gflash :error => "Mouse was not removed from cage. Removal Date is required."
                 format.html
                 format.json { render :json => { :message => "No date "}, :status => :unprocessable_entity }
             else
-                @mouse.update_attributes(removed: date_val, removed_for: reason_val)  
+                @mouse.update_attributes(removed: date_val, removed_for: reason_val)
+                unless experiment.nil?
+                    puts "EXPERIMENT NOT NIL"
+                    ExperimentMouse.new(mouse_id:@mouse.id, experiment_id:experiment).save
+                end
                 log_remove_mouse(cage_number, @mouse.id, current_user)
                 gflash :success => "Mouse was successfully removed"
                 format.html 
@@ -283,7 +288,7 @@ class HomeController < ApplicationController
         end
     end
 
-    def update_tail_cut_date
+    def update_biopsy_collection_date
         mouse = params.keys.select{ |k| k.include?("mouse-") }.first
         mouse_id = mouse.split("-").second
         key = params[mouse].keys.first
@@ -397,6 +402,9 @@ class HomeController < ApplicationController
             begin
                 @mouse = Mouse.find(restoreMouseParams[:mouse])
                 @mouse.update_attributes(removed: nil, removed_for: nil)
+                if @mouse.experiment_mouse
+                    @mouse.experiment_mouse.destroy
+                end
                 respond_to do |format|
                     format.html
                     format.json { render :json => { :message => "Mouse was restored to cage #{@mouse.cage.cage_number}.", :status => :accepted } }
@@ -488,7 +496,7 @@ class HomeController < ApplicationController
     end
 
     def createMouseParams
-        params.require(:mouse).permit(:sex, :three_digit_code, :strain, :strain2, :ear_notch, :dob, :tail_cut_date, :weaning_date, :cage_id, :genotype, :parent_cage_id)
+        params.require(:mouse).permit(:sex, :three_digit_code, :strain, :strain2, :ear_notch, :dob, :biopsy_collection_date, :weaning_date, :cage_id, :genotype, :parent_cage_id)
     end
 
     def updateCageParams
@@ -499,7 +507,7 @@ class HomeController < ApplicationController
     end
 
     def removeMouseParams
-        params.require(:mouse).permit(:mouse_id, :remove_date, :remove_reason)
+        params.require(:mouse).permit(:mouse_id, :remove_date, :remove_reason, :experiment)
     end
 
     def updateMouseParams

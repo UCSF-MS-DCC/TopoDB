@@ -1,6 +1,18 @@
 class Mouse < ApplicationRecord
   belongs_to :cage
+  belongs_to :experiment, optional: true
+  has_many :datapoints
   has_paper_trail
+  before_update :assign_experiment_code, if: :needs_experiment_code?
+
+  def needs_experiment_code?
+    self.experiment_id.present? && self.removed.present? && self.experiment_code.blank?
+  end
+
+  def assign_experiment_code
+    last_exp_code = self.experiment.mice.where(sex:self.sex).where.not(experiment_code:nil).order("experiment_code ASC").last
+    self.experiment_code = "Poo"
+  end
 
   # validates_uniqueness_of :designation, :scope => [:strain],  :message => "not unique"
   # validates_inclusion_of :ear_punch, :in => %w(N R L RL RR LL RLL RRL RRLL), :if => :has_ear_punch?
@@ -11,7 +23,6 @@ class Mouse < ApplicationRecord
   #validate :one_male_per_breeding_cage
   #validate :up_to_two_females_per_breeding_cage
   # validates_uniqueness_of :ear_punch, :scope => [:cage_id, :dob, :sex], on: :update, allow_nil: true, allow_blank: true
-  
   def assign_full_designation
     # find the most recent id of a living mouse in the same strain/hybrid strain
     current_max_id = Mouse.where(strain:self.strain).where(strain2:self.strain2).(removed:nil).order(:tdc_generated).last.three_digit_code

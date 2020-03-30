@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_24_221909) do
+ActiveRecord::Schema.define(version: 2020_03_30_203603) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "cage"
@@ -38,6 +38,28 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.string "genotype", default: "0"
     t.string "genotype2", default: "0"
     t.string "strain2"
+    t.datetime "last_viewed"
+  end
+
+  create_table "datapoints", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "mouse_id"
+    t.string "var_value"
+    t.string "timepoint"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mouse_id"], name: "index_datapoints_on_mouse_id"
+  end
+
+  create_table "experiments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.date "date"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "gene"
+    t.string "variables"
+    t.datetime "last_viewed"
+    t.text "protocol"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -46,7 +68,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.string "genotype"
     t.date "dob"
     t.date "weaning_date"
-    t.date "tail_cut_date"
+    t.date "biopsy_collection_date"
     t.string "ear_punch"
     t.string "designation"
     t.date "removed"
@@ -60,7 +82,10 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.string "strain2"
     t.datetime "tdc_generated"
     t.boolean "pup"
+    t.bigint "experiment_id"
+    t.string "experiment_code"
     t.index ["cage_id"], name: "index_mice_on_cage_id"
+    t.index ["experiment_id"], name: "index_mice_on_experiment_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -101,5 +126,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
+  add_foreign_key "datapoints", "mice"
   add_foreign_key "mice", "cages"
+  add_foreign_key "mice", "experiments"
 end

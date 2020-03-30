@@ -7,30 +7,71 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-        
             <% if current_user %>
-                <li class="nav-item">
-                    <form class="form-inline">
-                        <input class="form-control mr-sm-2" type="text" id="navbar-search" placeholder="Search cage numbers">
-                    </form>
-                    <div id="search-results">
-                        <ul id="search-results-list">
-                        </ul>
+                <% if current_page?(root_path) || current_page?(home_main_path) %>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-primary" style="margin-left:15px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+                    </li>
+                <% end %>
+                <!-- Locations dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Locations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <% Cage.all.pluck(:location).uniq.each do |loc|%>
+                            <%= link_to loc, home_main_path(:location => loc), :class => "dropdown-item" %>
+                        <% end %>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <%= link_to "Locations", root_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                <!-- Cages dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Cages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form class="form-inline" style="margin-left:15px;">
+                            <input class="form-control mr-sm-2" type="text" id="navbar-search" placeholder="Search cage numbers">
+                        </form>
+                        <div id="search-results">
+                            <ul id="search-results-list">
+                            </ul>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <i class="dropdown-item" style="font-size:9pt;">most recently viewed</i>
+                        <% Cage.where(in_use:true).order("last_viewed DESC").limit(5).each do |cage|%>
+                            <%= link_to "#{cage.strain} :: #{cage.cage_number}", cage_path(:id => cage.id), :class => "dropdown-item" %>
+                        <% end %>
+                    </div>
                 </li>
-                <% if current_page?(root_path) || current_page?(home_main_path) %>
-                <li class="nav-item">
-                    <button class="btn btn-outline-primary" style="margin-left:15px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+                <!-- Experiments Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Experiments
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <i class="dropdown-item" style="font-size:9pt;">most recently viewed</i>
+                        <% Experiment.all.order("last_viewed DESC").limit(5).each do |e|%>
+                            <%= link_to "#{e.name} :: #{e.gene}", experiment_path(:id => e.id), :class => "dropdown-item" %>
+                        <% end %>
+                        <div class="dropdown-divider"></div>
+                        <%= link_to "All Experiments", experiment_index_path, :class => "dropdown-item" %>
+                        <%= link_to "New Experiment", new_experiment_path, :class => "dropdown-item" %>
+                        <%# <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a> %>
+                    </div>
                 </li>
-                <% end %>
-                <li class="nav-item">
-                    <%= link_to "ChangeLog", archive_index_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
-                </li>
-                <li class="nav-item">
-                    <%= link_to "Removed Mice", home_removed_mouse_index_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                <!-- Audit dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Audit
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <%= link_to "Change Log", archive_index_path, :class => "dropdown-item" %>
+                        <%= link_to "Removed Mice", home_removed_mouse_index_path, :class => "dropdown-item" %>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <%= link_to "Log out", destroy_user_session_path, :method => :delete, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>

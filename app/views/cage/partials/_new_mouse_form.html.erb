@@ -1,11 +1,10 @@
 <div class="collapse" id="newMouseFormDiv" style="margin-top:20px;margin-bottom:20px;">
-    <%= form_for @new_mouse, url: home_create_mouse_path(@new_mouse), :html => { :id => "new-mouse-form", :style => "border:1px solid skyblue;padding:10px;min-width:50%;border-radius:5px;" } do |f| %>
-        <%= f.hidden_field(:cage_id, :value => @cage.id ) %>
+    <%= form_for @new_mouse, url: cage_mouse_index_path(@cage,@new_mouse), :html => { :id => "new-mouse-form", :style => "border:1px solid skyblue;padding:10px;min-width:50%;border-radius:5px;" } do |f| %>
         <div class="row">
             <div class="col-1">
                 <div class="form-group">
                     <%= f.label :sex, "Sex", :class => "col-form-label" %>
-                    <%= f.select :sex, [nil,"F","M"], :selected => nil, :class => "form-control" %>
+                    <%= f.select :sex, [[nil,0],["F",1],["M",2]], :selected => nil, :class => "form-control" %>
                 </div>
             </div>
             <div class="col-1">
@@ -16,9 +15,9 @@
             </div>
             <div class="col-1">
                 <div class="form-group">
-                    <%= f.label :ear_notch, "Notch", :class => "col-form-label" %>
-                    <%= f.select :ear_notch, ["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"], :selected => nil, :class => "form-control" %>
-                </div>
+                    <%= f.label :ear_punch, "Notch", :class => "col-form-label" %>
+                    <%= f.select :ear_punch, [["-",1],["N",2],["R",3],["L",4],["RR",5],["RL",6],["LL",7],["RRL",8],["RLL",9],["RRLL",10]], :selected => nil, :class => "form-control" %>
+                </div> 
             </div>
             <div class="col-1">
                 <div class="form-group">
