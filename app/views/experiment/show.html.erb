@@ -105,14 +105,14 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <%= form_with :url => "/experiment/#{@experiment.id}/add_single_mouse_data", :mouse_id => m.id do |f| %>
+                            <%= form_with :url => "/experiment/#{@experiment.id}/add_single_mouse_data", local: true do |f| %>
                                 <%= f.hidden_field :mouse_id, :value => m.id %>
                                 <% @timepoints.each do |t| %>
                                     <td>
                                         <%= f.text_field "timepoint-#{t}" %>
                                     </td>
                                 <% end %>
-                                <td><%= f.submit "Enter", :class => "btn btn-small btn-primary"%></td>
+                                <td colspan=3 ><%= f.submit "Enter", :class => "btn btn-xs btn-primary" %></td>
                             <% end %>
                         </tr>
                     </tbody>

@@ -26,7 +26,7 @@
                 </li>
                 <!-- Cages dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    <a class="dropdown-toggle btn btn-outline-primary <%= Cage.where(in_use:true).count == 0 ? "disabled" : "" %>" href="#" id="cageDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
                     Cages
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -46,7 +46,7 @@
                 </li>
                 <!-- Experiments Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    <a class="dropdown-toggle btn btn-outline-primary <%= Experiment.count == 0 ? "disabled" : "" %>" href="#" id="experimentDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
                     Experiments
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -65,11 +65,11 @@
                 </li>
                 <!-- Audit dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="auditDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
                     Audit
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <%= link_to "Change Log", archive_index_path, :class => "dropdown-item" %>
+                        <%= link_to "Change Log", audit_index_path, :class => "dropdown-item" %>
                         <%= link_to "Removed Mice", home_removed_mouse_index_path, :class => "dropdown-item" %>
                     </div>
                 </li>

@@ -11,6 +11,9 @@ locations = %w(sandler genentech\ hall)
 
 dgn = 100
 
+if User.count > 0
+    User.destroy_all
+end
 if Mouse.count > 0
     Mouse.destroy_all
 end
@@ -20,7 +23,12 @@ end
 if Archive.count > 0
     Archive.destroy_all
 end
+if Experiment.count > 0
+    Experiment.destroy_all
+end
 
+#create Admin user
+User.new(email:"admin@topodb.ucsf.edu", password:"321321", password_confirmation:"321321", admin:true, editor:true, first:"Admin", last:"User").save
 #create breeding cages
 50.times do 
 
@@ -88,3 +96,4 @@ dgn = 200
         end 
     end
 end
+

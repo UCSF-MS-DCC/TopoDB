@@ -43,6 +43,15 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :audit do
+    get 'index'
+    get 'mouse'
+    get 'cage'
+    get 'experiment'
+    get 'mouse_version'
+    post 'restore_mouse_version'
+  end
+
   namespace :archive do
     get 'index'
   end

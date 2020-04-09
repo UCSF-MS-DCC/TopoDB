@@ -34,21 +34,27 @@ class ExperimentController < ApplicationController
 
     def add_data
         puts "ADD DATA PARAMS: #{params}"
+        errors = []
         params.select { |key, value| key.to_s.match(/^mouse/) }.each do |k, v|
-            datapoint = Datapoint.new(mouse_id:k.split("-").last.to_i, timepoint:params[:timepoint], var_value:v).save
-            puts datapoint.to_json
+            datapoint = Datapoint.new(mouse_id:k.split("-").last.to_i, timepoint:params[:timepoint], var_value:v)
+            if !datapoint.save
+                errors.push(datapoint.errors.full_messages)
+            end
         end
-        redirect_to action: "show", id: params[:experiment_id]
+        if errors.size == 0
+            gflash :success => "New datapoints added"
+        else
+            gflash :error => "There was a problem creating new datapoints. #{errors}"
+        end
+        redirect_to experiment_path(id:params[:experiment_id].to_i)
     end
 
     def update_data
-        puts "UPDATE DATA PARAMS: #{params.to_json}"
         dp = params.select { |k, _| /^datapoint/.match(k) }
         Datapoint.find(dp.keys.first.split("-").last.to_i).update_attributes(var_value:dp[dp.keys.first]["var_value"])       
     end
 
     def add_new_datapoint
-        puts "PARAMS: #{params.to_json}"
         datapoint = Datapoint.new(new_datapoint_params)
         respond_to do |format|
             if datapoint.save
