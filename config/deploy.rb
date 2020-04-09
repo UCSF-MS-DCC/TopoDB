@@ -5,6 +5,7 @@ lock "~> 3.11.2"
 =begin
 set :application, "topodb"
 set :repo_url, "https://github.com/UCSF-MS-DCC/TopoDB"
+set :branch,        :master
 
 server '169.230.177.100', port: 22, roles: [:web, :app, :db], primary: true
 
@@ -43,7 +44,7 @@ set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle publi
 # uat:
 set :application, "uat-topodb"
 set :repo_url, "https://github.com/UCSF-MS-DCC/TopoDB"
-
+set :branch,        :uat
 server '169.230.177.100', port: 22, roles: [:web, :app, :db], primary: true
 
 set :user,            'deployment'
@@ -68,7 +69,7 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 set :console_user, :deployment
 ## Defaults:
 # set :scm,           :git
-set :branch,        :uat
+
 # set :format,        :pretty
 # set :log_level,     :debug
 set :keep_releases, 5
