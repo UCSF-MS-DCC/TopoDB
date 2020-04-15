@@ -38,7 +38,7 @@
                             <td><%= Cage.find(ver["cage_id"].to_i).cage_number %></td>
                             <td><%= ver["removed"]%></td>
                             <td><%= (ver["experiment_id"].present?) ? Experiment.find(ver["experiment_id"].to_i).name : "-"%></td>
-                            <td><%= "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" %></td>
+                            <td><%= (@mouse.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
                         </tr>
                     <% end %>
                     <tr style="background-color:greenyellow">
@@ -52,7 +52,7 @@
                         <td><%= Cage.find(@mouse["cage_id"].to_i).cage_number %></td>
                         <td><%= @mouse["removed"]%></td>
                         <td><%= (@mouse["experiment_id"].present?) ? @mouse.experiment.name : "-" %></td>
-                        <td><%= "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}"%></td>
+                        <td><%= (@mouse.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
                     </tr>
                 </tbody>
             </table>

@@ -14,21 +14,21 @@ dgn = 100
 # if User.count > 0
 #     User.destroy_all
 # end
-# if Datapoint.count > 0
-#     Datapoint.destroy_all
-# end
-# if Mouse.count > 0
-#     Mouse.destroy_all
-# end
-# if Cage.count > 0
-#     Cage.destroy_all
-# end
-# if Archive.count > 0
-#     Archive.destroy_all
-# end
-# if Experiment.count > 0
-#     Experiment.destroy_all
-# end
+if Datapoint.count > 0
+    Datapoint.destroy_all
+end
+if Mouse.count > 0
+    Mouse.destroy_all
+end
+if Cage.count > 0
+    Cage.destroy_all
+end
+if Archive.count > 0
+    Archive.destroy_all
+end
+if Experiment.count > 0
+    Experiment.destroy_all
+end
 
 
 
@@ -108,10 +108,12 @@ end
     date = Faker::Date.between(from:1.year.ago,to:Date.today)
     desc = Faker::Lorem.paragraph(sentence_count:3)
     gene = Mouse.pluck(:strain).uniq[Faker::Number.between(from:0, to: (Mouse.pluck(:strain).uniq.size - 1))]
-    var = ["disability","weight"]
     prot = Faker::Lorem.paragraph(sentence_count:3)
-    Experiment.create(name:name, date:date, description:desc, gene:gene, variables:var, protocol:prot)
+    var1 = "disability"
+    v1row = Faker::Number.between(from:5, to:20)
+    var2 = "weight"
+    v2row = Faker::Number.between(from:5, to:20)
+    Experiment.create(name:name, date:date, description:desc, gene:gene, variable_1:var1, variable_1_rows:v1row, variable_2:var2, variable_2_rows:v2row, protocol:prot)
 end
-# add mice to experiments
 
 
