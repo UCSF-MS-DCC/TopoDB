@@ -9,6 +9,10 @@ class Mouse < ApplicationRecord
     self.experiment_id.present? && self.removed.present? && self.experiment_code.blank?
   end
 
+  def assigned_to_experiment?
+    self.experiment_id.present? && self.removed.present?
+  end
+
   def assign_experiment_code
     last_exp_code = self.experiment.mice.where(sex:self.sex).where.not(experiment_code:nil).order("experiment_code ASC").last
     self.experiment_code = "Poo"

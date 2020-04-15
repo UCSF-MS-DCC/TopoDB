@@ -13,7 +13,6 @@ class ExperimentController < ApplicationController
             format.html 
             format.json 
         end
-        @timepoints = Datapoint.where(mouse_id:@experiment.mice.order("id ASC").pluck(:id).uniq).pluck(:timepoint).uniq
         @summary_stats = {}
 
     end
@@ -33,7 +32,6 @@ class ExperimentController < ApplicationController
     end
 
     def add_data
-        puts "ADD DATA PARAMS: #{params}"
         errors = []
         params.select { |key, value| key.to_s.match(/^mouse/) }.each do |k, v|
             datapoint = Datapoint.new(mouse_id:k.split("-").last.to_i, timepoint:params[:timepoint], var_value:v)
@@ -89,7 +87,8 @@ class ExperimentController < ApplicationController
     private
 
         def create_update_params
-            params.require(:experiment).permit(:date, :name, :gene, :description, :id, :variables =>[])
+            params.require(:experiment).permit(:date, :name, :gene, :description, :rows, :id, :variable_1, :variable_1_rows,
+            :variable_2, :variable_2_rows, :variable_3, :variable_3_rows)
         end
 
         def show_params
