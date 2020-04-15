@@ -27,6 +27,9 @@
 //= require_tree .
 
 $(document).on('turbolinks:load', function(){
+    if (window.location.hostname !== "uat.topodb.ucsf.edu") {
+        $('#test-warning').css('display','none');
+    }
     function boldMatchingSubstring(sub, str) {
         var subStartCharIdx = str.indexOf(sub);
         var subLen = sub.length;

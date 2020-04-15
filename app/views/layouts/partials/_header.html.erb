@@ -7,6 +7,10 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
+            <!-- Big ugly warning if this is the testing/uat version. Hidden by jquery in other deployments -->
+            <li class="nav-item" id="test-warning">
+                <h1>TopoDB Test App</h1>
+            </li>
             <% if current_user %>
                 <% if current_page?(root_path) || current_page?(home_main_path) %>
                     <li class="nav-item">
