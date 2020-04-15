@@ -52,20 +52,20 @@
                                 <% @experiment.mice.order("id ASC").each do |m| %>
                                     <% if Datapoint.find_by(mouse_id:m.id, timepoint:idx)%>
                                         <% dp = Datapoint.find_by(mouse_id:m.id, timepoint:idx) %>
-                                        <td class="score-cell" id="datapoint-<%=dp.id%>" >
+                                        <td class="score-cell" id="var1-datapoint-<%=dp.id%>" >
                                             <span class="hidden green-check">&#10003;</span>
                                             <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/update_data", :param => "datapoint-#{dp.id}",
                                             :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
-                                            :default => dp.var_value, :value => dp.var_value, :activator => "#datapoint-#{dp.id}", :ok_button => "OK" %>
+                                            :default => dp.var_value, :value => dp.var_value, :activator => "#var1-datapoint-#{dp.id}", :ok_button => "OK" %>
                                             <span class="hidden red-x">&#10060;</span>
                                         </td>
                                     <% else %>
                                         <% dp = Datapoint.new(mouse_id:m.id, timepoint:idx) %>
-                                        <td class="score-cell" id="novel-datapoint-<%=@novel_cell_num%>" >
+                                        <td class="score-cell" id="var1-novel-datapoint-<%=@novel_cell_num%>" >
                                             <span class="hidden green-check">&#10003;</span>
                                             <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/add_new_datapoint", :param => "datapoint",
                                             :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
-                                            :default => "", :value => "", :activator => "#novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
+                                            :default => "", :value => "", :activator => "#var1-novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
                                             <span class="hidden red-x">&#10060;</span>
                                         </td>
                                         <% @novel_cell_num += 1 %>
@@ -107,20 +107,20 @@
                                 <% @experiment.mice.order("id ASC").each do |m| %>
                                     <% if Datapoint.find_by(mouse_id:m.id, timepoint:idx)%>
                                         <% dp = Datapoint.find_by(mouse_id:m.id, timepoint:idx) %>
-                                        <td class="score-cell" id="datapoint-<%=dp.id%>" >
+                                        <td class="score-cell" id="var2-datapoint-<%=dp.id%>" >
                                             <span class="hidden green-check">&#10003;</span>
                                             <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/update_data", :param => "datapoint-#{dp.id}",
                                             :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
-                                            :default => dp.var_value, :value => dp.var_value, :activator => "#datapoint-#{dp.id}", :ok_button => "OK" %>
+                                            :default => dp.var_value, :value => dp.var_value, :activator => "#var2-datapoint-#{dp.id}", :ok_button => "OK" %>
                                             <span class="hidden red-x">&#10060;</span>
                                         </td>
                                     <% else %>
                                         <% dp = Datapoint.new(mouse_id:m.id, timepoint:idx) %>
-                                        <td class="score-cell" id="novel-datapoint-<%=@novel_cell_num%>" >
+                                        <td class="score-cell" id="var2-novel-datapoint-<%=@novel_cell_num%>" >
                                             <span class="hidden green-check">&#10003;</span>
                                             <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/add_new_datapoint", :param => "datapoint",
                                             :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
-                                            :default => "", :value => "", :activator => "#novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
+                                            :default => "", :value => "", :activator => "#var2-novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
                                             <span class="hidden red-x">&#10060;</span>
                                         </td>
                                         <% @novel_cell_num += 1 %>
@@ -162,20 +162,20 @@
                                 <% @experiment.mice.order("id ASC").each do |m| %>
                                     <% if Datapoint.find_by(mouse_id:m.id, timepoint:idx)%>
                                         <% dp = Datapoint.find_by(mouse_id:m.id, timepoint:idx) %>
-                                        <td class="score-cell" id="datapoint-<%=dp.id%>" >
+                                        <td class="score-cell" id="var3-datapoint-<%=dp.id%>" >
                                             <span class="hidden green-check">&#10003;</span>
                                             <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/update_data", :param => "datapoint-#{dp.id}",
                                             :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
-                                            :default => dp.var_value, :value => dp.var_value, :activator => "#datapoint-#{dp.id}", :ok_button => "OK" %>
+                                            :default => dp.var_value, :value => dp.var_value, :activator => "#var-3datapoint-#{dp.id}", :ok_button => "OK" %>
                                             <span class="hidden red-x">&#10060;</span>
                                         </td>
                                     <% else %>
                                         <% dp = Datapoint.new(mouse_id:m.id, timepoint:idx) %>
-                                        <td class="score-cell" id="novel-datapoint-<%=@novel_cell_num%>" >
+                                        <td class="score-cell" id="var3-novel-datapoint-<%=@novel_cell_num%>" >
                                             <span class="hidden green-check">&#10003;</span>
                                             <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/add_new_datapoint", :param => "datapoint",
                                             :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
-                                            :default => "", :value => "", :activator => "#novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
+                                            :default => "", :value => "", :activator => "#var3-novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
                                             <span class="hidden red-x">&#10060;</span>
                                         </td>
                                         <% @novel_cell_num += 1 %>
