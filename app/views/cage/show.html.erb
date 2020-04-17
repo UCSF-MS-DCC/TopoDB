@@ -68,6 +68,7 @@
                         <% if @cage.cage_type == "breeding" %><th class="editableColHeader">Wean Date</th><% end %>
                         <th class="editableColHeader">Transfer</th>
                         <th class="editableColHeader" id="enableRemoveMice">Remove</th>
+                        <th class="editableColHeader">History</th>
                     </thead>
                     <tbody>
                     <% if @cage.mice.count > 0 %>
@@ -152,6 +153,7 @@
                                         Remove 
                                     </button>
                                 </td>
+                                <td><%= link_to "Versions", audit_mouse_version_path(:id => m.id), :class => "btn btn-sm btn-primary"%></td>
                             </tr>
                         <% end %>
                     <% else %>

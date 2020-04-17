@@ -49,7 +49,7 @@
                         <td><%= @mouse["strain"]%></td>
                         <td><%= [nil, "n/a", "+/+", "+/-", "-/+", "-/-"][@mouse["genotype"].to_i] %></td>
                         <td><%= @mouse["biopsy_collection_date"]%></td>
-                        <td><%= Cage.find(@mouse["cage_id"].to_i).cage_number %></td>
+                        <td><%= link_to Cage.find(@mouse["cage_id"].to_i).cage_number, cage_path(:id => @mouse["cage_id"]) %></td>
                         <td><%= @mouse["removed"]%></td>
                         <td><%= (@mouse["experiment_id"].present?) ? @mouse.experiment.name : "-" %></td>
                         <td><%= (@mouse.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
