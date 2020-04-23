@@ -5,9 +5,8 @@
             <table class="table table-bordered table-striped" id="mouse-version-datatable", data-source="<%=  audit_mouse_version_path(format: :json, :mouse_id => @id )%>">
                 <thead>
                     <tr>
-                        <th colspan=11>
-                            To restore this mouse to a previous version, click the index number in the Version column.<br>
-                            <div style="display:inline-block;height:15px;min-width:15px;border:1px solid black;background-color:greenyellow"></div> = Current version of this mouse
+                        <th colspan=13>
+                            To restore this mouse to a previous version, click "restore" in the Version column.<br>
                         </th>
                     </tr>
                     <tr>
@@ -15,9 +14,11 @@
                         <th>Sex</th>
                         <th>Mouse ID</th>
                         <th>Ear Punch</th>
+                        <th>Birth Cage</th>
                         <th>Transgenic Line</th>
                         <th>Genotype</th>
-                        <th>Biopsy</th>
+                        <th>Biopsy Collection</th>
+                        <th>Weaned</th>
                         <th>Cage</th>
                         <th>Removed</th>
                         <th>Experiment</th>
@@ -25,35 +26,50 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% @versions.each_with_index do |v,idx| %>
-                        <% ver = v.reify %>
-                        <tr>
-                            <td><%= link_to idx + 1, audit_restore_mouse_version_path(:mouse_id => @mouse.id, :version => idx + 1), :method => :post %></td>
-                            <td><%= ["","F","M"][ver["sex"].to_i] %></td>
-                            <td><%= ver["three_digit_code"]%></td>
-                            <td><%= [nil,"-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][ver["ear_punch"].to_i]%></td>
-                            <td><%= ver["strain"]%></td>
-                            <td><%= [nil, "n/a", "+/+", "+/-", "-/+", "-/-"][ver["genotype"].to_i]%></td>
-                            <td><%= ver["biopsy_collection_date"]%></td>
-                            <td><%= Cage.find(ver["cage_id"].to_i).cage_number %></td>
-                            <td><%= ver["removed"]%></td>
-                            <td><%= (ver["experiment_id"].present?) ? Experiment.find(ver["experiment_id"].to_i).name : "-"%></td>
-                            <td><%= (@mouse.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
-                        </tr>
-                    <% end %>
-                    <tr style="background-color:greenyellow">
-                        <td><%= @mouse.versions.size%></td>
+                    <tr>
+                        <td><%= @mouse.updated_at.strftime("%Y-%m-%d") %><br><span style="font-size:10pt;">current</span></td>
                         <td><%= ["","F","M"][@mouse.sex.to_i] %></td>
                         <td><%= @mouse["three_digit_code"]%></td>
                         <td><%= [nil,"-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][@mouse["ear_punch"].to_i]%></td>
+                        <td><%= (@mouse["parent_cage_id"].present?) ? Cage.find(@mouse["parent_cage_id"].to_i).cage_number : "n/a" %>
                         <td><%= @mouse["strain"]%></td>
                         <td><%= [nil, "n/a", "+/+", "+/-", "-/+", "-/-"][@mouse["genotype"].to_i] %></td>
                         <td><%= @mouse["biopsy_collection_date"]%></td>
+                        <td><%= @mouse["weaning_date"]%>
                         <td><%= link_to Cage.find(@mouse["cage_id"].to_i).cage_number, cage_path(:id => @mouse["cage_id"]) %></td>
                         <td><%= @mouse["removed"]%></td>
-                        <td><%= (@mouse["experiment_id"].present?) ? @mouse.experiment.name : "-" %></td>
+                        <td><% if @mouse["experiment_id"].present? %>
+                                <%= link_to @mouse.experiment.name, experiment_path(:id => @mouse.experiment_id) %>
+                            <% else %>
+                                -
+                            <% end %>
+                        </td>
                         <td><%= (@mouse.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
                     </tr>
+                    <% @versions.each_with_index do |v,idx| %>
+                        <% ver = v.reify %>
+                        <tr>
+                            <td><%= ver["updated_at"].strftime("%Y-%m-%d") %><br><%= link_to "restore", audit_restore_mouse_version_path(:mouse_id => @mouse.id, :version => idx + 1), :method => :post, :style => "font-size:10pt;" %></td>
+                            <td><%= ["","F","M"][ver["sex"].to_i] %></td>
+                            <td><%= ver["three_digit_code"]%></td>
+                            <td><%= [nil,"-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][ver["ear_punch"].to_i]%></td>
+                            <td><%= (ver["parent_cage_id"].present?) ? Cage.find(ver["parent_cage_id"].to_i).cage_number : "n/a" %>
+                            <td><%= ver["strain"]%></td>
+                            <td><%= [nil, "n/a", "+/+", "+/-", "-/+", "-/-"][ver["genotype"].to_i]%></td>
+                            <td><%= ver["biopsy_collection_date"]%></td>
+                            <td><%= ver["weaning_date"] %>
+                            <td><%= link_to Cage.find(ver["cage_id"].to_i).cage_number, cage_path(:id => ver["cage_id"].to_i) %></td>
+                            <td><%= ver["removed"]%></td>
+                            <td><%  if ver["experiment_id"].present? %>
+                                    <%= link_to Experiment.find(ver["experiment_id"].to_i).name, experiment_path(:id => ver["experiment_id"]) %>
+                                <% else %>
+                                    -
+                                <% end %>
+                            </td>
+                            <td><%= (@mouse.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@mouse.versions.last.paper_trail_originator.to_i).first} #{User.find(@mouse.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
+                        </tr>
+                    <% end %>
+
                 </tbody>
             </table>
         </div>

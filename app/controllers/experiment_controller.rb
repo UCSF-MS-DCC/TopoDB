@@ -9,6 +9,11 @@ class ExperimentController < ApplicationController
     def show
         @experiment = Experiment.find(show_params[:id])
         @experiment.update_last_viewed
+        puts "VARIABLES COUNT: #{@experiment.variables.count}"
+        puts "VARIABLES: #{@experiment.variables}"
+        @experiment.variables.each do  |v|
+            puts JSON.parse(v)
+        end
         respond_to do |format|
             format.html 
             format.json 
@@ -22,7 +27,14 @@ class ExperimentController < ApplicationController
     end
 
     def create
-        @exp = Experiment.new(create_update_params)
+        vars = []
+        create_update_params[:variables].each do |k,v|
+            vars.push(v.to_json)
+        end
+        puts "VARS:#{vars}"
+        new_experiment_params = create_update_params
+        new_experiment_params[:variables] = vars
+        @exp = Experiment.new(new_experiment_params)
         if @exp.save
             gflash :success => "Experiment #{@exp.name} saved"
             redirect_to experiment_index_path
@@ -32,19 +44,20 @@ class ExperimentController < ApplicationController
     end
 
     def add_data
-        errors = []
-        params.select { |key, value| key.to_s.match(/^mouse/) }.each do |k, v|
-            datapoint = Datapoint.new(mouse_id:k.split("-").last.to_i, timepoint:params[:timepoint], var_value:v)
-            if !datapoint.save
-                errors.push(datapoint.errors.full_messages)
-            end
-        end
-        if errors.size == 0
-            gflash :success => "New datapoints added"
-        else
-            gflash :error => "There was a problem creating new datapoints. #{errors}"
-        end
-        redirect_to experiment_path(id:params[:experiment_id].to_i)
+
+        # errors = []
+        # params.select { |key, value| key.to_s.match(/^mouse/) }.each do |k, v|
+        #     datapoint = Datapoint.new(mouse_id:k.split("-").last.to_i, timepoint:params[:timepoint], var_value:v, variable_name:)
+        #     if !datapoint.save
+        #         errors.push(datapoint.errors.full_messages)
+        #     end
+        # end
+        # if errors.size == 0
+        #     gflash :success => "New datapoints added"
+        # else
+        #     gflash :error => "There was a problem creating new datapoints. #{errors}"
+        # end
+        # redirect_to experiment_path(id:params[:experiment_id].to_i)
     end
 
     def update_data
@@ -87,8 +100,7 @@ class ExperimentController < ApplicationController
     private
 
         def create_update_params
-            params.require(:experiment).permit(:date, :name, :gene, :description, :rows, :id, :variable_1, :variable_1_rows,
-            :variable_2, :variable_2_rows, :variable_3, :variable_3_rows)
+            params.require(:experiment).permit(:date, :name, :gene, :description, :id, :variables => {})
         end
 
         def show_params
@@ -96,7 +108,7 @@ class ExperimentController < ApplicationController
         end
 
         def new_datapoint_params
-            params.require(:datapoint).permit(:mouse_id, :timepoint, :var_value)
+            params.require(:datapoint).permit(:mouse_id, :timepoint, :var_value, :var_name)
         end
 
 

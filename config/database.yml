@@ -25,14 +25,14 @@ test:
   port: 3306
 
 # 
-# PRODUCTION:
-#   adapter: mysql2
-#   database: topodb_prod
-#   username: <%= ENV['TOPODB_USERNAME'] %>
-#   password: <%= ENV['TOPODB_PASS'] %>
+production:
+  adapter: mysql2
+  database: topodb_prod
+  username: <%= ENV['TOPODB_USERNAME'] %>
+  password: <%= ENV['TOPODB_PASS'] %>
 
 # UAT:
-production:
+staging:
   adapter: mysql2
   database: topodb_uat
   username: <%= ENV['UAT_TOPODB_USERNAME'] %>

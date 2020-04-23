@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_15_030110) do
+ActiveRecord::Schema.define(version: 2020_04_23_001306) do
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "cage"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2020_04_15_030110) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "var_name"
+    t.string "variable_name"
     t.index ["mouse_id"], name: "index_datapoints_on_mouse_id"
   end
 
@@ -58,7 +59,7 @@ ActiveRecord::Schema.define(version: 2020_04_15_030110) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "gene"
-    t.string "variables"
+    t.text "variables"
     t.datetime "last_viewed"
     t.text "protocol"
     t.integer "rows"
