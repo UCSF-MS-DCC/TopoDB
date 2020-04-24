@@ -8,6 +8,7 @@
 # server "db.example.com", user: "deploy", roles: %w{db}
 set :branch,        :uat
 set :stage,         :staging
+set :rails_env,       :staging
 set :application,   "uat-topodb"
 set :deploy_to,     "/var/www/#{fetch(:application)}"
 
