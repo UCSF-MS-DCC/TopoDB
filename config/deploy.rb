@@ -7,7 +7,7 @@ lock "~> 3.11.2"
 #set :application, "uat-topodb"
 set :repo_url, "https://github.com/UCSF-MS-DCC/TopoDB"
 #set :branch,        :uat
-server '169.230.177.100', port: 22, roles: [:web, :app, :db], primary: true
+# server '169.230.177.100', port: 22, roles: [:web, :app, :db], primary: true
 
 set :user,            'deployment'
 set :puma_threads,    [4, 16]
@@ -40,19 +40,18 @@ set :linked_files, %w(config/master.key)
 #set :linked_files, %w{config/database.yml}
 set :linked_dirs,  %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-namespace :puma do
-  desc 'Create Directories for Puma Pids and Socket'
-  task :make_dirs do
-    on roles(:app) do
-      execute "mkdir #{shared_path}/tmp/sockets -p"
-      execute "mkdir #{shared_path}/tmp/pids -p"
-    end
-  end
+# namespace :puma do
+#   desc 'Create Directories for Puma Pids and Socket'
+#   task :make_dirs do
+#     on roles(:app) do
+#       execute "mkdir #{shared_path}/tmp/sockets -p"
+#       execute "mkdir #{shared_path}/tmp/pids -p"
+#     end
+#   end
+#   before :start, :make_dirs
+# end
 
-  before :start, :make_dirs
-end
-
-# namespace :deploy do
+namespace :deploy do
 #   desc "Make sure local git is in sync with remote."
 #   task :check_revision do
 #     on roles(:app) do
@@ -73,18 +72,18 @@ end
 #     end
 #   end
 
-#   desc 'Restart application'
-#   task :restart do
-#     on roles(:app), in: :sequence, wait: 5 do
-#       invoke 'puma:restart'
-#     end
-#   end
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'puma:restart'
+    end
+  end
 
 #   # before :starting,     :check_revision
 #   after  :finishing,    :compile_assets
 #   after  :finishing,    :cleanup
 #   # after  :finishing,    :restart
-# end
+end
 
 # ps aux | grep puma    # Get puma pid
 # kill -s SIGUSR2 pid   # Restart puma
