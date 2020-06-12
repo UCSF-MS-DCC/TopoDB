@@ -59,14 +59,14 @@ function mean(numbers) {
   }
   return total / numbers.length;
 }
-let getMean = function (data) {
+function getMean(data) {
   return data.reduce(function (a, b) {
       return Number(a) + Number(b);
   }) / data.length;
 };
 
 // Standard deviation
-let getSD = function (data) {
+function geSD(data) {
     let m = getMean(data);
     return Math.sqrt(data.reduce(function (sq, n) {
             return sq + Math.pow(n - m, 2);
