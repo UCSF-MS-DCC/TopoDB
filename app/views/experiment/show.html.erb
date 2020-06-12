@@ -48,7 +48,6 @@
                                 <% @experiment.mice.order("id ASC").each do |m| %>
                                     <th><%= link_to m.id, audit_mouse_version_path(:id => m.id) %></th>
                                 <% end %>
-                                <th>ctr</th>
                                 <th>mean</th>
                                 <th>se</th>
                             </thead>
@@ -58,33 +57,28 @@
                             <tbody>
 
                                 <%(1..vars_hash["observations"].to_i).each do |i| %>
-                                    <tr id="row-"+<%= i %>>
+                                    <tr id="row-<%= i %>" >
                                         <td><%= i %></td> <!-- TODO: add best in place code in table cells. See cage#show view -->
                                         <% @experiment.mice.order("id ASC").each do |m| %>
                                             <% if Datapoint.find_by(mouse_id:m.id, timepoint:i, var_name:vars_hash["name"])%>
                                                 <% dp = Datapoint.find_by(mouse_id:m.id, timepoint:i, var_name:vars_hash["name"]) %>
                                                 <td class="score-cell" id="var-<%= vars_hash["name"] %>-datapoint-<%=dp.id%>" >
-                                                    <span class="hidden green-check">&#10003;</span>
                                                     <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/update_data", :param => "datapoint-#{dp.id}",
-                                                    :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
+                                                    :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success score-value row-#{i}", :placeholder => "",
                                                     :default => dp.var_value, :value => dp.var_value, :activator => "#var-#{ vars_hash["name"] }-datapoint-#{dp.id}", :ok_button => "OK" %>
-                                                    <span class="hidden red-x">&#10060;</span>
                                                 </td>
                                             <% else %>
                                                 <% dp = Datapoint.new(mouse_id:m.id, timepoint:i, var_name: vars_hash["name"]) %>
-                                                <td class="score-cell" id="var-<%= vars_hash["name"].chomp(" ") %>-novel-datapoint-<%=@novel_cell_num%>" >
-                                                    <span class="hidden green-check">&#10003;</span>
+                                                <td class="score-cell row-"+<%= i %>" id="var-<%= vars_hash["name"].chomp(" ") %>-novel-datapoint-<%=@novel_cell_num%>" >
                                                     <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/add_new_datapoint", :param => "datapoint",
-                                                    :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => "",
+                                                    :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success score-value row-#{i}", :placeholder => "",
                                                     :default => "", :value => "", :activator => "#var-#{vars_hash["name"].chomp(" ")}-novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
-                                                    <span class="hidden red-x">&#10060;</span>
                                                 </td>
                                                 <% @novel_cell_num += 1 %>
                                             <% end %>
                                         <% end %>
-                                        <td class="ctr-cell"></td>
-                                        <td class="mean-cell"></td>
-                                        <td class="standard-error-cell"></td>
+                                        <td class="mean-cell row-"+<%= i %>"></td>
+                                        <td class="se-cell row-"+<%= i %>"></td>
                                     </tr>
                                 <% end %>
                             </tbody>

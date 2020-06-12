@@ -84,8 +84,13 @@ class CageController < ApplicationController
         puts params
         cage = Cage.find(params[:cage_id])
         unless upload_file_params[:attachments].empty?
-            cage.attachments.attach(upload_file_params[:attachments])
+            if cage.attachments.attach(upload_file_params[:attachments])
+                gflash :success => "Files uploaded successfully"
+            else
+                gflash :error => "Files failed to upload"
+            end
         end
+        redirect_to action: "show", id: cage.id
 
     end
 

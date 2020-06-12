@@ -3,7 +3,10 @@
         <h5>Previous Uploads</h5>
         <ul style="list-style-type:none;padding:0">
             <% @cage.attachments.each do |a|%>
-                <li style='width:100%'><%= a.created_at.strftime("%Y-%m-%d") %>&nbsp;&nbsp;<%= a.filename.to_json %></li>
+                <li style='width:100%'>
+                    <%= a.created_at.strftime("%Y-%m-%d") %>&nbsp;&nbsp;
+                    <%= link_to a.filename, rails_blob_path(a, disposition: 'attachment') %>
+                </li>
             <% end %>
         </ul>
     </div>
