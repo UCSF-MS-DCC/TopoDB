@@ -1,6 +1,7 @@
 class Cage < ApplicationRecord
     has_many :mice
     has_paper_trail
+    has_many_attached :attachments
 
     validates_presence_of :cage_type
     validates_inclusion_of :cage_type, :in => ["single-m", "single-f", "breeding", "experiment"]

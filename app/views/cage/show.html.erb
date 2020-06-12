@@ -45,11 +45,13 @@
                 <% end %>
                 <%= link_to 'Print Table', home_strain_path(:strain => @cage.strain), :onclick => 'window.print();return false;', :class => "btn btn-sm btn-primary"%>
                 <button id="triggerRemoveModal" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#removeCageModal" data-cage-id=<%=@cage.id%> type="button" aria-expanded=false>Remove Cage</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#uploadFileDiv" type="button" aria-expanded=false>View/Upload Files</button>
             </div>
         </div>
         <%= render 'cage/partials/edit_cage_form' %>
         <%= render 'cage/partials/new_mouse_form' %>
         <%= render 'cage/partials/new_pups_form' %>
+        <%= render 'cage/partials/upload_files_form'%>
     <!-- begin cage table section -->
         <div class="row justify-content-md-center" style="margin-top:20px;">
             <div class="col-12">

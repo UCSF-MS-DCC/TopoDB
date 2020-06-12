@@ -2,15 +2,13 @@
 # ======================
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
-
-# server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
-# server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
-# server "db.example.com", user: "deploy", roles: %w{db}
+server 'topodb.ucsf.edu', port: 22, roles: [:web, :app, :db], primary: true
 set :branch,        :master
 set :stage,         :production
+set :rails_env,     :production
 set :application,   "topodb"
 set :deploy_to,     "/var/www/#{fetch(:application)}"
-set :puma_bind,     "unix:///var/www/topodb/tmp/sockets/topodb-puma.sock"
+
 namespace :puma do
   desc 'Create Directories for Puma Pids and Socket'
   task :make_dirs do
@@ -21,39 +19,44 @@ namespace :puma do
   end
   before :start, :make_dirs
 end
+
 namespace :deploy do
-    #   desc "Make sure local git is in sync with remote."
-    #   task :check_revision do
-    #     on roles(:app) do
-    #       #unless `git rev-parse HEAD` == `git rev-parse origin/master`
-    #       unless `git rev-parse HEAD` == `git rev-parse origin/uat`
-    #         puts "WARNING: HEAD is not the same as origin/uat"
-    #         puts "Run `git push` to sync changes."
-    #         exit
-    #       end
-    #     end
-    #   end
-    
-    #   desc 'Initial Deploy'
-    #   task :initial do
-    #     on roles(:app) do
-    #       before 'deploy:restart', 'puma:start'
-    #       invoke 'deploy'
-    #     end
-    #   end
-    
-      desc 'Restart application'
-      task :restart do
-        on roles(:app), in: :sequence, wait: 5 do
-          invoke 'puma:restart'
-        end
+  desc "Make sure local git is in sync with remote."
+  task :check_revision do
+    on roles(:app) do
+      unless `git rev-parse HEAD` == `git rev-parse origin/master`
+        puts "WARNING: HEAD is not the same as origin/uat"
+        puts "Run `git push` to sync changes."
+        exit
       end
-    
-    #   # before :starting,     :check_revision
-    #   after  :finishing,    :compile_assets
-    #   after  :finishing,    :cleanup
-    #   # after  :finishing,    :restart
     end
+  end
+
+  desc 'Initial Deploy'
+  task :initial do
+    on roles(:app) do
+      before 'deploy:restart', 'puma:start'
+      invoke 'deploy'
+    end
+  end
+
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'puma:restart'
+    end
+  end
+
+  before :starting,     :check_revision
+  after  :finishing,    :compile_assets
+  after  :finishing,    :cleanup
+  # after  :finishing,    :restart
+end
+
+# server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
+# server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
+# server "db.example.com", user: "deploy", roles: %w{db}
+
     
 # role-based syntax
 # ==================

@@ -79,10 +79,23 @@ class CageController < ApplicationController
     def destroy
     end
 
+    def file_store
+        puts upload_file_params
+        puts params
+        cage = Cage.find(params[:cage_id])
+        unless upload_file_params[:attachments].empty?
+            cage.attachments.attach(upload_file_params[:attachments])
+        end
+
+    end
+
     private 
 
         def create_and_update_params
             params.require(:cage).permit(Cage.column_names.select{ |col| ![:updated_at, :created_at].include? col }.map{ |col| col.to_sym })
         end
-
+        
+        def upload_file_params
+            params.require(:cage).permit(attachments:[])
+        end
 end

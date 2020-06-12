@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   resources :cage do
     post 'create_pups'
+    patch 'file_store'
     resources :mouse
   end
 

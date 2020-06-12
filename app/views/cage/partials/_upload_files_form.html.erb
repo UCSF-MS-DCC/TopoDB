@@ -1,0 +1,17 @@
+<div class="row justify-content-md-center collapse" id="uploadFileDiv" style="margin-top:20px;border:1px solid lightgrey;">
+    <div class="col-md-6" style="padding-top:10px;">
+        <h5>Previous Uploads</h5>
+        <ul style="list-style-type:none;padding:0">
+            <% @cage.attachments.each do |a|%>
+                <li style='width:100%'><%= a.created_at.strftime("%Y-%m-%d") %>&nbsp;&nbsp;<%= a.filename.to_json %></li>
+            <% end %>
+        </ul>
+    </div>
+    <div class="col-md-6" style="padding-top:10px;">  
+        <h5>Upload Files</h5>
+        <%= form_for @cage, :url => cage_file_store_path(:cage_id => @cage.id) do |f|%>
+            <%= f.file_field :attachments, multiple: true, direct_upload: true %><br /><br />
+            <%= f.submit "Upload Files", :class => "btn btn-primary", :id => "file_upload_submit" %>
+        <% end %>
+    </div>
+</div>
