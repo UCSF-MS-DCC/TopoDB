@@ -27,28 +27,29 @@ $(document).on('turbolinks:load', function(){
   });
   $('tr').each(function() {
     var values = $(this).children("td.score-cell").text().split("\n")
-    values = values.filter(val => val.trim().length > 0).filter(val => !isNaN(val)).map(val => Number(val))
+    values = values.filter(function(val) { return val.trim().length > 0} ).filter(function(val) { return !isNaN(val) }).map(function(val){ return Number(val) })
     if (values.length > 0) {
-      console.log(values)
+      console.log("Values",values)
       $(this).children("td.mean-cell").text(mean(values).toFixed(6));
       $(this).children("td.se-cell").text((getSD(values)/Math.sqrt(values.length)).toFixed(6));
     }
   });
   $('.score-cell').on('submit', function(e){
     // get the values of all td.score-cells
-    console.log($(this).text().split("\n")[2])
-    console.log($(this))
-    console.log($(this).closest('.score-cell').closest('tr').children("td.score-cell").text())
+    // console.log($(this).text().split("\n")[2])
+    // console.log($(this))
+    // console.log($(this).closest('.score-cell').closest('tr').children("td.score-cell").text())
     var values = $(this).closest('.score-cell').closest('tr').children("td.score-cell").text().split("\n")
     //values.forEach(function(v) { console.log("the number is "+v.trim()+"! and is "+v.trim().length+" long")})
-    values = values.filter(val => val.trim().length > 0).filter(val => !isNaN(val)).map(val => Number(val))
-    console.log(values)
-    console.log(mean(values))
-    $(this).closest('.score-cell').closest('tr').children("td.mean-cell").text(mean(values).toFixed(6));
-    $(this).closest('.score-cell').closest('tr').children("td.se-cell").text((getSD(values)/Math.sqrt(values.length)).toFixed(6))
+    values = values.filter(function(val) { return val.trim().length > 0} ).filter(function(val) { return !isNaN(val) }).map(function(val){ return Number(val) })
+    // console.log(values)
+    // console.log(mean(values))
+    if (values.length > 0) {
+      $(this).closest('.score-cell').closest('tr').children("td.mean-cell").text(mean(values).toFixed(6));
+      $(this).closest('.score-cell').closest('tr').children("td.se-cell").text((getSD(values)/Math.sqrt(values.length)).toFixed(6))
     // run the mean and se calculations on all number value cells
     // write the results to the mean and se columns 
-
+    }
   })
 });
 function mean(numbers) {
