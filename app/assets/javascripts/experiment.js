@@ -67,7 +67,7 @@ function getMean(data) {
 
 // Standard deviation
 function geSD(data) {
-    let m = getMean(data);
+    var m = getMean(data);
     return Math.sqrt(data.reduce(function (sq, n) {
             return sq + Math.pow(n - m, 2);
         }, 0) / (data.length - 1));
