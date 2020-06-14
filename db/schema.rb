@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_12_161750) do
+ActiveRecord::Schema.define(version: 2020_06_14_191804) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -84,12 +84,6 @@ ActiveRecord::Schema.define(version: 2020_06_12_161750) do
     t.datetime "last_viewed"
     t.text "protocol"
     t.integer "rows"
-    t.text "variable_1"
-    t.integer "variable_1_rows"
-    t.text "variable_2"
-    t.integer "variable_2_rows"
-    t.text "variable_3"
-    t.integer "variable_3_rows"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

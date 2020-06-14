@@ -9,15 +9,6 @@ class ExperimentController < ApplicationController
     def show
         @experiment = Experiment.find(show_params[:id])
         @experiment.update_last_viewed
-        puts "VARIABLES COUNT: #{@experiment.variables.count}"
-        puts "VARIABLES: #{@experiment.variables}"
-        @experiment.variables.each do  |v|
-            puts JSON.parse(v)
-        end
-        respond_to do |format|
-            format.html 
-            format.json 
-        end
         @summary_stats = {}
 
     end

@@ -55,7 +55,6 @@
                             database table. In case a mouse does not have a datapoint(column) for a particular timepoint(row), best in place will instead 
                             instatiate a new Datapoint model -->
                             <tbody>
-
                                 <%(1..vars_hash["observations"].to_i).each do |i| %>
                                     <tr id="row-<%= i %>" >
                                         <td><%= i %></td> <!-- TODO: add best in place code in table cells. See cage#show view -->

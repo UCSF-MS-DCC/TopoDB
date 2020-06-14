@@ -36,14 +36,8 @@ $(document).on('turbolinks:load', function(){
   });
   $('.score-cell').on('submit', function(e){
     // get the values of all td.score-cells
-    // console.log($(this).text().split("\n")[2])
-    // console.log($(this))
-    // console.log($(this).closest('.score-cell').closest('tr').children("td.score-cell").text())
     var values = $(this).closest('.score-cell').closest('tr').children("td.score-cell").text().split("\n")
-    //values.forEach(function(v) { console.log("the number is "+v.trim()+"! and is "+v.trim().length+" long")})
-    values = values.filter(function(val) { return val.trim().length > 0} ).filter(function(val) { return !isNaN(val) }).map(function(val){ return Number(val) })
-    // console.log(values)
-    // console.log(mean(values))
+    values = values.filter(function(val) { return val.trim().length > 0} ).filter(function(val) { return !isNaN(val) }).map(function(val){ return Number(val) });
     if (values.length > 0) {
       $(this).closest('.score-cell').closest('tr').children("td.mean-cell").text(mean(values).toFixed(6));
       $(this).closest('.score-cell').closest('tr').children("td.se-cell").text((getSD(values)/Math.sqrt(values.length)).toFixed(6))
@@ -66,7 +60,7 @@ function getMean(data) {
 };
 
 // Standard deviation
-function geSD(data) {
+function getSD(data) {
     var m = getMean(data);
     return Math.sqrt(data.reduce(function (sq, n) {
             return sq + Math.pow(n - m, 2);

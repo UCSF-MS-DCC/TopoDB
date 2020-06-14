@@ -50,15 +50,17 @@
                 </li>
                 <!-- Experiments Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="dropdown-toggle btn btn-outline-primary <%= Experiment.count == 0 ? "disabled" : "" %>" href="#" id="experimentDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="experimentDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
                     Experiments
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <% unless Experiment.count == 0 %>
                         <i class="dropdown-item" style="font-size:9pt;">most recently viewed</i>
-                        <% Experiment.all.order("last_viewed DESC").limit(5).each do |e|%>
-                            <%= link_to "#{e.name} :: #{e.gene}", experiment_path(:id => e.id), :class => "dropdown-item" %>
+                            <% Experiment.all.order("last_viewed DESC").limit(5).each do |e|%>
+                                <%= link_to "#{e.name} :: #{e.gene}", experiment_path(:id => e.id), :class => "dropdown-item" %>
+                            <% end %>
+                            <div class="dropdown-divider"></div>
                         <% end %>
-                        <div class="dropdown-divider"></div>
                         <%= link_to "All Experiments", experiment_index_path, :class => "dropdown-item" %>
                         <%= link_to "New Experiment", new_experiment_path, :class => "dropdown-item" %>
                         <%# <a class="dropdown-item" href="#">Action</a>
