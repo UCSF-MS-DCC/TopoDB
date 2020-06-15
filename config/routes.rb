@@ -50,7 +50,9 @@ Rails.application.routes.draw do
     get 'cage'
     get 'experiment'
     get 'mouse_version'
+    get 'cage_version'
     post 'restore_mouse_version'
+    post 'restore_cage_version'
   end
 
   namespace :archive do
@@ -61,6 +63,5 @@ Rails.application.routes.draw do
     get 'error_404'
   end
 
-  get '*path', to: 'error#error_404', via: :all, as: 'error'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

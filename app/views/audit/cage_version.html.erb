@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-10 offset-1" style="margin-top:20px;">
+            <h1>Cage <%= @cage.cage_number %></h1>
+            <table class="table table-bordered table-striped" id="cage-version-datatable", data-source="<%=  audit_cage_version_path(format: :json, :mouse_id => @id )%>">
+                <thead>
+                    <tr>
+                        <th colspan=13>
+                            To restore this cage to a previous version, click "restore" in the Version column.<br>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Version</th>
+                        <th>Number</th>
+                        <th>Location</th>
+                        <th>Transgenic Line</th>
+                        <th>Cage Type</th>
+                        <th>Genotype</th>
+                        <th>In Use/Removed</th>
+                        <th>Who</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><%= @cage.updated_at.strftime("%Y-%m-%d") %><br><span style="font-size:10pt;">current</span></td>
+                        <td><%= @cage.cage_number %></td>
+                        <td><%= @cage.location %></td>
+                        <td><%= (@cage.strain2.blank?) ? @cage.strain : "#{@cage.strain}/#{@cage.strain2}" %></td>
+                        <td><%= @cage.cage_type %></td>
+                        <td><%= (@cage.genotype2.blank?) ? @cage.genotype : @cage.genotype2 %>
+                        <td><%= @cage.in_use == true ? "In Use" : "Removed" %></td>
+                        <td><%= (@cage.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@cage.versions.last.paper_trail_originator.to_i).first} #{User.find(@cage.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
+                    </tr>
+                    <% @versions.each_with_index do |v,idx| %>
+                        <% ver = v.reify %>
+                        <tr>
+                            <td><%= ver["updated_at"].strftime("%Y-%m-%d") %><br><%= link_to "restore", audit_restore_cage_version_path(:cage_id => @cage.id, :version => idx + 1), :method => :post, :style => "font-size:10pt;" %></td>
+                            <td><%= ver["cage_number"] %></td>
+                            <td><%= ver["location"]%></td>
+                            <td><%= (ver.strain2.blank?) ? ver.strain : "#{ver.strain}/#{ver.strain2}"%></td>
+                            <td><%= ver.cage_type %>
+                            <td><%= (ver.genotype2.blank?) ? ver.genotype : ver.genotype2 %></td>
+                            <td><%= ver.in_use == true ? "In Use" : "Removed"%></td>
+                            <td><%= (@cage.versions.last.paper_trail_originator.to_i != 0) ? "#{User.find(@cage.versions.last.paper_trail_originator.to_i).first} #{User.find(@cage.versions.last.paper_trail_originator.to_i).last}" : "-" %></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

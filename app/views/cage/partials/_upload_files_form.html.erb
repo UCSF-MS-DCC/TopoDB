@@ -5,7 +5,12 @@
             <% @cage.attachments.each do |a|%>
                 <li style='width:100%'>
                     <%= a.created_at.strftime("%Y-%m-%d") %>&nbsp;&nbsp;
-                    <%= link_to a.filename, rails_blob_path(a, disposition: 'attachment') %>
+                    <% if a.previewable? %>
+                         <%= link_to a.filename, rails_blob_path(a, disposition:"preview"), target: :blank %>
+                    <% else %>
+                         <%= a.filename %>
+                    <% end %>
+                    
                 </li>
             <% end %>
         </ul>
