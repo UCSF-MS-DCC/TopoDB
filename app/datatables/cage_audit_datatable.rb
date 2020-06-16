@@ -18,7 +18,7 @@ class CageAuditDatatable < AjaxDatatablesRails::ActiveRecord
     def data
       records.map do |record|
         {
-          id: record.decorate.link_to_cage,
+          id: record.decorate.link_to_cage_table,
           in_use: record.in_use == true ? "In Use" : "Removed",
           location: record.location,
           cage_number: record.cage_number,
@@ -42,7 +42,7 @@ class CageAuditDatatable < AjaxDatatablesRails::ActiveRecord
   
   end
   class CageDecorator < ApplicationDecorator
-    def link_to_cage
+    def link_to_cage_table
       h.link_to object.id, h.audit_cage_version_path(id: object.id)
     end
   
