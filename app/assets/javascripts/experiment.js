@@ -40,6 +40,10 @@ $(document).on('turbolinks:load', function(){
     values = values.filter(function(val) { return val.trim().length > 0} ).filter(function(val) { return !isNaN(val) }).map(function(val){ return Number(val) });
     if (values.length > 0) {
       $(this).closest('.score-cell').closest('tr').children("td.mean-cell").text(mean(values).toFixed(6));
+      var se = (getSD(values)/Math.sqrt(values.length)).toFixed(6);
+      if (isNaN(se)) {
+        se = "-"
+      }
       $(this).closest('.score-cell').closest('tr').children("td.se-cell").text((getSD(values)/Math.sqrt(values.length)).toFixed(6))
     // run the mean and se calculations on all number value cells
     // write the results to the mean and se columns 
