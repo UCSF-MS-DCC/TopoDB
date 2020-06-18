@@ -1,15 +1,19 @@
 <div class="row justify-content-md-center collapse" id="uploadFileDiv" style="margin-top:20px;border:1px solid lightgrey;">
     <div class="col-md-6" style="padding-top:10px;">
-        <h5>Previous Uploads</h5>
+        <h5 style="margin-bottom:0px;">Previous Uploads</h5>
+        <span style="font-size:10pt;font-style:italic;">Warning: Deleting attachments cannot be undone</span>
         <ul style="list-style-type:none;padding:0">
             <% @cage.attachments.each do |a|%>
                 <li style='width:100%'>
-                    <%= a.created_at.strftime("%Y-%m-%d") %>&nbsp;&nbsp;
-                    <% if a.previewable? %>
-                         <%= link_to a.filename, rails_blob_path(a, disposition:"preview"), target: :blank %>
-                    <% else %>
-                         <%= a.filename %>
+                    <%= link_to cage_delete_attachment_path(:attachment_id => a.id, :cage_id => @cage.id), :method => :post, :data => {:toggle => "tooltip", :placement => "top", :title => "Delete"}, :style => "color:transparent; text-shadow: 0 0 0 red;cursor: pointer; border:none;"  do %>
+                        &#10006;
                     <% end %>
+                    <% if a.previewable?%>
+                        <%= link_to rails_blob_path(a, disposition:"preview"), target: :blank, :data => {:toggle => "tooltip", :placement => "top", :title => "Preview"}, :style => "cursor: pointer; border:none;"  do %>
+                            &#128065;
+                        <% end %>
+                    <% end %>
+                    <%= a.created_at.strftime("%Y-%m-%d") %>&nbsp;&nbsp;<%= a.filename %>
                     
                 </li>
             <% end %>
@@ -18,7 +22,7 @@
     <div class="col-md-6" style="padding-top:10px;">  
         <h5>Upload Files</h5>
         <%= form_for @cage, :url => cage_file_store_path(:cage_id => @cage.id) do |f|%>
-            <%= f.file_field :attachments, multiple: true, direct_upload: true %><br /><br />
+            <%= f.file_field :attachments, multiple: true, direct_upload: true, required: true %><br /><br />
             <%= f.submit "Upload Files", :class => "btn btn-primary", :id => "file_upload_submit" %>
         <% end %>
     </div>

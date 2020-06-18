@@ -80,8 +80,6 @@ class CageController < ApplicationController
     end
 
     def file_store
-        puts upload_file_params
-        puts params
         cage = Cage.find(params[:cage_id])
         unless upload_file_params[:attachments].empty?
             if cage.attachments.attach(upload_file_params[:attachments])
@@ -91,7 +89,28 @@ class CageController < ApplicationController
             end
         end
         redirect_to action: "show", id: cage.id
+    end
 
+    def download_file 
+        puts params
+        @cage = Cage.find(params[:cage_id])
+        @attachment = @cage.attachments.find_by(id:params[:attachment_id])
+        @attachment.open(tmpdir:"#{Rails.root}/public") do |file|
+            send_file(file, filename: @attachment.filename)
+        end
+        redirect_to action: "show", id: params[:cage_id]
+    end
+
+    def delete_attachment
+        @cage = Cage.find(params[:cage_id])
+        @attachment = @cage.attachments.find_by(id:params[:attachment_id])
+        @attachment.purge
+        if !@cage.attachments.find_by(id:params[:attachment_id])
+            gflash :success => "File #{@attachment.filename} was deleted."
+        else
+            gflash :error => "There was a problem deleting #{@attachment.filename}."
+        end
+        redirect_to action: "show", id: @cage.id
     end
 
     private 

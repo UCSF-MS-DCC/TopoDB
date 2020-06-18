@@ -82,3 +82,17 @@ td {
    padding-left:3px;
    border:1px dotted lightlightgrey;
 }
+.deleteButton {
+   background: transparent;
+   border: none;
+   color: #f00;
+   display: inline-block;
+   font-size: 12px;
+   height: 16px;
+   line-height: 2px;
+   margin: 0 0 2px;
+   margin-top: -4px;
+   padding: 0;
+   text-align: center;
+   width: 16px;
+   }
