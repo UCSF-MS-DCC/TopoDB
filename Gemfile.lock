@@ -220,7 +220,7 @@ GEM
       cairo-gobject (= 3.4.3)
       gio2 (= 3.4.3)
     public_suffix (3.1.1)
-    puma (3.12.1)
+    puma (3.12.6)
     rack (2.2.3)
     rack-pjax (1.1.0)
       nokogiri (~> 1.5)
@@ -369,7 +369,7 @@ DEPENDENCIES
   paper_trail-association_tracking
   pg
   poppler
-  puma (~> 3.11)
+  puma (~> 3.12)
   rails (~> 5.2.1)
   rails_admin (~> 2.0.0.beta)
   sass-rails (~> 5.0)
