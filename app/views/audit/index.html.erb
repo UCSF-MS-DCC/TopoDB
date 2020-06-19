@@ -1,0 +1,67 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" id="mice-tab" href="#mouse-content" role="tab">Mice</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" id="cage-tab" href="#cage-content" role="tab">Cages</a></li>
+                <%# <li class="nav-item"><a class="nav-link" data-toggle="tab" id="experiment-tab" href="" role="tab">Experiment</a></li> %>
+            </ul>
+            <div class="tab-content" style="padding-top:25px;">
+                <div class="tab-pane fade show active" id="mouse-content" role="tabpanel">
+                    <table id="mice-audit-table" class="table table-bordered table-striped" data-model="mouse" data-source="<%= audit_mouse_path(format: :json) %>">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cage</th>
+                                <th>Identifier</th>
+                                <th>Previous Versions</th>
+                                <th>Last Update</th>
+                                <th>Last Event</th>
+                                <th>Who</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade show" id="cage-content" role="tabpanel">
+                    <table id="cages-audit-table" class="table table-bordered table-striped" data-model="cage" data-source="<%= audit_cage_path(format: :json) %>">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>In Use</th>
+                                <th>Location</th>
+                                <th>Cage Number</th>
+                                <th>Transgenic Line</th>
+                                <th>Versions</th>
+                                <th>Last Update</th>
+                                <th>Last Event</th>
+                                <th>Who</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-content" id="experiment-content" style="padding-top:25px;">
+                <div class="tab-pane fade show" id="experiment-table-pane" role="tabpanel">
+                    <table id="experiment-audit-table" class="table table-bordered table-striped" data-model="experiment" data-source="<%= audit_index_path(format: :json) %>">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Identifier</th>
+                                <th>Versions</th>
+                                <th>Last Update</th>
+                                <th>Who</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

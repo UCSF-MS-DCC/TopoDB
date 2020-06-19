@@ -28,8 +28,33 @@ Rails.application.routes.draw do
     get 'cage_timeline_dates'
   end
 
-  resources :cages do
-    resources :mice 
+  resources :cage do
+    post 'create_pups'
+    patch 'file_store'
+    post 'delete_attachment'
+    get 'download_file'
+    resources :mouse
+  end
+
+  resources :experiment do 
+    post 'add_data'
+    put 'update_data'
+    post 'add_new_datapoint'
+    resources :mouse do
+      resource :datapoint do 
+      end
+    end
+  end
+
+  namespace :audit do
+    get 'index'
+    get 'mouse'
+    get 'cage'
+    get 'experiment'
+    get 'mouse_version'
+    get 'cage_version'
+    post 'restore_mouse_version'
+    post 'restore_cage_version'
   end
 
   namespace :archive do
@@ -40,6 +65,5 @@ Rails.application.routes.draw do
     get 'error_404'
   end
 
-  get '*path', to: 'error#error_404', via: :all, as: 'error'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

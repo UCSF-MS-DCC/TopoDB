@@ -1,0 +1,89 @@
+<div class="container">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h1 id="experiment-name"><%= @experiment.name %></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h2><%= @experiment.date %></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <h2 id="experiment-gene"><%=@experiment.gene %></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <p id="experiment-description"><%= @experiment.description %></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10 offset-1">
+        <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editExpFormDiv" type="button" aria-expanded=false>Edit Experiment Information</button>
+        </div>
+    </div>
+    <hr>
+
+    <ul class="nav nav-tabs">
+        <% @experiment["variables"].each_with_index do |v,idx| %>
+            <% vars_hash = JSON.parse(v) %>
+            <li class="nav-item">
+                <a class="nav-link <%= idx == 0 ? "active" : nil %>" data-toggle="tab" href="#var<%= idx %>"><%= vars_hash["name"] %></a>
+            </li>
+        <% end %>
+    </ul>
+    <div class="row">
+        <div class="col-12">
+            <div class="tab-content">
+                <%@novel_cell_num = 1%>
+                <% @experiment.variables.each_with_index do |v,idx| %>
+                    <% vars_hash = JSON.parse(v) %>
+                    <div class="tab-pane container <%= idx == 0 ? "active" : nil %>" id="var<%= idx %>" >
+                        <table class="table table-bordered table-striped" id="experiment-mouse-datatable" data-source=<%= @experiment.id %> style = "margin-top:15px;">
+                            <thead>
+                            <th></th>
+                                <% @experiment.mice.order("id ASC").each do |m| %>
+                                    <th><%= link_to m.id, audit_mouse_version_path(:id => m.id) %></th>
+                                <% end %>
+                                <th>mean</th>
+                                <th>se</th>
+                            </thead>
+                            <!-- The table holdiing the data is made up columns of mice and rows of datapoints. Each table cell represents one row in the Datapoints
+                            database table. In case a mouse does not have a datapoint(column) for a particular timepoint(row), best in place will instead 
+                            instatiate a new Datapoint model -->
+                            <tbody>
+                                <%(1..vars_hash["observations"].to_i).each do |i| %>
+                                    <tr id="row-<%= i %>" >
+                                        <td><%= i %></td> <!-- TODO: add best in place code in table cells. See cage#show view -->
+                                        <% @experiment.mice.order("id ASC").each do |m| %>
+                                            <% if Datapoint.find_by(mouse_id:m.id, timepoint:i, var_name:vars_hash["name"])%>
+                                                <% dp = Datapoint.find_by(mouse_id:m.id, timepoint:i, var_name:vars_hash["name"]) %>
+                                                <td class="score-cell" id="var-<%= vars_hash["name"] %>-datapoint-<%=dp.id%>" >
+                                                    <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/update_data", :param => "datapoint-#{dp.id}",
+                                                    :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success score-value row-#{i}", :placeholder => "",
+                                                    :default => dp.var_value, :value => dp.var_value, :activator => "#var-#{ vars_hash["name"] }-datapoint-#{dp.id}", :ok_button => "OK" %>
+                                                </td>
+                                            <% else %>
+                                                <% dp = Datapoint.new(mouse_id:m.id, timepoint:i, var_name: vars_hash["name"]) %>
+                                                <td class="score-cell row-"+<%= i %>" id="var-<%= vars_hash["name"].chomp(" ") %>-novel-datapoint-<%=@novel_cell_num%>" >
+                                                    <%= best_in_place dp, :var_value, :as => :input, :url => "/experiment/#{@experiment.id}/add_new_datapoint", :param => "datapoint",
+                                                    :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success score-value row-#{i}", :placeholder => "",
+                                                    :default => "", :value => "", :activator => "#var-#{vars_hash["name"].chomp(" ")}-novel-datapoint-#{@novel_cell_num}", :ok_button => "OK" %>
+                                                </td>
+                                                <% @novel_cell_num += 1 %>
+                                            <% end %>
+                                        <% end %>
+                                        <td class="mean-cell row-"+<%= i %>"></td>
+                                        <td class="se-cell row-"+<%= i %>"></td>
+                                    </tr>
+                                <% end %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>

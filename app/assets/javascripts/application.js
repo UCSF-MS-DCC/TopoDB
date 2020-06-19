@@ -27,12 +27,13 @@
 //= require_tree .
 
 $(document).on('turbolinks:load', function(){
+    if (window.location.hostname !== "uat.topodb.ucsf.edu") {
+        $('#test-warning').css('display','none');
+    }
     function boldMatchingSubstring(sub, str) {
         var subStartCharIdx = str.indexOf(sub);
         var subLen = sub.length;
         var subLastCharIdx = subStartCharIdx + subLen;
-        //console.log(str,sub,subIdx);
-        console.log(str,sub, str.substring(subStartCharIdx,subLastCharIdx));
         if (subLen >= str.length) {
             return "<strong><u>"+str+"</u></strong>"
         } else if (subStartCharIdx === 0) {

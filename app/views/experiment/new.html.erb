@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="row">
+        <div class="col-10 offset-1">
+            <%= form_for @experiment, :url => experiment_index_path(@experiment),  :html => { :id => "new-experiment-form", :style => "border:1px solid skyblue;padding:10px;min-width:50%;border-radius:5px;"}  do |f| %>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <%= f.label :date, "Experiment Date", :class => "col-form-label" %>
+                            <%= f.date_field :date, :class => "form-control experiment-date" %>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <%= f.label :name, "Experiment Name/ID", :class => "col-form-label" %>
+                            <%= f.text_field :name, :class => "form-control" %>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <%= f.label :gene, "Gene", :class => "col-form-label" %>
+                            <%= f.text_field :gene, :class => "form-control" %>
+                        </div>
+                    </div>
+                </div>
+
+                    <%= f.fields_for :variables do |fv|%>
+                        <% [:one, :two, :three, :four, :five].each do |enum| %>
+                            <div class="row">
+                                <%= fv.fields_for enum do |e|%>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <%= e.label :name, "Variable", :class => "col-form-label" %>
+                                            <%= e.text_field :name, :class => "form-control" %>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <%= e.label :observations, "Observations", :class => "col-form-label" %>
+                                            <%= e.text_field :observations, :class => "form-control" %>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <%= e.label :unit, "Unit", :class => "col-form-label" %>
+                                            <%= e.text_field :unit, :class => "form-control" %>
+                                        </div>
+                                    </div>
+                                <% end %>
+                            </div>
+                        <% end %>
+
+                    <% end %>
+
+
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <%= f.label :description, "Description", :class => "col-form-label" %>
+                            <%= f.text_area :description, :class => "form-control "%>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 offset-5">
+                        <%= f.submit "Save", :class => "btn btn-primary btn-block" %>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</div>

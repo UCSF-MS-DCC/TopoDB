@@ -64,7 +64,7 @@
                 <h6>Remove date:</h6>
             </div>
             <div class="col-sm-8">
-                <input type="text" id="modal-mouse-remove-date">
+                <input type="text" id="modal-mouse-remove-date" class="form-control">
             </div>
         </div>
         <br>
@@ -73,8 +73,20 @@
                 <h6>Reason for removal:</h6>
             </div>
             <div class="col-sm-8">
-                <input type="text" id="modal-mouse-remove-reason">
+                <input type="text" id="modal-mouse-remove-reason" class="form-control">
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <h6>Use in experiment:</h6>
+            </div>
+            <div class="col-sm-8">
+                <select id="modal-mouse-remove-experiment" class="form-control">
+                    <% Experiment.all.each do |e| %>
+                        <option value="<%= e.id %>"><%= e.name %></option>
+                    <% end %>
+                </select>
+            <div>
         </div>
       </div>
 

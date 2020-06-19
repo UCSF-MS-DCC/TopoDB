@@ -19,7 +19,7 @@
                 <h2><%= @location %></h2>
                 <table id="index-datatable" class="table table-bordered table-striped" data-source="<%= home_index_path(format: :json) %>">
                     <thead>
-                        <th>Strain</th>
+                        <th>Gene(s)</th>
                         <th>Total Cages</th>
                         <th>Breeding Cages</th>
                         <th>Mice</th>
@@ -28,7 +28,7 @@
                     <tbody>
                         <% @loc_strains.each do |strain| %>
                             <tr>
-                                <td><%= link_to strain, home_strain_path(:strain => strain, :location => @location) %></td>
+                                <td><%= link_to strain, cage_index_path(:strain => strain, :location => @location) %></td>
                                 <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(location:@location).where(in_use:true).where.not(cage_type:"experiment").count %></td>
                                 <td><%= Cage.where(strain:strain).where(strain2:[nil,""]).where(location:@location).where(in_use:true).where(cage_type:"breeding").count%></td>
                                 <td><%= Mouse.where(cage_id:Cage.where(strain:strain).where(strain2:[nil,""]).where(location:@location).where(in_use:true).where.not(cage_type:"experiment").pluck(:id)).count %></td>
@@ -39,7 +39,7 @@
                             <% first_strain = hybrid.split("/").first %>
                             <% second_strain = hybrid.split("/").second %>
                             <tr>
-                                <td><%= link_to hybrid, home_strain_path(:strain => "#{first_strain}_#{second_strain}", :location => @location) %></td>
+                                <td><%= link_to hybrid, cage_index_path(:strain => "#{first_strain}_#{second_strain}", :location => @location) %></td>
                                 <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(location:@location).where(in_use:true).where.not(cage_type:"experiment").count %></td>
                                 <td><%= Cage.where(strain:first_strain).where(strain2:second_strain).where(location:@location).where(in_use:true).where(cage_type:"breeding").count%></td>
                                 <td><%= Mouse.where(cage_id:Cage.where(strain:first_strain).where(strain2:second_strain).where(location:@location).where(in_use:true).where.not(cage_type:"experiment").pluck(:id)).count %></td>

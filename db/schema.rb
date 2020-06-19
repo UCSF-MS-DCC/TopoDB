@@ -10,7 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_24_221909) do
+ActiveRecord::Schema.define(version: 2020_06_14_191804) do
+
+  create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
 
   create_table "archives", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "cage"
@@ -38,6 +59,31 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.string "genotype", default: "0"
     t.string "genotype2", default: "0"
     t.string "strain2"
+    t.datetime "last_viewed"
+  end
+
+  create_table "datapoints", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "mouse_id"
+    t.string "var_value"
+    t.string "timepoint"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "var_name"
+    t.string "variable_name"
+    t.index ["mouse_id"], name: "index_datapoints_on_mouse_id"
+  end
+
+  create_table "experiments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.date "date"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "gene"
+    t.text "variables"
+    t.datetime "last_viewed"
+    t.text "protocol"
+    t.integer "rows"
   end
 
   create_table "mice", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -46,7 +92,7 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.string "genotype"
     t.date "dob"
     t.date "weaning_date"
-    t.date "tail_cut_date"
+    t.date "biopsy_collection_date"
     t.string "ear_punch"
     t.string "designation"
     t.date "removed"
@@ -60,7 +106,10 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.string "strain2"
     t.datetime "tdc_generated"
     t.boolean "pup"
+    t.bigint "experiment_id"
+    t.string "experiment_code"
     t.index ["cage_id"], name: "index_mice_on_cage_id"
+    t.index ["experiment_id"], name: "index_mice_on_experiment_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -101,5 +150,8 @@ ActiveRecord::Schema.define(version: 2020_02_24_221909) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "datapoints", "mice"
   add_foreign_key "mice", "cages"
+  add_foreign_key "mice", "experiments"
 end

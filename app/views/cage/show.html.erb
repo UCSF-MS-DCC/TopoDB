@@ -1,0 +1,184 @@
+<div class="container">
+    <% if !current_user %> 
+        <div class="row justify-content-md-center" style="margin-top:2%;">
+           <span>UCSF Multiple Sclerosis Genetics Research Laboratory Mouse Database</span>
+            <%= image_tag("lab-mouse-vector", :style => "margin-top:5%;") %>
+        </div>
+    <% else %>
+        <%= render 'home/partials/cage_breadcrumb.html.erb' %>
+        <div class="row justify-content-md-center">
+            <div class="col-5" style="padding-left:25px;margin-top:25px;">
+                <h1>Cage <%= @cage.cage_number %></h1>
+                <table>
+                    <tr>
+                        <th>Strain:</th>
+                        <td><% if @cage.strain2.blank? %>
+                                <%= link_to @cage.strain, home_strain_path(strain: @cage.strain, location: @location) %>
+                            <% else %>
+                                <%= link_to "#{@cage.strain}/#{@cage.strain2}", home_strain_path({:strain => "#{@cage.strain}_#{@cage.strain2}", :location => @location}) %>
+                            <% end %>
+                        </td>
+                        <th>Type:</th>
+                        <td> <%= @cage.cage_type %></td>
+                    </tr>
+                    <tr>
+                        <th>Genotype:</th>
+                        <td>
+                            <%= (@cage.strain2.blank?) ? @genotypes_list[@cage.genotype.to_i] : "#{@genotypes_list[@cage.genotype.to_i]} | #{@genotypes_list[@cage.genotype2.to_i]}"%>
+                        </td>
+                        <th>Location:</th>
+                        <td><%= @cage.location.capitalize %></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-7 hide-on-print" style="margin-top:25px;">
+                <div id="cage-timeline"></div>
+            </div>
+        </div>
+ 
+        <div class="row hide-on-print" style="margin-top:20px;">
+            <div class="col-11">
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#editCageFormDiv" type="button" aria-expanded=false>Edit Cage Information</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#newMouseFormDiv" type="button" aria-expanded=false>Add New Mouse</button>
+                <% if @cage.cage_type == "breeding" %>
+                    <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false >Record New Pups</button>
+                <% end %>
+                <%= link_to 'Print Table', home_strain_path(:strain => @cage.strain), :onclick => 'window.print();return false;', :class => "btn btn-sm btn-primary"%>
+                <button id="triggerRemoveModal" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#removeCageModal" data-cage-id=<%=@cage.id%> type="button" aria-expanded=false>Remove Cage</button>
+                <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#uploadFileDiv" type="button" aria-expanded=false>View/Upload Files</button>
+            </div>
+        </div>
+        <%= render 'cage/partials/edit_cage_form' %>
+        <%= render 'cage/partials/new_mouse_form' %>
+        <%= render 'cage/partials/new_pups_form' %>
+        <%= render 'cage/partials/upload_files_form'%>
+    <!-- begin cage table section -->
+        <div class="row justify-content-md-center" style="margin-top:20px;">
+            <div class="col-12">
+            <%= form_tag home_update_mouse_path(:cage => @cage.cage_number), method: :put do %>
+                <table id="single-cage-datatable" class="table table-bordered table-striped">
+                    <thead>
+                        <th class="editableColHeader">Sex</th>
+                        <th class="editableColHeader">ID</th>
+                        <th class="editableColHeader">Notch</th>
+                        <th class="editableColHeader"><%= @cage.strain %></th>
+                        <% if !@cage.strain2.blank? %><th class="editableColHeader"><%= @cage.strain2 %></th><% end %>
+                        <th class="editableColHeader">Birth Cage</th>
+                        <th class="editableColHeader">Birth Date</th>
+                        <% if @cage.cage_type == "breeding" %><th class="editableColHeader">Pup</th><% end %>
+                        <th class="editableColHeader">Biopsy Collection Date</th>
+                        <% if @cage.cage_type == "breeding" %><th class="editableColHeader">Wean Date</th><% end %>
+                        <th class="editableColHeader">Transfer</th>
+                        <th class="editableColHeader" id="enableRemoveMice">Remove</th>
+                        <th class="editableColHeader">History</th>
+                    </thead>
+                    <tbody>
+                    <% if @cage.mice.count > 0 %>
+                        <% @cage.mice.where(removed:nil).each do |m| %>
+                            <% sx = ["f", "m"][(m.sex.to_i - 1)] %>
+                            <tr class=<%= (m.pup == false && @cage.cage_type == "breeding") ? "cage-parent-row" : nil %> >
+                                <td id="sex-<%= m.id %>" >
+                                    <span class="hidden green-check">&#10003;</span>
+                                    <%= best_in_place m, :sex, :as => :select, :collection => [[0,"-"],[1,"F"], [2,"M"]], :value => m.sex, :html_attrs => { :selected => m.sex }, 
+                                    :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#sex-#{m.id}" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <td id="designation-<%= m.id %>">
+                                    <span class="hidden green-check">&#10003;</span>
+                                    <%= best_in_place m, :three_digit_code , :as => :input, :url => cage_mouse_path(@cage,m), :param => "new_col_value", :html_attrs => { :size => "9", :maxlength => "8" }, :class => "editableField highlight-on-success", :placeholder => m.three_digit_code,
+                                    :default => m.three_digit_code, :value => m.three_digit_code, :activator => "#designation-#{m.id}", :ok_button => "OK" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <td id="ear-punch-<%= m.id %>">
+                                    <span class="hidden green-check">&#10003;</span>
+                                    <%= best_in_place m, :ear_punch, :as => :select, :collection => [[1,"-"],[2,"N"],[3,"R"],[4,"L"],[5,"RR"],[6,"RL"],[7,"LL"],[8,"RRL"],[9,"RLL"],[10,"RRLL"]], :html_attrs => { :selected => m.ear_punch }, :default => m.ear_punch, 
+                                    :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#ear-punch-#{m.id}" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <td id="genotype-<%= m.id %>">
+                                    <span class="hidden green-check">&#10003;</span>
+                                    <%= best_in_place m, :genotype, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/-"]], :value => m.genotype, :html_attrs => { :selected => m.genotype }, 
+                                    :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#genotype-#{m.id}" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <% if @cage.strain2.present? %>
+                                    <td id="genotype2-<%= m.id %>">
+                                        <span class="hidden green-check">&#10003;</span>
+                                        <%= best_in_place m, :genotype2, :as => :select, :collection => [[1,"n/a"],[2,"+/+"],[3,"+/-"],[4,"-/-"]], :value => m.genotype2, :html_attrs => { :selected => m.genotype2 },
+                                        :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#genotype2-#{m.id}" %>
+                                        <span class="hidden red-x">&#10060;</span>
+                                    </td>
+                                <% end %>
+                                <td id="birth_cage-<%= m.id %>">
+                                    <span class="hidden green-check">&#10003;</span>
+                                    <%= best_in_place m, :parent_cage_id , :as => :input, :url => cage_mouse_path(@cage,m), :param => "new_col_value", :html_attrs => { :size => "9", :maxlength => "8"}, :class => "editableField highlight-on-success",              
+                                     :default => "TEST", :activator => "#birth_cage-#{m.id}", :ok_button => "OK" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <td id="dob-<%=m.id%>">
+                                    <span class="hidden green-check">&#10003;</span><%= best_in_place m, :dob, :as => :date, :html_attrs => { :size => "12" }, 
+                                    :url => home_update_mouse_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}", :activator => "#dob-#{m.id}" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <% if @cage.cage_type == "breeding"%>
+                                    <td id="pup-<%=m.id%>">
+                                        <span class="hidden green-check">&#10003;</span>
+                                        <%= best_in_place m, :pup, :as => :select, :collection => [[false,"No"],[true,"Yes"]], :url => cage_mouse_path(@cage,m), :param => "new_col_value", :activator => "#pup-#{m.id}", :class => "editable highlight-on-success" %>
+                                        <span class="hidden red-x">&#10060;</span>
+                                    </td>
+                                <% end %>
+                                <td id="biopsy-coll-date-<%= m.id %>" >
+                                    <span class="hidden green-check">&#10003;</span><%= best_in_place m, :biopsy_collection_date, :as => :date, :html_attrs => { :size => "12" }, 
+                                    :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#biopsy-coll-date-#{m.id}" %>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <% if @cage.cage_type == "breeding" %>
+                                    <td id="wean-date-<%= m.id %>">
+                                        <span class="hidden green-check">&#10003;</span><%= best_in_place m, :weaning_date, :as => :date, :html_attrs => { :size => "12" }, 
+                                        :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#wean-date-#{m.id}" %>
+                                        <span class="hidden red-x">&#10060;</span>
+                                    </td>
+                                <% end %>
+                                <td id="transfer-<%= m.id %>">
+                                    <% @genotypes = %w(\  n/a +/+ +/- -/-)%>
+                                    <% target_cages = (m.strain2.blank?) ? Cage.where(strain:m.strain).where(strain2:[nil,""]).where(cage_type:["breeding", "single-#{sx}", "experiment"]).where(in_use:true) : Cage.where(strain:m.strain).where(strain2:m.strain2).where(cage_type:["breeding", "single-#{sx}"]).where(in_use:true) %>
+                                    <% target_cage_list = target_cages.map{ |cg| ["#{@cage.id}->#{cg.id}", "#{cg.strain} #{@genotypes[cg.genotype.to_i]}: #{cg.cage_number} (#{cg.cage_type})"] }.push(["#{@cage.id}->#{@cage.id}", "CANCEL TRANSFER"]) %>
+                                    <span class="hidden green-check">&#10003;</span>
+                                    <%= best_in_place m, :cage_id, :as => :select, 
+                                    :collection => target_cage_list,
+                                    :html_attrs => { :selected => m.cage.cage_number }, :url => cage_mouse_path(@cage,m), :param => "new_col_value", :class => "editableField highlight-on-success", :activator => "#transfer-#{m.id}", :id => "mouse-#{m.id}-transfer-select-menu"%>
+                                    <span class="hidden red-x">&#10060;</span>
+                                </td>
+                                <td id="remove-<%=m.id%>">
+                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#removeMouseModal"
+                                     data-dependencies='{"mouseid":"<%=m.id%>", "cage_id":"<%=@cage.id%>"}' >
+                                        Remove 
+                                    </button>
+                                </td>
+                                <td><%= link_to "Versions", audit_mouse_version_path(:id => m.id), :class => "btn btn-sm btn-primary"%></td>
+                            </tr>
+                        <% end %>
+                    <% else %>
+                        <tr>
+                            <td colspan="15"><h3 class="text-center">Cage is empty</h3></td>
+                        </tr>
+                    <% end %>
+                    </tbody>
+                    <tfoot class="hide-on-print">
+                        <tr rowspan="2">
+                            <td colspan="15">
+                                <% if @cage.cage_type == "breeding"%><div style="display:inline-block;height:15px;min-width:15px;border:1px solid black;background-color:greenyellow"></div>&nbsp;&nbsp;indicates a parent/adult mouse.<br><% end %>"-" indicates the table cell has no set value.<br>
+                            <span style="font-size:20px;color:green;">&#10003;</span>&nbsp;&nbsp;Field value successfully updated.<span class="tfoot-red-x">&#10060;</span>&nbsp;&nbsp;Field failed to update</td>
+                        </tr>
+                    </tfoot>
+                </table>                
+                <% end %>
+            </div>
+        </div>
+        
+    <% end %>
+</div>
+<%= render 'cage/partials/remove_cage_modal'%>
+<%= render 'cage/partials/remove_mouse_modal'%>
+<%= render 'cage/partials/remove_attachment_modal'%>
+

@@ -219,56 +219,59 @@ $(document).on('turbolinks:load',function() {
 
    /* remove mouse from cage front end code here. On modal activation, there is an AJAX call to get the most up-to-date state of the mouse to be removed. Modal body is populated with returned variables.
    A datepicker and text box allow for user input. Date is required for successful deletion of a mouse. When user clicks on the Yes, I'm sure button, another AJAX call is made to update the mouse with a removal date. */
-  $('.modal').on('show.bs.modal', function(e) {
-    var parsed = $(e.relatedTarget).data("dependencies");
-    var mouseIdx = parsed["mouseid"];
-    var mouseData;
+  // $('.modal').on('show.bs.modal', function(e) {
+  //   if ($(e.relatedTarget).data("dependencies")) {
+  //     var parsed = $(e.relatedTarget).data("dependencies");
+  //     var mouseIdx = parsed["mouseid"];
+  //     var mouseData;
   
-    $.ajax({
-      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-      type:"GET",
-      url:"/home/mouse",
-      data:{"mouse":mouseIdx},
-      dataType:"json",
-      success:function(reply) {
-         mouseData = reply["data"];
-         $('#modal-mouse-remove-date').datepicker().datepicker("setDate", new Date());
-         $('#modal-mouse-designation').text(mouseData["three_digit_code"]);
-         $('#modal-mouse-sex').text(["N/A","F", "M"][mouseData["sex"]]);
-         $('#modal-mouse-cage-number').text(parsed["mousecage"]);
-         $('#modal-mouse-earpunch').text(["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][mouseData["ear_punch"]-1]);
-         $('#modal-mouse-strain').text(mouseData["strain"]+":");
-         $('#modal-mouse-genotype').text(["","N/A","+/+","+/-","-/-"][mouseData["genotype"]]);
-         $('#modal-mouse-dob').text(mouseData["dob"]);
-         if (mouseData["strain2"] != null) {
-           $('#second-strain-modal-row').css("display", "flex");
-           $('#modal-mouse-strain2').text(mouseData["strain2"]+":");
-           $('#modal-mouse-genotype2').text(["","N/A","+/+","+/-","-/-"][mouseData["genotype2"]]);
-         }
-        },
-      error:function(jqxhr,reply,status) { alert("Mouse data was not fetched, please notify a site administrator."); }
-    });
-    //AJAX call to remove_mouse controller method
-    $('#destroyMouseConfirm').on('click', function(){
-      var rDate = $('#modal-mouse-remove-date').val();
-      var rReason = $('#modal-mouse-remove-reason').val();
+  //     $.ajax({
+  //       beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+  //       type:"GET",
+  //       url:"/home/mouse",
+  //       data:{"mouse":mouseIdx},
+  //       dataType:"json",
+  //       success:function(reply) {
+  //         mouseData = reply["data"];
+  //         $('#modal-mouse-remove-date').datepicker().datepicker("setDate", new Date());
+  //         $('#modal-mouse-designation').text(mouseData["three_digit_code"]);
+  //         $('#modal-mouse-sex').text(["N/A","F", "M"][mouseData["sex"]]);
+  //         $('#modal-mouse-cage-number').text(parsed["mousecage"]);
+  //         $('#modal-mouse-earpunch').text(["-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"][mouseData["ear_punch"]-1]);
+  //         $('#modal-mouse-strain').text(mouseData["strain"]+":");
+  //         $('#modal-mouse-genotype').text(["","N/A","+/+","+/-","-/-"][mouseData["genotype"]]);
+  //         $('#modal-mouse-dob').text(mouseData["dob"]);
+  //         if (mouseData["strain2"] != null) {
+  //           $('#second-strain-modal-row').css("display", "flex");
+  //           $('#modal-mouse-strain2').text(mouseData["strain2"]+":");
+  //           $('#modal-mouse-genotype2').text(["","N/A","+/+","+/-","-/-"][mouseData["genotype2"]]);
+  //         }
+  //       },
+  //         error:function(jqxhr,reply,status) { alert("Mouse data was not fetched, please notify a site administrator."); }
+  //     });
+  //     //AJAX call to remove_mouse controller method
+  //     $('#destroyMouseConfirm').on('click', function(){
+  //       var rDate = $('#modal-mouse-remove-date').val();
+  //       var rReason = $('#modal-mouse-remove-reason').val();
+  //       var rExperiment = $('#modal-mouse-remove-experiment').val()
 
-      $.ajax({
-        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        type:"PUT",
-        url:"/home/remove_mouse",
-        data:{"mouse":{"mouse_id":mouseIdx, "remove_date":rDate, "remove_reason":rReason}},
-        dataType:"json",
-        success:function(reply) { window.location.reload(); },
-        error:function(jqxhr,reply,status) { alert("Mouse was not removed, please notify a site administrator."); }
-      })
-    })
-  });
+  //       $.ajax({
+  //         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+  //         type:"PUT",
+  //         url:"/home/remove_mouse",
+  //         data:{"mouse":{"mouse_id":mouseIdx, "remove_date":rDate, "remove_reason":rReason, "experiment":rExperiment}},
+  //         dataType:"json",
+  //         success:function(reply) { window.location.reload(); },
+  //         error:function(jqxhr,reply,status) { alert("Mouse was not removed, please notify a site administrator."); }
+  //       })
+  //     })
+  //   }
+  // });
 
 }); /* close 'on turbolinks:load' function */
 
 /* Datepicker jquery initialization code here */
-$('#pups_birthdate').datepicker();
+//$('#pups_birthdate').datepicker();
 $('#new_mouse_birthdate').datepicker();
 $.datepicker.setDefaults({
   dateFormat: 'yy-mm-dd'

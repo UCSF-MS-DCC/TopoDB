@@ -1,0 +1,84 @@
+<div class="collapse" id="newMouseFormDiv" style="margin-top:20px;margin-bottom:20px;">
+    <%= form_for @new_mouse, url: cage_mouse_index_path(@cage,@new_mouse), :html => { :id => "new-mouse-form", :style => "border:1px solid skyblue;padding:10px;min-width:50%;border-radius:5px;" } do |f| %>
+        <div class="row">
+            <div class="col-1">
+                <div class="form-group">
+                    <%= f.label :sex, "Sex", :class => "col-form-label" %>
+                    <%= f.select :sex, [[nil,0],["F",1],["M",2]], :selected => nil, :class => "form-control" %>
+                </div>
+            </div>
+            <div class="col-1">
+                <div class="form-group">
+                    <%= f.label :three_digit_code, "ID", :class => "col-form-label"%>
+                    <%= f.text_field :three_digit_code, :class => "form-control", :maxlength => "3", :size => "5" %>
+                </div>
+            </div>
+            <div class="col-1">
+                <div class="form-group">
+                    <%= f.label :ear_punch, "Notch", :class => "col-form-label" %>
+                    <%= f.select :ear_punch, [["-",1],["N",2],["R",3],["L",4],["RR",5],["RL",6],["LL",7],["RRL",8],["RLL",9],["RRLL",10]], :selected => nil, :class => "form-control" %>
+                </div> 
+            </div>
+            <div class="col-1">
+                <div class="form-group">
+                    <%= f.label :genotype, "Genotype", :class => "col-form-label" %>
+                    <%= f.select :genotype, [nil,"n/a","+/+","+/-","-/-"], :selected => nil, :class => "form-control" %>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <%= f.label :parent_cage_id, "Birth Cage", :class => "col-form-label"%>
+                    <%= f.text_field :parent_cage_id, :class => "form-control", :id => "birth-cage-textfield" %>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <%= f.label :strain, "Strain", :class => "col-form-label"%>
+                    <%= f.text_field :strain, :class => "form-control", :list => "strains", :value => @cageStrain %>
+                    <datalist id="strains">
+                        <% @all_strains.each do |s| %>
+                            <option value="<%= s %>">
+                        <% end %>
+                    </datalist>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <%= f.label :strain2, "Strain 2", :class => "col-form-label"%>
+                    <%= f.text_field :strain2, :class => "form-control", :list => "strains", :value => @cageStrain2 %>
+                    <datalist id="strains">
+                        <% @all_strains.each do |s| %>
+                            <option value="<%= s %>">
+                        <% end %>
+                    </datalist>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <div class="form-group">
+                    <%= f.label :dob, "Birth Date", :class => "col-form-label"%>
+                    <%= f.date_field :dob, :class => "form-control new-mouse-form-date" %>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <%= f.label :biopsy_collection_date, "Biopsy Collection Date", :class => "col-form-label"%>
+                    <%= f.date_field :biopsy_collection_date, :class => "form-control new-mouse-form-date" %>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group">
+                    <%= f.label :weaning_date, "Weaning Date", :class => "col-form-label"%>
+                    <%= f.date_field :weaning_date, :class => "form-control new-mouse-form-date" %>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="actions col-2 offset-5">
+                <%= f.submit "Enter", :class => "btn btn-primary btn-block float-right" %>
+            </div>
+        </div>
+    <% end %>
+</div>

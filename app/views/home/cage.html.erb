@@ -73,7 +73,7 @@
                         <th class="editableColHeader">Birth Cage</th>
                         <th class="editableColHeader">Birth Date</th>
                         <% if @cage.cage_type == "breeding" %><th class="editableColHeader">Pup</th><% end %>
-                        <th class="editableColHeader">Tail Cut Date</th>
+                        <th class="editableColHeader">Biopsy Collection Date</th>
                         <% if @cage.cage_type == "breeding" %><th class="editableColHeader">Wean Date</th><% end %>
                         <th class="editableColHeader">Transfer</th>
                         <th class="editableColHeader" id="enableRemoveMice">Remove</th>
@@ -133,8 +133,8 @@
                                         <span class="hidden red-x">&#10060;</span>
                                     </td>
                                 <% end %>
-                                <td id="tail-cut-cell-<%= m.id %>" >
-                                    <span class="hidden green-check">&#10003;</span><%= best_in_place m, :tail_cut_date, :as => :date, :html_attrs => { :size => "12" }, 
+                                <td id="biopsy_coll_date-<%= m.id %>" >
+                                    <span class="hidden green-check">&#10003;</span><%= best_in_place m, :biopsy_collection_date, :as => :date, :html_attrs => { :size => "12" }, 
                                     :url => home_update_tail_cut_date_path, :class => "editableField highlight-on-success", :param => "mouse-#{m.id}", :activator => "#tail-cut-cell-#{m.id}" %>
                                     <span class="hidden red-x">&#10060;</span>
                                 </td>

@@ -15,7 +15,6 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
   end
 
   def data
-    puts options.to_json
     gts = %w(\  n/a +/+ +/- -/-)
     @dob_val = nil
     records.map do |record|
@@ -31,7 +30,6 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
       else
         "-"
       end
-      puts "DOB_VAL: #{@dob_val}"
       {
         cage_number:            record.decorate.link_to_cage,
         cage_type:              record.cage_type,
@@ -44,7 +42,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
 
   def get_raw_records
     records = nil
-    if options[:strain2] && ![nil, ""].include?(options[:strain2]) 
+    if options[:strain2].present?
       records = Cage.where(strain:options[:strain]).where(strain2:options[:strain2]).where(location:options[:location]).where(["cage_type LIKE ? ","%#{options[:cage_type]}%"]).where(in_use:true)
     else
       records = Cage.where(strain:options[:strain]).where(strain2:[nil, ""]).where(location:options[:location]).where(["cage_type LIKE ? ","%#{options[:cage_type]}%"]).where(in_use:true)
@@ -57,11 +55,7 @@ class StrainDatatable < AjaxDatatablesRails::ActiveRecord
 end
 class CageDecorator < ApplicationDecorator
   def link_to_cage
-    if ![nil, ""].include? object.strain2
-      h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number, :location => object.location, :strain => "#{object.strain}_#{object.strain2}")
-    else
-      h.link_to object.cage_number, h.home_cage_path(:cage_number => object.cage_number, :location => object.location, :strain => object.strain)
-    end
+      h.link_to object.cage_number, h.cage_path(:id => object.id)
   end
 end
 #record.mice.where(removed:nil).where(sex:1).where(["dob < ?", Date.today - 21 ]).second.dob.strftime("%m-%d-%Y") : "n/a"

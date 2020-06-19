@@ -4,7 +4,15 @@ test:
 
 local:
   service: Disk
-  root: <%= Rails.root.join("storage") %>
+  root: <%= Rails.root.join("upload_storage") %>
+
+production:
+  service: Disk
+  root: <%= Rails.root.join("upload_storage") %>
+
+staging:
+  service: Disk
+  root: <%= Rails.root.join("upload_storage") %>
 
 # Use rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:

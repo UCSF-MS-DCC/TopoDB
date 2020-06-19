@@ -1,0 +1,98 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="border-bottom:1px solid black;">
+    <%= link_to(image_tag("mouse-icon-high-res.png", :style=>"height:30px;") +" TopoDB", root_path, :class => "navbar-brand" )%>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <!-- Big ugly warning if this is the testing/uat version. Hidden by jquery in other deployments -->
+            <li class="nav-item" id="test-warning">
+                <h1>TopoDB Test App</h1>
+            </li>
+            <% if current_user %>
+                <% if current_page?(root_path) || current_page?(home_main_path) %>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-primary" style="margin-left:15px;" type="button" data-toggle="collapse" data-target="#newCageForm" aria-expanded="false">Add New Cage</button>
+                    </li>
+                <% end %>
+                <!-- Locations dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Locations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <% Cage.all.pluck(:location).uniq.each do |loc|%>
+                            <%= link_to loc, home_main_path(:location => loc), :class => "dropdown-item" %>
+                        <% end %>
+                    </div>
+                </li>
+                <!-- Cages dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary <%= Cage.where(in_use:true).count == 0 ? "disabled" : "" %>" href="#" id="cageDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Cages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form class="form-inline" style="margin-left:15px;">
+                            <input class="form-control mr-sm-2" type="text" id="navbar-search" placeholder="Search cage numbers">
+                        </form>
+                        <div id="search-results">
+                            <ul id="search-results-list">
+                            </ul>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <i class="dropdown-item" style="font-size:9pt;">most recently viewed</i>
+                        <% Cage.where(in_use:true).order("last_viewed DESC").limit(5).each do |cage|%>
+                            <%= link_to "#{cage.strain} :: #{cage.cage_number}", cage_path(:id => cage.id), :class => "dropdown-item" %>
+                        <% end %>
+                    </div>
+                </li>
+                <!-- Experiments Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="experimentDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Experiments
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <% unless Experiment.count == 0 %>
+                        <i class="dropdown-item" style="font-size:9pt;">most recently viewed</i>
+                            <% Experiment.all.order("last_viewed DESC").limit(5).each do |e|%>
+                                <%= link_to "#{e.name} :: #{e.gene}", experiment_path(:id => e.id), :class => "dropdown-item" %>
+                            <% end %>
+                            <div class="dropdown-divider"></div>
+                        <% end %>
+                        <%= link_to "All Experiments", experiment_index_path, :class => "dropdown-item" %>
+                        <%= link_to "New Experiment", new_experiment_path, :class => "dropdown-item" %>
+                        <%# <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a> %>
+                    </div>
+                </li>
+                <!-- Audit dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="dropdown-toggle btn btn-outline-primary" href="#" id="auditDropdownButton" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-left:15px;">
+                    Audit
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <%= link_to "Change Log", audit_index_path, :class => "dropdown-item" %>
+                        <%= link_to "Removed Mice", home_removed_mouse_index_path, :class => "dropdown-item" %>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <%= link_to "Log out", destroy_user_session_path, :method => :delete, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                </li>
+            <% else %>
+                <li class="nav-item">
+                    <%= link_to "Sign In", new_user_session_path, :class => "btn btn-outline-primary" %>
+                </li>
+            <% end %>
+            <% if current_user && current_user.is_admin? %>
+                <li class="nav-item">
+                    <%= link_to "Admin", rails_admin_path, :class => "btn btn-outline-primary", :style => "margin-left:15px;" %>
+                </li>
+            <% end %>
+        </ul>
+    </div>
+</nav>
+

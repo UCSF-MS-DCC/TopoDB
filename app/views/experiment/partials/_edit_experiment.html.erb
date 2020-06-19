@@ -1,0 +1,85 @@
+<div class="row justify-content-md-center collapse" id="editExpFormDiv" style="margin-top:20px;">
+    <div class="col-10 offset-1">
+        <%= form_for @experiment, :url => experiment_path(@experiment), :method => :patch, :html => { :id => "edit-experiment-form", :style => "border:1px solid skyblue;padding:10px;min-width:50%;border-radius:5px;"}  do |f| %>
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <%= f.label :date, "Experiment Date", :class => "col-form-label" %>
+                        <%= f.date_field :date, :class => "form-control experiment-date" %>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <%= f.label :name, "Experiment Name/ID", :class => "col-form-label" %>
+                        <%= f.text_field :name, :class => "form-control" %>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <%= f.label :gene, "Gene", :class => "col-form-label" %>
+                        <%= f.text_field :gene, :class => "form-control" %>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <div class="form-group">
+                        <%= f.label :variable_1, "Variable 1", :class => "col-form-label" %>
+                        <%= f.text_field :variable_1, :class => "form-control" %>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <%= f.label :variable_1_rows, "Rows", :class => "col-form-label" %>
+                        <%= f.text_field :variable_1_rows, :class => "form-control", :type => "number", :min => "0", :max => "100" %>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <%= f.label :variable_2, "Variable 2", :class => "col-form-label" %>
+                        <%= f.text_field :variable_2, :class => "form-control" %>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <%= f.label :variable_2_rows, "Rows", :class => "col-form-label" %>
+                        <%= f.text_field :variable_2_rows, :class => "form-control", :type => "number", :min => "0", :max => "100" %>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <%= f.label :variable_3, "Variable 3", :class => "col-form-label" %>
+                        <%= f.text_field :variable_3, :class => "form-control" %>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="form-group">
+                        <%= f.label :variable_3_rows, "Rows", :class => "col-form-label" %>
+                        <%= f.text_field :variable_3_rows, :class => "form-control", :type => "number", :min => "0", :max => "100" %>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <%= f.label :description, "Description", :class => "col-form-label" %>
+                        <%= f.text_area :description, :class => "form-control "%>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <%= f.label :protocol, "Protocol", :class => "col-form-label" %>
+                        <%= f.text_area :protocol, :class => "form-control "%>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2 offset-5">
+                    <%= f.submit "Save", :class => "btn btn-primary btn-block" %>
+                </div>
+            </div>
+        <% end %>
+    </div>
+</div>
