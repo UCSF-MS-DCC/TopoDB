@@ -40,7 +40,7 @@
                 <%@novel_cell_num = 1%>
                 <% @experiment.variables.each_with_index do |v,idx| %>
                     <% vars_hash = JSON.parse(v) %>
-                    <div class="tab-pane container <%= idx == 0 ? "active" : nil %>" id="var<%= idx %>" >
+                    <div class="tab-pane container <%= idx == 0 ? "active" : nil %> table-responsive" id="var<%= idx %>" >
                         <table class="table table-bordered table-striped" id="experiment-mouse-datatable" data-source=<%= @experiment.id %> style = "margin-top:15px;">
                             <thead>
                             <th></th>

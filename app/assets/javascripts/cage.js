@@ -59,7 +59,7 @@ $(document).on('turbolinks:load', function(){
             },
               error:function(jqxhr,reply,status) { alert("Mouse data was not fetched, please notify a site administrator."); }
           }); /* close AJAX call to get current mouse state data */
-          /* If the user clicks the Yes, I'm Sure button in the delete mouse modal, this method sends data to the mouse update method for processing */
+          /* If the user clicks the [Yes, I'm Sure] button in the delete mouse modal, this method sends data to the mouse update method for processing */
           $('#destroyMouseConfirm').on('click', function(){
             var rDate = $('#modal-mouse-remove-date').val();
             var rReason = $('#modal-mouse-remove-reason').val();
