@@ -18,7 +18,7 @@ gem 'mysql2', '~> 0.5.2'
 gem 'jquery-rails'
 gem 'bootstrap', '~> 4.3.1'
 gem 'devise'
-gem 'rails_admin', '~> 2.0.0.beta'
+gem 'rails_admin', '~> 2.0.2'
 gem 'cancancan'
 gem 'paper_trail'
 gem 'paper_trail-association_tracking'
@@ -33,6 +33,7 @@ gem 'pg'
 gem 'chart-js-rails'
 gem 'd3-rails'
 gem 'poppler'
+gem "activesupport", ">= 5.2.4.3"
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
