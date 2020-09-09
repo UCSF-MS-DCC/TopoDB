@@ -27,7 +27,7 @@ TopoDB uses MySQL as the database component. Download and install MySQL prior to
 TopoDB requires Ruby version 2.5.2
 
 to download the application:
-git clone https://github.com/UCSF-MS-DCC/TopoDB
+git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB
 
 initialize the database:
 rails db:migrate
