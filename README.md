@@ -31,14 +31,14 @@ Open mysql and create a user and password for TopoDB to use to connect:;
 Create a database named topo_database:;
 Give the TopoDB user account all permissions on that database:;
 
-to download the application:;
+# Download the repo:
 git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;
 
-initialize the database:;
-rails db:migrate;
+initialize the database:
+rails db:migrate
 
-create a sample dataset:;
-rails db:seed;
+create a sample dataset:
+rails db:seed
 
-start the application:;
-rails s;
+start the application:
+rails s
