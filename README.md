@@ -27,10 +27,10 @@ Things you may want to cover:
 TopoDB requires Ruby version of at least 2.5.2. We recommend using rbenv to install and manage Ruby versions. [Link] (https://github.com/rbenv/rbenv)
 # Database requirements:
 TopoDB is configured to use MySQL as the database component. Download and install MySQL prior to installing TopoDB on your system [here](https://dev.mysql.com/downloads/). 
-Open mysql and create a user and password for TopoDB to use to connect:
-Create a database named topo_database:
-Give the TopoDB user account all permissions on that database:
-TopoDB requires Ruby version 2.5.2
+Open mysql and create a user and password for TopoDB to use to connect:;
+Create a database named topo_database:;
+Give the TopoDB user account all permissions on that database:;
+TopoDB requires Ruby version 2.5.2;
 
 to download the application:
 git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB
