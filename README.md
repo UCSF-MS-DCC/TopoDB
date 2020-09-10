@@ -23,7 +23,7 @@ Things you may want to cover:
 
 * ...
 # TopoDB
-TopoDB uses MySQL as the database component. Download and install MySQL prior to installing TopoDB on your system.
+TopoDB is configured to use MySQL as the database component. Download and install MySQL prior to installing TopoDB on your system [here](https://dev.mysql.com/downloads/).
 TopoDB requires Ruby version 2.5.2
 
 to download the application:
