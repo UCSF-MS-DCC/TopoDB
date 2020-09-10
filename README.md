@@ -31,10 +31,11 @@ TopoDB is configured to use MySQL as the database component. Download and instal
 Open the mysql shell and create a user and password for TopoDB to use to connect:
 ```mysql> CREATE USER 'topo'@'localhost' IDENTIFIED BY 'password';```
 
-Create a database named topo_dev:
-```mysql> CREATE DATABASE 'topo_database';```
-Give the TopoDB user account all permissions on that database:
-```mysql> GRANT ALL PRIVILEGES ON topo_database.* TO 'topo'@'localhost';```
+Create a database named topo_dev:  
+```mysql> CREATE DATABASE 'topo_database';```  
+
+Give the TopoDB user account all permissions on that database:  
+```mysql> GRANT ALL PRIVILEGES ON topo_database.* TO 'topo'@'localhost';``` 
 
 # Download the repo
 git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;
