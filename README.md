@@ -17,7 +17,7 @@ Close the mysql shell
 
 
 # Download the repo
-```git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;``1
+```git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;```
 
 # Set up the local environment
 add the following to your local ENV:
