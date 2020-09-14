@@ -19,14 +19,11 @@ Close the mysql shell
 # Download the repo
 ```git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;```
 
-# Set up the local environment
-add the following to your local ENV:
-```DATABASE=
-initialize the database:
+# Initialize the database:
 rails db:migrate
 
-create a sample dataset:
+# To create a sample dataset:
 rails db:seed
 
-start the application:
+# Start the application:
 rails s
