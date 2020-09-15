@@ -7,7 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 strains = %w(ATXN1 Tau 2D2 ATXN1L CD79 CIC FLOX)
 cage_types = %w(single-m single-f breeding experiment)
-locations = %w(sandler genentech\ hall)
+locations = %w(facility_a, facility_b, facility_c)
 
 dgn = 100
 
@@ -33,7 +33,7 @@ end
 
 
 #create Admin user
-#User.new(email:"admin@topodb.ucsf.edu", password:"321321", password_confirmation:"321321", admin:true, editor:true, first:"Admin", last:"User").save
+User.new(email:"admin@topo.topo", password:"321321", password_confirmation:"321321", admin:true, editor:true, first:"Admin", last:"User").save
 #create breeding cages
 50.times do 
 
