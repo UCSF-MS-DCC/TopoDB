@@ -20,14 +20,14 @@ Close the mysql shell
 ```git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;```
 
 # Initialize the database:
-rails db:migrate
+```rails db:migrate```
 
 # To create a sample dataset:
-rails db:seed
+```rails db:seed```
 
 # Start the application:
-rails s
-in a web browser, go to localhost:3000
+```rails s```
+in the address bar of a web browser enter localhost:3000
 
 # Authentication
 Creating the sample data set will also create an administrator-level account that you may use to log into TopoDB. See the seed.rb file for the username and password. Once logged in as the administrator it is recommended that you create new users to handle day-to-day activities in the application. It's also recommended that you change the Administrator account password. Both of these activities can be done either directly in the users database table, or through the included rails admin feature, available in the main navigation bar.
