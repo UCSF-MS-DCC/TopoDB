@@ -19,13 +19,13 @@ Close the mysql shell
 # Download the repo
 ```git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;```
 
-# Initialize the database:
+# Initialize the database
 ```rails db:migrate```
 
-# To create a sample dataset:
+# To create a sample dataset
 ```rails db:seed```
 
-# Start the application:
+# Start the application
 ```rails s```
 
 in the address bar of a web browser enter localhost:3000 to access TopoDB
