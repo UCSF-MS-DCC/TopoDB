@@ -33,3 +33,5 @@ in the address bar of a web browser enter localhost:3000 to access TopoDB
 # Authentication
 Creating the sample data set will also create an administrator-level account that you may use to log into TopoDB. See the seed.rb file for the username and password. Once logged in as the administrator it is recommended that you create new users to handle day-to-day activities in the application. It's also recommended that you change the Administrator account password. Both of these activities can be done either directly in the users database table, or through the included rails admin feature, available in the main navigation bar.
 
+# Using TopoDB
+## Navigation
