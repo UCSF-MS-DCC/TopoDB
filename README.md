@@ -19,6 +19,9 @@ Close the mysql shell
 # Download the repo
 ```git clone --branch distribution https://github.com/UCSF-MS-DCC/TopoDB;```
 
+# CD into the TopoDB directory and nstall the application gems
+```bundle install```
+
 # Initialize the database
 ```rails db:migrate```
 
