@@ -33,7 +33,7 @@ end
 
 
 #create Admin user
-User.new(email:"admin@topo.topo", password:"321321", password_confirmation:"321321", admin:true, editor:true, first:"Admin", last:"User").save
+User.new(email:"admin@topodb.topo", password:"admin123", password_confirmation:"admin123", admin:true, editor:true, first:"Admin", last:"User").save
 #create breeding cages
 50.times do 
 
