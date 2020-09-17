@@ -34,7 +34,11 @@ Close the mysql shell
 in the address bar of a web browser enter http://localhost:3000 to access TopoDB
 
 # Authentication
-Creating the sample data set will also create an administrator-level account that you may use to log into TopoDB. See the seed.rb file for the username and password. Once logged in as the administrator it is recommended that you create new users to handle day-to-day activities in the application. It's also recommended that you change the Administrator account password. Both of these activities can be done either directly in the users database table, or through the included rails admin feature, available in the main navigation bar.
+Log in as the admin user that was created as part of the sample data set: email: admin@topodb.topo, password: admin123 . 
+Once logged in as the administrator it is highly recommended that you create new users to handle day-to-day activities in the application. It's also recommended that you change the Administrator account password. Both of these activities can be done either directly in the users database table, or through the included rails admin feature, available in the main navigation bar.
+
+# Permissions
+TopoDB has three pre-defined types of account permissions: Admin, editor, and normal. Normal users have read-only access to mouse, cage, and experiment data and may not enter, delete, or update data. Editors may read as well as enter, update, or delete mice, cage, and experiment data. Admins have all of the privileges of editors and may also access the rails admin interface to create or remove users as well as change users' permissions. To make a user an editor, find the user account in rails admin ( click the Users tab on the left) and change the editor field  to true and save the changes. To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false.
 
 # Using TopoDB
 ## Navigation
