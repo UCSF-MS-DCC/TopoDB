@@ -25,7 +25,7 @@ Close the mysql shell
 # Initialize the database
 ```rails db:migrate```
 
-# To create a sample dataset
+# Create a sample dataset
 ```rails db:seed```
 
 # Start the application
