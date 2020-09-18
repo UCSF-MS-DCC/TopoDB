@@ -1,6 +1,6 @@
 # TopoDB
 # Language requirements
-TopoDB requires Ruby version >= 2.5.2. We recommend using [rbenv](https://github.com/rbenv/rbenv) to install and manage Ruby versions.
+TopoDB requires Ruby version >= 2.5.2, Ruby on Rails version >= 5.2.0, and bundler version 2.0 . We recommend using [rbenv](https://github.com/rbenv/rbenv) to install and manage Ruby gems. 
 # Database requirements
 TopoDB is configured to use MySQL as the database component. Download and install MySQL prior to installing TopoDB on your system [here](https://dev.mysql.com/downloads/). 
 
