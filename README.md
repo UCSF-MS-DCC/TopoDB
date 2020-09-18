@@ -49,8 +49,13 @@ Next, select Users in the menu on the left:
 
 ![README 2](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_2.png)
 
+Click the pencil icon on the row of the user to be edited:
 
-( click the Users tab on the left) and change the editor field  to true and save the changes. To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false. The default level of permissions (read-only) does not require changes to a User account field.
+
+![README 3](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_3.png)
+
+
+To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false. The default level of permissions (read-only) does not require changes to a User account field.
 
 # Using TopoDB
 ## Navigation
