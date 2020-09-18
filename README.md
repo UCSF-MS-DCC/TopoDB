@@ -44,7 +44,7 @@ To add or remove a user's permissions, first access the Administration panel fro
 ![README_1](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_1.png)
 
 Next, select Users in the menu on the left:
-![README 2]()
+![README 2](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_2.png)
 
 ( click the Users tab on the left) and change the editor field  to true and save the changes. To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false. The default level of permissions (read-only) does not require changes to a User account field.
 
