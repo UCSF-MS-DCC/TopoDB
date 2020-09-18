@@ -35,7 +35,7 @@ in the address bar of a web browser enter http://localhost:3000 to access TopoDB
 
 # Authentication
 Log in as the admin user that was created as part of the sample data set: email: admin@topodb.topo, password: admin123 . 
-Once logged in as the administrator it is highly recommended that you create new users to handle day-to-day activities in the application. It's also recommended that you change the Administrator account password. Both of these activities can be done either directly in the users database table, or through the included rails admin feature, available in the main navigation bar.
+Once logged in as the administrator it is strongly recommended that you create new users to handle day-to-day activities in the application. It's also recommended that you change the Administrator account password. Both of these activities can be done either directly in the users database table, or through the included rails admin feature, available in the main navigation bar.
 
 # Permissions
 TopoDB has three pre-defined types of account permissions: Admin, editor, and normal. Normal users have read-only access to mouse, cage, and experiment data and may not enter, delete, or update data. Editors may read as well as enter, update, or delete mice, cage, and experiment data. Admins have all of the privileges of editors and may also access the rails admin interface to create or remove users as well as change users' permissions. 
