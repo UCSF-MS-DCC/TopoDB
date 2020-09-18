@@ -40,8 +40,11 @@ Once logged in as the administrator it is highly recommended that you create new
 # Permissions
 TopoDB has three pre-defined types of account permissions: Admin, editor, and normal. Normal users have read-only access to mouse, cage, and experiment data and may not enter, delete, or update data. Editors may read as well as enter, update, or delete mice, cage, and experiment data. Admins have all of the privileges of editors and may also access the rails admin interface to create or remove users as well as change users' permissions. 
 
-To make a user an editor, access the Administration panel from the main navbar:
+To add or remove a user's permissions, first access the Administration panel from the main navbar:
 ![README_1](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_1.png)
+
+Click on Users in the menu on the left:
+
 
 ( click the Users tab on the left) and change the editor field  to true and save the changes. To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false. The default level of permissions (read-only) does not require changes to a User account field.
 
