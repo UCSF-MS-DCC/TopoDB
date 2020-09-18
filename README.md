@@ -45,6 +45,8 @@ To add or remove a user's permissions, first access the Administration panel fro
 
 
 Next, select Users in the menu on the left:
+
+
 ![README 2](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_2.png)
 
 
