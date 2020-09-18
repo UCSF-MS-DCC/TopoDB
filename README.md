@@ -54,8 +54,10 @@ Click the pencil icon on the row of the user to be edited:
 
 ![README 3](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_3.png)
 
+To add or remove admin or editor permissions, check or uncheck the appropriate box:
 
-To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false. The default level of permissions (read-only) does not require changes to a User account field.
+![README 4](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_4.png)
+
 
 # Using TopoDB
 ## Navigation
