@@ -43,8 +43,8 @@ TopoDB has three pre-defined types of account permissions: Admin, editor, and no
 To add or remove a user's permissions, first access the Administration panel from the main navbar:
 ![README_1](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_1.png)
 
-Click on Users in the menu on the left:
-
+Next, select Users in the menu on the left:
+![README 2]()
 
 ( click the Users tab on the left) and change the editor field  to true and save the changes. To make a user an admin, change the admin field to true. To remove these privileges, change the fields to false. The default level of permissions (read-only) does not require changes to a User account field.
 
