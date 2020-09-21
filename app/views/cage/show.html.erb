@@ -43,7 +43,7 @@
                 <% if @cage.cage_type == "breeding" %>
                     <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#recordNewPupsDiv" type="button" aria-expanded=false >Record New Pups</button>
                 <% end %>
-                <%= link_to 'Print Table', home_strain_path(:strain => @cage.strain), :onclick => 'window.print();return false;', :class => "btn btn-sm btn-primary"%>
+                <%= link_to 'Print/Save as PDF', home_strain_path(:strain => @cage.strain), :onclick => 'window.print();return false;', :class => "btn btn-sm btn-primary"%>
                 <button id="triggerRemoveModal" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#removeCageModal" data-cage-id=<%=@cage.id%> type="button" aria-expanded=false>Remove Cage</button>
                 <button class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#uploadFileDiv" type="button" aria-expanded=false>View/Upload Files</button>
             </div>
