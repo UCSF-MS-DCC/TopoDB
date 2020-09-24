@@ -53,6 +53,27 @@ class Cage < ApplicationRecord
         self.update_columns(last_viewed: Time.now)
     end
 
+    def get_csv
+        sex = ["-","F","M"]
+        punch = ["","-","N","R","L","RR","RL","LL","RRL","RLL","RRLL"]
+        geno = ["","n/a","+/+","+/-","-/-"]
+        CSV.generate do |csv|
+            col_heads = Mouse.column_names.reject{ |cn| ["id", "cage_id", "tdc_generated", "updated_at", "created_at", "experiment_code", "strain2", "experiment_id", "designation"].include? cn }.map{ |cn| cn.to_s }
+            mice = self.mice
+            csv << col_heads
+            mice.each do |m|
+                row = m.attributes.values_at(*col_heads)
+                row[0] = sex[row[0].to_i]
+                row[1] = geno[row[1].to_i]
+                row[5] = punch[row[5].to_i]
+                unless row[11].blank?
+                    row[11] = geno[row[12].to_i]
+                end
+                csv << row
+            end
+        end
+    end
+
     private
     def set_default_values
         self.in_use = true

@@ -26,6 +26,21 @@ $(document).on('turbolinks:load', function(){
       $('#modal-mouse-remove-experiment').prop("disabled", true);
     } 
 
+    /* Print CSV file button handler */
+
+    $('#print-csv-button').on('click', function(){
+      var cage = $(this).data("cage")
+      $.ajax({
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        type:"POST",
+        url:"/cage/"+cage+"/csv",
+        data:{"cage":cage, "id":cage, "format":"csv"},
+        dataType:"csv",
+        success:function(reply) {}
+      });
+
+    });
+
     /* This code transfers mouse data to the remove mouse modal and handles to AJAX call to the contoller */
     $('.modal').on('show.bs.modal', function(e) {
         if ($(e.relatedTarget).data("dependencies")) {

@@ -113,6 +113,18 @@ class CageController < ApplicationController
         redirect_to action: "show", id: @cage.id
     end
 
+    def csv
+        # need to translate the integer codes for sex, ear punch, genotype, parent_cage_id to the correct string
+        # 
+        # for the csv column names, filter out unneeded cols.
+        puts params
+        # col_heads = Mouse.column_names.reject{ |cn| ["id", "cage_id", "tdc_generated", "updated_at", "created_at", "experiment_code"].include? cn }
+        # @cage = Cage.find(params["cage"])
+        # respond_to do |format|
+        #     format.csv { send_file @cage.get_csv }
+        # end
+    end
+
     private 
 
         def create_and_update_params

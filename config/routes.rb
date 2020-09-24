@@ -36,6 +36,8 @@ Rails.application.routes.draw do
     resources :mouse
   end
 
+  get 'util/csv'
+
   resources :experiment do 
     post 'add_data'
     put 'update_data'
