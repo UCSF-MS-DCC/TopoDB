@@ -58,6 +58,3 @@ To add or remove admin or editor permissions, check or uncheck the appropriate b
 
 ![README 4](https://github.com/UCSF-MS-DCC/TopoDB/blob/master/app/assets/images/topo_readme_4.png)
 
-
-# Using TopoDB
-## Navigation
