@@ -1,19 +1,29 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-breeding_cage:
+breeding_cage1:
   cage_number: "12345"
   cage_type: "breeding"
-  location: "sandler"
-  rack: "L5"
+  location: "facility_1"
+  strain: "ATXN1"
   cage_number_changed: false
-  pups: 4
 
-single_sex_cage:
+breeding_cage2:
+  cage_number: "12345"
+  cage_type: "breeding"
+  location: "facility_1"
+  strain: "CIC"
+  cage_number_changed: false
+
+single_sex_cage1:
   cage_number: "54321"
-  cage_type: "single"
-  location: "genentech hall"
-  rack: "R3"
+  cage_type: "single-m"
+  location: "facility_2"
+  strain: "ATXN1"
   cage_number_changed: false
-  pups: nil
-  sex: "M"
 
+single_sex_cage2:
+  cage_number: "54321"
+  cage_type: "single-m"
+  location: "facility_2"
+  strain: "COC"
+  cage_number_changed: false

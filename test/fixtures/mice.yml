@@ -3,74 +3,59 @@
 mouse_one:
   strain: "ATXN1"
   cage: breeding_cage
-  sex: "F"
-  genotype: "-/-"
+  sex: 1
+  genotype: 1
   dob: 2019-07-26
   weaning_date: 2019-07-26
-  tail_cut_date: 2019-07-26
+  biopsy_collection_date: 2019-07-26
   ear_punch: "RL"
-  designation: "F001RL"
-  euthanized: false
-  notes: nil
-  on_experiment: 
+  designation: "F001RL" 
   parent_cage_id: 1
 
 mouse_two:
   strain: "ATXN1"
   cage: breeding_cage
-  sex: "M"
+  sex: 2
   genotype: "-/+"
   dob: 2019-07-26
   weaning_date: 2019-07-26
-  tail_cut_date: 2019-07-26
+  biopsy_collection_date: 2019-07-26
   ear_punch: "N"
-  designation: "M024N"
-  euthanized: false
-  notes: nil
-  on_experiment: 
+  designation: "M024N" 
   parent_cage_id: 1
 
 mouse_three:
   strain: "ATXN1"
   cage: breeding_cage
-  sex: "F"
+  sex: 1
   genotype: "+/+"
   dob: 2019-07-26
   weaning_date: 2019-07-26
-  tail_cut_date: 2019-07-26
+  biopsy_collection_date: 2019-07-26
   ear_punch: "RL"
   designation: "F003L"
-  euthanized: false
-  notes: nil
-  on_experiment: 
   parent_cage_id: 1
 
 mouse_four:
   strain: "Tau"
   cage: single_sex_cage
-  sex: "M"
+  sex: 1
   genotype: "-/+"
   dob: 2019-07-26
   weaning_date: 2019-07-26
-  tail_cut_date: 2019-07-26
+  biopsy_collection_date: 2019-07-26
   ear_punch: "N"
   designation: "M024N"
-  euthanized: false
-  notes: nil
-  on_experiment: 
   parent_cage_id: 1
 
 mouse_four:
   strain: "Tau"
   cage: single_sex_cage
-  sex: "M"
+  sex: 2
   genotype: "-/+"
   dob: 2019-07-26
   weaning_date: 2019-07-26
-  tail_cut_date: 2019-07-26
+  biopsy_collection_date: 2019-07-26
   ear_punch: "RR"
   designation: "M222RR"
-  euthanized: true
-  notes: nil
-  on_experiment: 
   parent_cage_id: 1

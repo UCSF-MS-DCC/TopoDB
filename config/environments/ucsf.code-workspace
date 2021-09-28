@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "../../../../INDIGO"
+		},
+		{
+			"path": "../../../../msgenes2/msgenes"
+		},
+		{
+			"path": "../../../../msgenetics2/msGenetics2"
+		},
+		{
+			"path": "../../../../bioscreen_api"
+		},
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../rgidash/rgidash"
+		},
+		{
+			"path": "../../../../summit_api"
+		},
+		{
+			"path": "../../../../covidhla"
+		},
+		{
+			"path": "../../../../hlacovid_rails"
+		}
+	],
+	"settings": {
+		"javascript.suggest.enabled": false,
+		"git.ignoreLimitWarning": true
+	}
+}
